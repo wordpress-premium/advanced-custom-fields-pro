@@ -6,7 +6,7 @@
 	"homepage": "https://www.advancedcustomfields.com",
 	"time": "2019-06-04",
     "require": {
-        "composer/installers": "^1.6"
+        "composer/installers": ">=1.0"
     },
     "license": "GPLv2 or later",
     "authors": [
