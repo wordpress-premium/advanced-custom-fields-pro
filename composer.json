@@ -1,5 +1,5 @@
 {
-    "name": "wordpress-premium-plugins/advanced-custom-fields-pro",
+    "name": "thaikolja/advanced-custom-fields-pro",
     "description": "Customize WordPress with powerful, professional and intuitive fields.",
     "type": "wordpress-plugin",
 	"version": "5.8.1",
