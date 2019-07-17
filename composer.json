@@ -2,9 +2,9 @@
     "name": "thaikolja/advanced-custom-fields-pro",
     "description": "Customize WordPress with powerful, professional and intuitive fields.",
     "type": "wordpress-plugin",
-	"version": "5.8.1",
+	"version": "5.8.2",
 	"homepage": "https://www.advancedcustomfields.com",
-	"time": "2019-06-04",
+	"time": "2019-07-15",
     "require": {
         "composer/installers": ">=1.0"
     },

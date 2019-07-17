@@ -40,6 +40,21 @@ function acf_is_empty( $value ) {
 }
 
 /**
+ * acf_not_empty
+ *
+ * Returns true if the value provided is considered "not empty". Allows numbers such as 0.
+ *
+ * @date	15/7/19
+ * @since	5.8.1
+ *
+ * @param	mixed $var The value to check.
+ * @return	bool
+ */
+function acf_not_empty( $var ) {
+	return ( $var || is_numeric($var) );
+}
+
+/**
 *  acf_idify
 *
 *  Returns an id friendly string
@@ -69,6 +84,37 @@ function acf_idify( $str = '' ) {
 
 function acf_slugify( $str = '' ) {
 	return str_replace(array('_', '/', ' '), '-', strtolower($str));
+}
+
+/**
+ * acf_punctify
+ *
+ * Returns a string with correct full stop puctuation.
+ *
+ * @date	12/7/19
+ * @since	5.8.2
+ *
+ * @param	string $str The string to format.
+ * @return	string
+ */
+function acf_punctify( $str = '' ) {
+	return trim($str, '.') . '.';
+}
+
+/**
+ * acf_multi_explode
+ *
+ * Returns an array of strings created by splitting the $string by the given $delimiters.
+ *
+ * @date	12/7/19
+ * @since	5.8.2
+ *
+ * @param	array $delimiters An array of delimiters.
+ * @return	string $string The string to explode.
+ */
+function acf_multi_explode( $delimiters, $string ) {
+	$string = str_replace( $delimiters, $delimiters[0], $string );
+    return explode( $delimiters[0], $string );
 }
 
 /**
@@ -3442,43 +3488,6 @@ function acf_get_current_url() {
 	return ( is_ssl() ? 'https' : 'http' ) . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 }
 
-/**
-*  acf_str_join
-*
-*  Joins together 2 strings removing any overlapping characters.
-*  Useful for urls. Eg: 'test.local/foo/' + '/foo/bar/' = 'test.local/foo/bar/'
-*
-*  @date	19/11/18
-*  @since	5.8.0
-*
-*  @param	string $s1 The first string.
-*  @param	string $s2 The seccond string.
-*  @return	string
-*/
-function acf_str_join( $s1 = '', $s2 = '' ) {
-	
-	// Remember number of chars that overlap.
-	$overlap = 0;
-	
-	// Find shortest word length.
-	$length = min( strlen($s1), strlen($s2) );
-	
-	// Find number of chars that overlap.
-	for( $i = 0; $i < $length; $i++ ) {
-		if( substr($s1, -$i) === substr($s2, 0, $i) ) {
-			$overlap = $i;
-		}
-	}
-	
-	// shorten $s2 based on overlap
-	if( $overlap ) {
-		$s2 = substr($s2, $overlap);
-	}
-	
-	// Return joined string.
-	return $s1 . $s2;
-}
-
 /*
 *  acf_current_user_can_admin
 *
@@ -5038,18 +5047,22 @@ function acf_array_camel_case( $array = array() ) {
 }
 
 /**
-*  acf_is_block_editor
-*
-*  Returns true if the current screen uses the block editor.
-*
-*  @date	13/12/18
-*  @since	5.8.0
-*
-*  @return	bool
-*/
+ * acf_is_block_editor
+ *
+ * Returns true if the current screen uses the block editor.
+ *
+ * @date	13/12/18
+ * @since	5.8.0
+ *
+ * @param	void
+ * @return	bool
+ */
 function acf_is_block_editor() {
-	if( method_exists(get_current_screen(), 'is_block_editor') ) {
-		return get_current_screen()->is_block_editor();
+	if( function_exists('get_current_screen') ) {
+		$screen = get_current_screen();
+		if( method_exists($screen, 'is_block_editor') ) {
+			return $screen->is_block_editor();
+		}
 	}
 	return false;
 }
