@@ -560,6 +560,7 @@ function acf_parse_save_blocks_callback( $matches ) {
 	// Defaults
 	$name = isset($matches['name']) ? $matches['name'] : '';
 	$attrs = isset($matches['attrs']) ? json_decode( $matches['attrs'], true) : '';
+	$void = isset($matches['void']) ? $matches['void'] : '';
 	
 	// Bail early if missing data or not an ACF Block.
 	if( !$name || !$attrs || !acf_has_block_type($name) ) {
@@ -588,5 +589,5 @@ function acf_parse_save_blocks_callback( $matches ) {
 	$attrs = apply_filters( 'acf/pre_save_block', $attrs );
 	
 	// Return new comment
-	return '<!-- wp:' . $name . ' ' . acf_json_encode($attrs) . ' /-->';
+	return '<!-- wp:' . $name . ' ' . acf_json_encode($attrs) . ' ' . $void . '-->';
 }

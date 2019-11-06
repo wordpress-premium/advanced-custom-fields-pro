@@ -1407,23 +1407,26 @@
 			// vars
 			var $el = this.$attachment( attachment.id );
 			
-			// image
+			// Image type.
 			if( attachment.type == 'image' ) {
 				
-				// remove filename	
+				// Remove filename.
 				$el.find('.filename').remove();
 			
-			// other (video)	
+			// Other file type.	
 			} else {	
 				
-				// attempt to find attachment thumbnail
-				attachment.url = acf.isget(attachment, 'thumb', 'src');
+				// Check for attachment featured image.
+				var image = acf.isget(attachment, 'image', 'src');
+				if( image !== null ) {
+					attachment.url = image;
+				}
 				
-				// update filename
+				// Update filename text.
 				$el.find('.filename').text( attachment.filename );
 			}
 			
-			// default icon
+			// Default to mimetype icon.
 			if( !attachment.url ) {
 				attachment.url = acf.get('mimeTypeIcon');
 				$el.addClass('-icon');
