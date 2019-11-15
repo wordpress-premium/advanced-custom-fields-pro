@@ -135,19 +135,32 @@
 				$(this).find('> .order > span').html( i+1 );
 			});
 			
+			// Extract vars.
+			var $controll = this.$control();
+			var $button = this.$button();
+			
 			// empty
 			if( this.val() == 0 ) {
-				this.$control().addClass('-empty');
+				$controll.addClass('-empty');
 			} else {
-				this.$control().removeClass('-empty');
+				$controll.removeClass('-empty');
 			}
 			
-			// max
-			if( this.allowAdd() ) {
-				this.$button().removeClass('disabled');
+			// Reached max rows.
+			if( !this.allowAdd() ) {
+				$controll.addClass('-max');
+				$button.addClass('disabled');
 			} else {
-				this.$button().addClass('disabled');
-			}	
+				$controll.removeClass('-max');
+				$button.removeClass('disabled');
+			}
+			
+			// Reached min rows (not used).
+			//if( !this.allowRemove() ) {
+			//	$controll.addClass('-min');
+			//} else {
+			//	$controll.removeClass('-min');
+			//}	
 		},
 		
 		validateAdd: function(){
@@ -1596,10 +1609,13 @@
 		
 		onChangeSort: function( e, $el ){
 			
-			// vars
-			var val = $el.val();
+			// Bail early if is disabled.
+			if( $el.hasClass('disabled') ) {
+				return;
+			}
 			
-			// validate
+			// Get sort val.
+			var val = $el.val();
 			if( !val ) {
 				return;
 			}
@@ -1609,6 +1625,7 @@
 			this.$attachments().each(function(){
 				ids.push( $(this).data('id') );
 			});
+			
 			
 			// step 1
 			var step1 = this.proxy(function(){
