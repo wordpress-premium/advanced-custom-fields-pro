@@ -20,7 +20,7 @@ class ACF {
 	var $version = '5.8.7';
 	
 	/** @var array The plugin settings array. */
-	var $settings = array();
+	var $settings = array(); 
 	
 	/** @var array The plugin data array. */
 	var $data = array();
