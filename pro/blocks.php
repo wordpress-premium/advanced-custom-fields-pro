@@ -12,7 +12,7 @@ acf_register_store( 'block-types' );
  * Registers a block type.
  *
  * @date	18/2/19
- * @since	5.7.12
+ * @since	5.8.0
  *
  * @param	array $block The block settings.
  * @return	(array|false)
@@ -22,8 +22,26 @@ function acf_register_block_type( $block ) {
 	// Validate block type settings.
 	$block = acf_validate_block_type( $block );
 	
+	/**
+	 * Filters the arguments for registering a block type.
+	 *
+	 * @since	5.8.9
+	 *
+	 * @param	array $block The array of arguments for registering a block type.
+	 */
+    $block = apply_filters( 'acf/register_block_type_args', $block );
+    
+    // Require name.
+    if( !$block['name'] ) {
+	    $message = __( 'Block type name is required.', 'acf' );
+	    _doing_it_wrong( __FUNCTION__, $message, '5.8.0' );
+		return false;
+    }
+    
 	// Bail early if already exists.
 	if( acf_has_block_type($block['name']) ) {
+		$message = sprintf( __( 'Block type "%s" is already registered.' ), $block['name'] );
+		_doing_it_wrong( __FUNCTION__, $message, '5.8.0' );
 		return false;
 	}
 	
@@ -194,7 +212,9 @@ function acf_validate_block_type( $block ) {
 	}
 	
 	// Generate name with prefix.
-	$block['name'] = 'acf/' . acf_slugify($block['name']);
+	if( $block['name'] ) {
+		$block['name'] = 'acf/' . acf_slugify($block['name']);
+	}
 	
 	// Add default 'supports' settings.
 	$block['supports'] = wp_parse_args($block['supports'], array(
@@ -372,6 +392,9 @@ function acf_enqueue_block_assets() {
 	acf_localize_text(array(
 		'Switch to Edit'		=> __('Switch to Edit', 'acf'),
 		'Switch to Preview'		=> __('Switch to Preview', 'acf'),
+		
+		/* translators: %s: Block type title */
+		'%s settings'			=> __('%s settings', 'acf'),
 	));
 	
 	// Get block types.
