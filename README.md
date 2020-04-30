@@ -1,15 +1,16 @@
-=== Advanced Custom Fields Pro ===
-Contributors: elliotcondon
-Tags: acf, advanced, custom, field, fields, form, repeater, content
-Requires at least: 4.7.0
-Tested up to: 5.4
-Requires PHP: 5.4
-License: GPLv2 or later
-License URI: https://www.gnu.org/licenses/gpl-2.0.html
+# Advanced Custom Fields Pro 
+**Contributors:** elliotcondon  
+**Tags:** acf, advanced, custom, field, fields, form, repeater, content  
+**Requires at least:** 4.7.0  
+**Tested up to:** 5.4  
+**Requires PHP:** 5.4  
+**License:** GPLv2 or later  
+**License URI:** https://www.gnu.org/licenses/gpl-2.0.html  
 
 Customize WordPress with powerful, professional and intuitive fields.
 
-== Description ==
+
+## Description 
 
 Use the Advanced Custom Fields plugin to take full control of your WordPress edit screens & custom field data.
 
@@ -19,24 +20,28 @@ Use the Advanced Custom Fields plugin to take full control of your WordPress edi
 
 **Show them everywhere.** Load and display your custom field values in any theme template file with our hassle free developer friendly functions!
 
-= Features =
+
+### Features 
 * Simple & Intuitive
 * Powerful Functions
 * Over 30 Field Types
 * Extensive Documentation
 * Millions of Users
 
-= Links =
+
+### Links 
 * [Website](https://www.advancedcustomfields.com)
 * [Documentation](https://www.advancedcustomfields.com/resources/)
 * [Support](https://support.advancedcustomfields.com)
 * [ACF PRO](https://www.advancedcustomfields.com/pro/)
 
-= PRO =
+
+### PRO 
 The Advanced Custom Fields plugin is also available in a professional version which includes more fields, more functionality, and more flexibility! [Learn more](https://www.advancedcustomfields.com/pro/)
 
 
-== Installation ==
+
+## Installation 
 
 From your WordPress dashboard
 
@@ -47,27 +52,38 @@ From your WordPress dashboard
 5. **Read** the documentation to [get started](https://www.advancedcustomfields.com/resources/getting-started-with-acf/)
 
 
-== Frequently Asked Questions ==
 
-= What kind of support do you provide? =
+## Frequently Asked Questions 
+
+
+### What kind of support do you provide? 
 
 **Help Desk.** Support is currently provided via our email help desk. Questions are generally answered within 24 hours, with the exception of weekends and holidays. We answer questions related to ACF, its usage and provide minor customization guidance. We cannot guarantee support for questions which include custom theme code, or 3rd party plugin conflicts & compatibility. [Open a Support Ticket](https://www.advancedcustomfields.com/support/)
 
 **Support Forums.** Our Community Forums provide a great resource for searching and finding previously answered and asked support questions. You may create a new thread on these forums, however, it is not guaranteed that you will receive an answer from our support team. This is more of an area for developers to talk to one another, post ideas, plugins and provide basic help. [View the Support Forum](https://support.advancedcustomfields.com/)
 
 
-== Screenshots ==
 
-1. Simple & Intuitive
+## Screenshots 
 
-2. Made for developers
-
-3. All about fields
+### 1. Simple & Intuitive
+[missing image]
 
 
-== Changelog ==
+### 2. Made for developers
+[missing image]
 
-= 5.8.9 =
+
+### 3. All about fields
+[missing image]
+
+
+
+
+## Changelog 
+
+
+### 5.8.9 
 *Release Date - 26 March 2020*
 
 * Fix - Fixed bug in ACF Blocks causing default "align" property to be ignored.
@@ -82,7 +98,8 @@ From your WordPress dashboard
 * i18n - Updated German translation thanks to Ralf Koller.
 * i18n - Updated Portuguese language thanks to Pedro Mendonça.
 
-= 5.8.8 =
+
+### 5.8.8 
 *Release Date - 4 March 2020*
 
 * Fix - Fixed bug in `have_rows()` function causing a PHP warning when no value is found.
@@ -95,7 +112,8 @@ From your WordPress dashboard
 * i18n - Added Catalan translation thanks to Jordi Tarrida.
 * i18n - Updated French translation thanks to Maxime Bernard-Jacquet & Bérenger Zyla.
 
-= 5.8.7 =
+
+### 5.8.7 
 *Release Date - 12 November 2019*
 
 * New - Updated admin CSS for new WordPress 5.3 styling.
@@ -105,7 +123,8 @@ From your WordPress dashboard
 * Tweak - Repeater field "Add row" icons will now hide when maximum rows are reached.
 * Tweak - Removed ACF Blocks keyword limit for later versions of Gutenberg.
 
-= 5.8.6 =
+
+### 5.8.6 
 *Release Date - 24 October 2019*
 
 * New - Added more data to Google Maps field value including place_id, street_name, country and more.
@@ -115,7 +134,8 @@ From your WordPress dashboard
 * Dev - Added missing return statement from `acf_get_form()` function.
 * Dev - Added "google_map_result" JS filter.
 
-= 5.8.5 =
+
+### 5.8.5 
 *Release Date - 8 October 2019*
 
 * New - Added new choice "Add" to the User Form location rule.
@@ -127,7 +147,8 @@ From your WordPress dashboard
 * Fix - Fixed bug preventing block registration when no icon is declared.
 * Dev - Added RegExp compatibility for innerBlocks.
 
-= 5.8.4 =
+
+### 5.8.4 
 *Release Date - 3 September 2019*
 
 * New - Optimized Relationship field by delaying AJAX call until UI is visible.
@@ -137,7 +158,8 @@ From your WordPress dashboard
 * Dev - Ensure Checkbox field value is an array even when empty.
 * Dev - Added new `ACF_MAJOR_VERSION` constant.
 
-= 5.8.3 =
+
+### 5.8.3 
 *Release Date - 7 August 2019*
 
 * Tweak - Changed Options Page location rules to show "page_title" instead of "menu_title".
@@ -148,7 +170,8 @@ From your WordPress dashboard
 * i18n - Added French Canadian language thanks to Bérenger Zyla.
 * i18n - Updated French language thanks to Bérenger Zyla.
 
-= 5.8.2 =
+
+### 5.8.2 
 *Release Date - 15 July 2019*
 
 * Fix - Fixed bug where validation did not prevent new user registration.
@@ -157,7 +180,8 @@ From your WordPress dashboard
 * Fix - Fixed bug when editing a post and adding a new tag did not refresh metaboxes.
 * Dev - Added missing `$value` parameter in "acf/pre_format_value" filter.
 
-= 5.8.1 =
+
+### 5.8.1 
 *Release Date - 3 June 2019*
 
 * New - Added "Preview Size" and "Return Format" settings to the Gallery field.
@@ -170,7 +194,8 @@ From your WordPress dashboard
 * i18n - Updated German translation thanks to Ralf Koller.
 * i18n - Updated Persian translation thanks to Majix.
 
-= 5.8.0 =
+
+### 5.8.0 
 *Release Date - 8 May 2019*
 
 * New - Added ACF Blocks feature for ACF PRO.
@@ -183,7 +208,8 @@ From your WordPress dashboard
 * i18n - Updated German translation thanks to Ralf Koller.
 * i18n - Updated Portuguese language thanks to Pedro Mendonça.
 
-= 5.7.13 =
+
+### 5.7.13 
 *Release Date - 6 March 2019*
 
 * Fix - Fixed bug causing issues with registered fields during `switch_to_blog()`.
@@ -196,7 +222,8 @@ From your WordPress dashboard
 * Dev - Added new 'pre' filters to get, update and delete meta functions.
 * i18n - Update Turkish translation thanks to Emre Erkan.
 
-= 5.7.12 =
+
+### 5.7.12 
 *Release Date - 15 February 2019*
 
 * Fix - Added missing function `register_field_group()`.
@@ -212,7 +239,8 @@ From your WordPress dashboard
 * Fix - Fixed bug causing incorrect value retrieval after `switch_to_blog()`.
 * i18n - Updated Persian translation thanks to Majix.
 
-= 5.7.11 =
+
+### 5.7.11 
 *Release Date - 11 February 2019*
 
 * New - Added support for persistent object caching.
@@ -226,7 +254,8 @@ From your WordPress dashboard
 * i18n - Updated German translation thanks to Ralf Koller.
 * i18n - Updated Swiss German translation thanks to Raphael Hüni.
 
-= 5.7.10 =
+
+### 5.7.10 
 *Release Date - 16 January 2019*
 
 * Fix - Fixed bug preventing metaboxes from saving if validation fails within Gutenberg.
@@ -243,7 +272,8 @@ From your WordPress dashboard
 * i18n - Updated French translation thanks to Maxime Bernard-Jacquet.
 * i18n - Updated Czech translation thanks to David Rychly.
 
-= 5.7.9 =
+
+### 5.7.9 
 *Release Date - 17 December 2018*
 
 * Fix - Added custom metabox location (acf_after_title) compatibility with Gutenberg.
@@ -255,7 +285,8 @@ From your WordPress dashboard
 * Dev - Added filter 'acf/connect_attachment_to_post' to prevent connecting attachments to posts.
 * Dev - Added JS filter 'google_map_autocomplete_args' to customize Google Maps autocomplete settings.
 
-= 5.7.8 =
+
+### 5.7.8 
 *Release Date - 7 December 2018*
 
 * Fix - Fixed vulnerability allowing author role to save unfiltered HTML values.
@@ -265,7 +296,8 @@ From your WordPress dashboard
 * i18n - Update Turkish translation thanks to Emre Erkan.
 * i18n - Updated Portuguese language thanks to Pedro Mendonça.
 
-= 5.7.7 =
+
+### 5.7.7 
 *Release Date - 1 October 2018*
 
 * Fix - Fixed various plugin update issues.
@@ -277,7 +309,8 @@ From your WordPress dashboard
 * Dev - Added action 'acf/options_page/submitbox_major_actions'.
 * i18n - Updated Portuguese language thanks to Pedro Mendonça
 
-= 5.7.6 =
+
+### 5.7.6 
 *Release Date - 12 September 2018*
 
 * Fix - Fixed unload prompt not working.
@@ -288,4 +321,5 @@ From your WordPress dashboard
 
 [View the full changelog](https://www.advancedcustomfields.com/changelog/)
 
-== Upgrade Notice ==
+
+## Upgrade Notice 
