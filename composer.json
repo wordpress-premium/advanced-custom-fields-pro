@@ -2,7 +2,8 @@
     "name": "wordpress-premium/advanced-custom-fields-pro",
     "description": "Customize WordPress with powerful, professional and intuitive fields.",
     "type": "wordpress-plugin",
-	"version": "5.8.9",
+	"version": "5.8.12",
+	"time": "2020-06-10",
 	"homepage": "https://www.advancedcustomfields.com",
     "require": {
         "composer/installers": ">=1.0"
