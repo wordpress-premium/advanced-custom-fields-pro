@@ -143,41 +143,34 @@ class acf_field_page_link extends acf_field {
 		// add archives to $results
 		if( $field['allow_archives'] && $args['paged'] == 1 ) {
 			
-			$archives = array();
-			$archives[] = array(
-				'id'	=> home_url(),
-				'text'	=> home_url()
-			);
-			
+			// Generate unique list of URLs.
+			$links = array();
+			$links[] = home_url();
 			foreach( $args['post_type'] as $post_type ) {
-				
-				// vars
-				$archive_link = get_post_type_archive_link( $post_type );
-				
-				
-				// bail ealry if no link
-				if( !$archive_link ) continue;
-				
-				
-				// bail early if no search match
-				if( $is_search && stripos($archive_link, $s) === false ) continue;
-				
-				
-				// append
-				$archives[] = array(
-					'id'	=> $archive_link,
-					'text'	=> $archive_link
-				);
-				
+				$links[] = get_post_type_archive_link( $post_type );
 			}
-			
-			
-			// append
-			$results[] = array(
-				'text'		=> __('Archives', 'acf'),
-				'children'	=> $archives
-			);
-			
+			$links = array_filter( $links );
+			$links = array_unique( $links );
+
+			// Convert list into choices.
+			$children = array();
+			foreach( $links as $link ) {
+
+				// Ignore if search does not match.
+				if( $is_search && stripos($link, $s) === false ) {
+					continue;
+				}
+				$children[] = array(
+					'id'	=> $link,
+					'text'	=> $link
+				);
+			}
+			if( $children ) {
+				$results[] = array(
+					'text'		=> __('Archives', 'acf'),
+					'children'	=> $children
+				);
+			}
 		}
 		
 		
@@ -210,7 +203,7 @@ class acf_field_page_link extends acf_field {
 				
 				
 				// order posts by search
-				if( $is_search && empty($args['orderby']) ) {
+				if( $is_search && empty($args['orderby']) && isset($args['s']) ) {
 					
 					$posts = acf_order_by_search( $posts, $args['s'] );
 					

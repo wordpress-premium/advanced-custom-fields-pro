@@ -45,40 +45,36 @@ class acf_field_color_picker extends acf_field {
 	*/
 	
 	function input_admin_enqueue_scripts() {
-		
-		// globals
-		global $wp_scripts;
-		
-		
-		// register if not already (on front end)
-		// http://wordpress.stackexchange.com/questions/82718/how-do-i-implement-the-wordpress-iris-picker-into-my-plugin-on-the-front-end
-		if( !isset($wp_scripts->registered['iris']) ) {
+
+		// Register scripts for non-admin.
+		// Applies logic from wp_default_scripts() function defined in "wp-includes/script-loader.php".
+		if( !is_admin() ) {
+			$suffix = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? '' : '.min';
+			$scripts = wp_scripts();
+			$scripts->add( 'iris', '/wp-admin/js/iris.min.js', array( 'jquery-ui-draggable', 'jquery-ui-slider', 'jquery-touch-punch' ), '1.0.7', 1 );
+			$scripts->add( 'wp-color-picker', "/wp-admin/js/color-picker$suffix.js", array( 'iris' ), false, 1 );
 			
-			// styles
-			wp_register_style('wp-color-picker', admin_url('css/color-picker.css'), array(), '', true);
-			
-			
-			// scripts
-			wp_register_script('iris', admin_url('js/iris.min.js'), array('jquery-ui-draggable', 'jquery-ui-slider', 'jquery-touch-punch'), '1.0.7', true);
-			wp_register_script('wp-color-picker', admin_url('js/color-picker.min.js'), array('iris'), '', true);
-			
-			
-			// localize
-		    wp_localize_script('wp-color-picker', 'wpColorPickerL10n', array(
-		        'clear'			=> __('Clear', 'acf' ),
-		        'defaultString'	=> __('Default', 'acf' ),
-		        'pick'			=> __('Select Color', 'acf' ),
-		        'current'		=> __('Current Color', 'acf' )
-		    )); 
+			// Handle localisation across multiple WP versions. 
+			// WP 5.0+
+			if( method_exists($scripts, 'set_translations') ) {
+				$scripts->set_translations( 'wp-color-picker' );
+			// WP 4.9
+			} else {
+				$scripts->localize( 'wp-color-picker', 'wpColorPickerL10n', array(
+					'clear'            => __( 'Clear' ),
+					'clearAriaLabel'   => __( 'Clear color' ),
+					'defaultString'    => __( 'Default' ),
+					'defaultAriaLabel' => __( 'Select default color' ),
+					'pick'             => __( 'Select Color' ),
+					'defaultLabel'     => __( 'Color value' ),
+				));
+			}
 			
 		}
 		
-		
-		// enqueue
-		wp_enqueue_style('wp-color-picker');
-	    wp_enqueue_script('wp-color-picker');
-	    
-	    			
+		// Enqueue.
+		wp_enqueue_style( 'wp-color-picker' );
+		wp_enqueue_script( 'wp-color-picker' );			
 	}
 	
 	

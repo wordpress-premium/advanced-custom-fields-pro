@@ -335,7 +335,8 @@ class acf_field_repeater extends acf_field {
 				
 				<?php if( $show_remove ): ?>
 					<td class="acf-row-handle remove">
-						<a class="acf-icon -plus small acf-js-tooltip" href="#" data-event="add-row" title="<?php _e('Add row','acf'); ?>"></a>
+						<a class="acf-icon -plus small acf-js-tooltip hide-on-shift" href="#" data-event="add-row" title="<?php _e('Add row','acf'); ?>"></a>
+						<a class="acf-icon -duplicate small acf-js-tooltip show-on-shift" href="#" data-event="duplicate-row" title="<?php _e('Duplicate row','acf'); ?>"></a>
 						<a class="acf-icon -minus small acf-js-tooltip" href="#" data-event="remove-row" title="<?php _e('Remove row','acf'); ?>"></a>
 					</td>
 				<?php endif; ?>
