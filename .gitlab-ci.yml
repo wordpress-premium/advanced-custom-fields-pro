@@ -1,0 +1,111 @@
+image: edbizarro/gitlab-ci-pipeline-php:7.3-alpine
+
+services:
+  - mysql:5.7
+
+# Fill in ssh username, hosts, ports and theme slug ie. directory name
+variables: 
+  WP_TEST_URL: "http://localhost:12000"
+  WP_TEST_USER: "test"
+  WP_TEST_USER_PASS: "test"
+  WP_ENV: "ci"
+  MYSQL_DATABASE: "wp_test"
+  MYSQL_HOST: "mysql"
+  MYSQL_ROOT_PASSWORD: "root"
+  DB_NAME: "wp_test"
+  DB_USER: "root"
+  DB_PASSWORD: "root"
+  DB_HOST: "mysql"
+  SSH_USERNAME: "username"
+  PROD_HOST: "example.com"
+  STAGING_HOST: "staging.example.com"
+  PROD_SSH_PORT: "11111"
+  STAGING_SSH_PORT: "11222"
+  THEME_SLUG: "theme_dir"
+
+stages: 
+  - install
+  - build
+  - test
+  - deploy
+
+cache:
+  key: project-deps
+  paths:
+    - composer-cache/
+
+before_script: 
+  - sudo apk add mysql-client sshpass pkgconfig autoconf automake libtool nasm build-base zlib-dev
+
+  # Install router so that we don't need nginx/php-fpm
+  - curl -s https://raw.githubusercontent.com/Seravo/wordpress-test-template/master/lib/router.php > htdocs/router.php
+  
+  # Start php server on background
+  - cd htdocs && php -S 0.0.0.0:12000 router.php & sleep 2
+
+install: 
+  stage: install
+  script: 
+    # Install Composer deps
+    - COMPOSER_CACHE_DIR=composer-cache composer install --no-dev --no-interaction
+
+    # Install WordPress with wp-cli
+    - curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+    - php wp-cli.phar core install --url=$WP_TEST_URL --title='Test' --admin_user=$WP_TEST_USER --admin_password=$WP_TEST_USER_PASS --admin_email="$WP_TEST_USER@wordpress.dev" --skip-email --path=htdocs/wordpress
+
+  artifacts:
+    untracked: true
+
+  only:
+    - master
+    - staging
+    - production
+
+build: 
+  stage: build 
+  script: 
+    # Change to theme dir
+    - cd htdocs/wp-content/themes/$THEME_SLUG
+    
+    # Install Composer deps
+    - composer install --no-dev --no-interaction
+
+    # Install NPM packages and build using production confs
+    - npm install
+  
+  artifacts:
+    untracked: true
+
+  cache:
+    key: theme-deps
+    paths:
+      - htdocs/wp-content/themes/$THEME_SLUG/vendor/
+      - htdocs/wp-content/themes/$THEME_SLUG/node_modules/
+  only:
+    - master
+    - staging
+    - production
+
+test:
+  stage: test
+  script: 
+    - echo "Running test"
+
+    # Get the database
+    - sshpass -e ssh -q -o StrictHostKeyChecking=no $SSH_USERNAME@$PROD_HOST -p $PROD_SSH_PORT 'wp db export - --single-transaction' > database.sql
+    - php wp-cli.phar db import database.sql --path=htdocs/wordpress
+    - rm database.sql
+
+    # Activate all plugins
+    - php wp-cli.phar plugin activate --all --path=htdocs/wordpress
+
+    # Test webserver
+    - curl -i http://localhost:12000
+    # Syntax check all php files and fail for any error text in STDERR
+    - '! find . -type f -name "*.php" -exec php -d error_reporting=32767 -l {} \; 2>&1 >&- | grep "^"'
+    # @TODO: Run a more extensive test using the above real WordPress installation
+    
+  only:
+    - master
+    - staging
+    - production
