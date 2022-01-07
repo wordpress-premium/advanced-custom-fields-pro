@@ -1,0 +1,11 @@
+{
+    "name": "wordpress-premium/seo-by-rank-math-pro",
+    "description": "Rank Math is a revolutionary SEO product that combines the features of many SEO tools and lets you multiply your traffic in the easiest way possible.",
+    "type": "wordpress-plugin",
+	"version": "3.0.4",
+	"homepage": "https://rankmath.com/wordpress/plugin/seo-suite/",
+    "require": {
+        "composer/installers": "^1.6"
+    },
+    "license": "GPL-3.0-or-later"
+}

@@ -1,0 +1,2808 @@
+# Copyright (C) 2022 rank-math-pro
+# This file is distributed under the same license as the rank-math-pro package.
+msgid ""
+msgstr ""
+"Project-Id-Version: rank-math-pro\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language-Team: Rank Math\n"
+"Last-Translator: Rank Math\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-KeywordsList: __;_e;_ex:1,2c;_n:1,2;_n_noop:1,2;_nx:1,2,4c;_nx_noop:1,2,3c;_x:1,2c;esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Please update Rank Math Free to the latest version first before activating the PRO version."
+msgstr ""
+
+msgid "Rank Math free version is required to run Rank Math Pro, but it could not be installed automatically. Please install and activate the free version first."
+msgstr ""
+
+msgid "Rank Math free version is required to run Rank Math Pro, but it could not be activated automatically. Please install and activate the free version first."
+msgstr ""
+
+msgid "Rank Math free version is required to run Rank Math Pro. Both plugins are now disabled."
+msgstr ""
+
+msgid "Rich Pins Validator"
+msgstr ""
+
+msgid "Pinterest Debugger"
+msgstr ""
+
+msgid "Activate now"
+msgstr ""
+
+msgid "News Sitemap"
+msgstr ""
+
+msgid "Create a News Sitemap for your news-related content. You only need a News sitemap if you plan on posting news-related content on your website."
+msgstr ""
+
+msgid "Please activate Sitemap module to use this module."
+msgstr ""
+
+msgid "Video Sitemap"
+msgstr ""
+
+msgid "For your video content, a Video Sitemap is a recommended step for better rankings and inclusion in the Video search."
+msgstr ""
+
+msgid "Please activate Schema & Sitemap module to use this module."
+msgstr ""
+
+msgid "Persistent random word chosen from a list"
+msgstr ""
+
+msgid "Non-persistent random word chosen from a list. A new random word will be chosen on each page load."
+msgstr ""
+
+msgid "Off"
+msgstr ""
+
+msgid "Custom Image Watermarks"
+msgstr ""
+
+msgid "Add more image watermarks to choose from for the social thumbnails."
+msgstr ""
+
+msgid "Add Watermark"
+msgstr ""
+
+msgid "Remove"
+msgstr ""
+
+msgid "Add Image"
+msgstr ""
+
+msgid "Name*"
+msgstr ""
+
+msgid "Default Thumbnail Watermark"
+msgstr ""
+
+msgid "Select the default watermark that will be applied if no specific watermark is selected."
+msgstr ""
+
+msgid "A Custom Watermark item could not be saved because the name field is empty."
+msgstr ""
+
+msgid "Top Left"
+msgstr ""
+
+msgid "Top Center"
+msgstr ""
+
+msgid "Top Right"
+msgstr ""
+
+msgid "Middle Left"
+msgstr ""
+
+msgid "Middle Center"
+msgstr ""
+
+msgid "Middle Right"
+msgstr ""
+
+msgid "Bottom Left"
+msgstr ""
+
+msgid "Bottom Center"
+msgstr ""
+
+msgid "Bottom Right"
+msgstr ""
+
+msgid "Special Sitemaps:"
+msgstr ""
+
+msgid "&#8595; Rank Math"
+msgstr ""
+
+msgid "Set to noindex"
+msgstr ""
+
+msgid "Set to index"
+msgstr ""
+
+msgid "Set to nofollow"
+msgstr ""
+
+msgid "Set to follow"
+msgstr ""
+
+msgid "Remove custom canonical URL"
+msgstr ""
+
+msgid "Redirect"
+msgstr ""
+
+msgid "Remove redirection"
+msgstr ""
+
+msgid "Set Schema: None"
+msgstr ""
+
+#. translators: placeholder is the default Schema type setting.
+msgid "Set Schema: Default (%s)"
+msgstr ""
+
+#. translators: 1 The number of posts edited. 2 The post type name.
+#. translators: 1 The number of terms edited. 2 The term taxonomy name.
+msgid "Robots meta edited for %1$d %2$s."
+msgstr ""
+
+#. translators: placeholder is the number of redirections deleted.
+#. translators: placeholder is the number of redirections deleted.
+msgid "%d redirection moved to Trash."
+msgid_plural "%d redirections moved to Trash."
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: 1 The number of posts edited. 2 The post type name.
+#. translators: 1 The number of posts edited. 2 The post type name.
+msgid "Schema edited for %1$d %2$s."
+msgstr ""
+
+#. translators: 1 The number of posts edited. 2 The post type name.
+msgid "Custom Canonical URL removed from %1$d %2$s."
+msgstr ""
+
+msgid "Are you sure you want to change the Schema type for the selected posts? Doing so may irreversibly delete the existing Schema data."
+msgstr ""
+
+msgid "Affiliate Link Prefix"
+msgstr ""
+
+msgid "Add the URI prefixes you use for affiliate (cloaked) links, which redirect to external sites. These will not count as internal links in the content analysis. Add one per line."
+msgstr ""
+
+msgid "Example: /get/"
+msgstr ""
+
+msgid "Rank Math SEO Filters"
+msgstr ""
+
+msgid "Missing alt tag"
+msgstr ""
+
+msgid "Missing or default title tag"
+msgstr ""
+
+msgid "Missing caption"
+msgstr ""
+
+msgid "Custom Canonical URL"
+msgstr ""
+
+msgid "Custom Meta Title"
+msgstr ""
+
+msgid "Custom Meta Description"
+msgstr ""
+
+msgid "Redirected Posts"
+msgstr ""
+
+msgid "Orphan Posts"
+msgstr ""
+
+msgid "Filter by Schema Type"
+msgstr ""
+
+msgid "Turned Off"
+msgstr ""
+
+msgid "Article"
+msgstr ""
+
+msgid "Blog Post"
+msgstr ""
+
+msgid "News Article"
+msgstr ""
+
+msgid "Book"
+msgstr ""
+
+msgid "Course"
+msgstr ""
+
+msgid "Event"
+msgstr ""
+
+msgid "Job Posting"
+msgstr ""
+
+msgid "Music"
+msgstr ""
+
+msgid "Movie"
+msgstr ""
+
+msgid "Person"
+msgstr ""
+
+msgid "Product"
+msgstr ""
+
+msgid "Recipe"
+msgstr ""
+
+msgid "Restaurant"
+msgstr ""
+
+msgid "Service"
+msgstr ""
+
+msgid "Software"
+msgstr ""
+
+msgid "Video"
+msgstr ""
+
+msgid "Dataset"
+msgstr ""
+
+msgid "FAQ"
+msgstr ""
+
+msgid "FactCheck"
+msgstr ""
+
+msgid "Clear Filter"
+msgstr ""
+
+msgid "SEO Details"
+msgstr ""
+
+msgid "Index"
+msgstr ""
+
+msgid "No Index"
+msgstr ""
+
+msgid "No Follow"
+msgstr ""
+
+msgid "No Archive"
+msgstr ""
+
+msgid "No Image Index"
+msgstr ""
+
+msgid "No Snippet"
+msgstr ""
+
+msgid "SEO Settings"
+msgstr ""
+
+msgid "SEO Title"
+msgstr ""
+
+msgid "SEO Description"
+msgstr ""
+
+msgid "Robots Meta"
+msgstr ""
+
+msgid "Primary Focus Keyword"
+msgstr ""
+
+msgid "Canonical URL"
+msgstr ""
+
+#. translators: placeholder is taxonomy name, e.g. "Category".
+msgid "Primary %s"
+msgstr ""
+
+msgid "&mdash; Not Selected &mdash;"
+msgstr ""
+
+msgid "Upload"
+msgstr ""
+
+msgid "Select a Rank Math settings file on your computer and upload it to use the custom settings."
+msgstr ""
+
+#. translators: placeholder is a list of filetypes.
+msgid "Allowed filetypes: %s"
+msgstr ""
+
+msgid "More information"
+msgstr ""
+
+msgid "Uploading..."
+msgstr ""
+
+msgid "Import finished. In the next steps you can review the settings."
+msgstr ""
+
+msgid "Import failed."
+msgstr ""
+
+#. translators: Option Description
+msgid "Easy %s"
+msgstr ""
+
+msgid "For websites where you only want to change the basics and let Rank Math do most of the heavy lifting. Most settings are set to default as per industry best practices. One just has to set it and forget it."
+msgstr ""
+
+#. translators: Option Description
+msgid "Advanced %s"
+msgstr ""
+
+msgid "For the advanced users who want to control every SEO aspect of the website. You are offered options to change everything and have full control over the website’s SEO."
+msgstr ""
+
+#. translators: Option Description
+msgid "Custom Mode %s"
+msgstr ""
+
+msgid "Select this if you have a custom Rank Math settings file you want to use."
+msgstr ""
+
+msgid "Import successful."
+msgstr ""
+
+msgid "No settings found to be imported."
+msgstr ""
+
+msgid "No file selected."
+msgstr ""
+
+msgid "Settings file could not be imported:"
+msgstr ""
+
+msgid "Settings could not be imported:"
+msgstr ""
+
+msgid "Settings could not be imported: Upload failed."
+msgstr ""
+
+#. translators: 1: opening HTML anchor tag, 2: closing HTML anchor tags.
+msgid "Rank Math Pro is installed but not activated yet. %1$sActivate now%2$s. It only takes 20 seconds!"
+msgstr ""
+
+msgid "Enable updates"
+msgstr ""
+
+msgid "Automatic updates are not available."
+msgstr ""
+
+msgid "This update will install a beta version of Rank Math SEO PRO."
+msgstr ""
+
+msgid "Cannot Update"
+msgstr ""
+
+msgid "Rank Math SEO PRO For WordPress"
+msgstr ""
+
+msgid "SEO is the most consistent source of traffic for any website"
+msgstr ""
+
+#. translators: placeholders are the anchor tag opening and closing.
+msgid "We created %1$sRank Math, a WordPress SEO plugin%2$s, to help every website owner get access to the SEO tools they need to improve their SEO and attract more traffic to their website."
+msgstr ""
+
+msgid "Please update the free version before updating Rank Math SEO PRO."
+msgstr ""
+
+#. translators: 1: Plugin name, 2: Pricing Link's opening HTML anchor tag, 3: Pricing Link's closing HTML anchor tag.
+msgid "It seems that you don't have an active subscription for %1$s. Please see %2$sdetails and pricing%3$s."
+msgstr ""
+
+#. translators: 1: Link's opening HTML anchor tag, 2: Link's closing HTML anchor tag.
+msgid "Please %1$s connect Rank Math SEO PRO %2$s for automatic updates."
+msgstr ""
+
+msgid "Rank Math PRO"
+msgstr ""
+
+msgid "https://rankmath.com/changelog/"
+msgstr ""
+
+msgid "CSV File"
+msgstr ""
+
+msgid "Import SEO meta data for posts, terms, and users from a CSV file."
+msgstr ""
+
+msgid "Import CSV"
+msgstr ""
+
+msgid "Export CSV"
+msgstr ""
+
+msgid "Please select a CSV file to import."
+msgstr ""
+
+msgid "Do not overwrite existing data"
+msgstr ""
+
+msgid "Check this to import meta fields only if their current meta value is empty."
+msgstr ""
+
+#. translators: placeholder is the word Warning: in bold.
+msgid "%s It is recommended to save a database backup before using this option because importing malformed CSV can result in loss of data."
+msgstr ""
+
+msgid "Warning:"
+msgstr ""
+
+msgid "Import"
+msgstr ""
+
+msgid "Cancel Import"
+msgstr ""
+
+msgid "User Roles:"
+msgstr ""
+
+msgid "Taxonomies:"
+msgstr ""
+
+msgid "Post types:"
+msgstr ""
+
+msgid "Include read-only columns (SEO score and link counts)"
+msgstr ""
+
+msgid "Choose the object types to export."
+msgstr ""
+
+msgid "Use advanced options"
+msgstr ""
+
+msgid "Export"
+msgstr ""
+
+msgid "Redirections CSV"
+msgstr ""
+
+msgid "Add or edit redirections by importing and exporting a CSV file."
+msgstr ""
+
+msgid "Import Redirections"
+msgstr ""
+
+msgid "Export Redirections"
+msgstr ""
+
+msgid "Do not update current redirections"
+msgstr ""
+
+msgid "Check this to only create non-existing redirections."
+msgstr ""
+
+msgid "Export current redirections as a CSV file."
+msgstr ""
+
+msgid "Include deactivated redirections"
+msgstr ""
+
+msgid "Rank Math FAQ Schema"
+msgstr ""
+
+msgid "Add FAQ Schema Markup"
+msgstr ""
+
+msgid "Added by the Rank Math SEO Plugin."
+msgstr ""
+
+msgid "Yes"
+msgstr ""
+
+msgid "No"
+msgstr ""
+
+msgid "Breadcrumbs"
+msgstr ""
+
+msgid "Breadcrumbs are disabled in the Rank Math SEO"
+msgstr ""
+
+msgid "Breadcrumbs Panel"
+msgstr ""
+
+msgid "Alignment"
+msgstr ""
+
+msgid "Left"
+msgstr ""
+
+msgid "Center"
+msgstr ""
+
+msgid "Right"
+msgstr ""
+
+msgid "HTML Tag"
+msgstr ""
+
+msgid "Default"
+msgstr ""
+
+msgid "Additional settings are available in the Rank Math SEO"
+msgstr ""
+
+msgid "Text Color"
+msgstr ""
+
+msgid "Normal"
+msgstr ""
+
+msgid "Link Color"
+msgstr ""
+
+msgid "Hover"
+msgstr ""
+
+msgid "Color"
+msgstr ""
+
+msgid "Are you sure you want to import meta data from this CSV file?"
+msgstr ""
+
+msgid "Are you sure you want to stop the import process?"
+msgstr ""
+
+msgid "CSV import is in progress..."
+msgstr ""
+
+msgid "Please select at least one object type to export."
+msgstr ""
+
+msgid "Invalid nonce."
+msgstr ""
+
+msgid "Sorry, you are not allowed to export the content of this site."
+msgstr ""
+
+msgid "Please select a file to import."
+msgstr ""
+
+msgid "Sorry, you are not allowed to import contents to this site."
+msgstr ""
+
+msgid "CSV could not be imported:"
+msgstr ""
+
+msgid "CSV could not be imported: Upload failed."
+msgstr ""
+
+msgid "CSV could not be imported: File type error."
+msgstr ""
+
+msgid "Posts"
+msgstr ""
+
+msgid "Terms"
+msgstr ""
+
+msgid "Users"
+msgstr ""
+
+msgid "Import could not be canceled: invalid nonce. Please try again."
+msgstr ""
+
+msgid "Import could not be canceled: you are not allowed to import content to this site."
+msgstr ""
+
+msgid "Import could not be canceled."
+msgstr ""
+
+msgid "CSV import canceled."
+msgstr ""
+
+msgid "Import in progress..."
+msgstr ""
+
+#. translators: placeholders represent count like 15/36.
+#. translators: placeholders represent count like 15/36.
+msgid "Items processed: %1$s/%2$s"
+msgstr ""
+
+#. translators: placeholder is the number of rows imported.
+#. translators: placeholder is the number of rows imported.
+msgid "CSV import completed. Successfully imported %d rows."
+msgstr ""
+
+msgid "CSV import completed."
+msgstr ""
+
+#. translators: placeholder is the number of rows imported.
+#. translators: placeholder is the number of rows imported.
+msgid "Imported %d rows."
+msgstr ""
+
+msgid "One or more errors occured while importing: "
+msgstr ""
+
+msgid "The following lines could not be imported: "
+msgstr ""
+
+#. translators: placeholders are opening and closing tags for link.
+msgid "CSV import in progress. You can see its progress and cancel it in the %1$sImport & Export panel%2$s."
+msgstr ""
+
+msgid "Missing import file."
+msgstr ""
+
+msgid "Missing CSV headers."
+msgstr ""
+
+msgid "Missing one or more required columns."
+msgstr ""
+
+msgid "Empty column data."
+msgstr ""
+
+msgid "Columns number mismatch."
+msgstr ""
+
+msgid "Unknown object type."
+msgstr ""
+
+msgid "Sitemap"
+msgstr ""
+
+#. translators: Link to How to Setup Sitemap KB article
+msgid "Choose your Sitemap configuration and select which type of posts or pages you want to include in your Sitemaps. %s"
+msgstr ""
+
+msgid "Learn more."
+msgstr ""
+
+msgid "Save and Continue"
+msgstr ""
+
+msgid "Sitemaps"
+msgstr ""
+
+msgid "XML Sitemaps help search engines index your website&#039;s content more effectively."
+msgstr ""
+
+msgid "Include Images"
+msgstr ""
+
+msgid "Include reference to images from the post content in sitemaps. This helps search engines index your images better."
+msgstr ""
+
+msgid "Public Post Types"
+msgstr ""
+
+msgid "Select post types to enable SEO options for them and include them in the sitemap."
+msgstr ""
+
+msgid "Public Taxonomies"
+msgstr ""
+
+msgid "Select taxonomies to enable SEO options for them and include them in the sitemap."
+msgstr ""
+
+msgid "News Sitemaps allow you to control which content you submit to Google News."
+msgstr ""
+
+msgid "News Sitemaps"
+msgstr ""
+
+msgid "You will generally only need a News Sitemap when your website is included in Google News."
+msgstr ""
+
+msgid "Google News Publication Name"
+msgstr ""
+
+msgid "The name of the news publication. It must match the name exactly as it appears on your articles in news.google.com, omitting any trailing parentheticals. <a href=\"https://support.google.com/news/publisher-center/answer/9606710\" target=\"_blank\">More information at support.google.com</a>"
+msgstr ""
+
+msgid "News Post Type"
+msgstr ""
+
+msgid "Select the post type you use for News articles."
+msgstr ""
+
+msgid "Video Sitemaps give search engines information about video content on your site."
+msgstr ""
+
+msgid "Video Sitemaps"
+msgstr ""
+
+msgid "You will generally only need a Video Sitemap when your website has video content."
+msgstr ""
+
+msgid "Video Post Type"
+msgstr ""
+
+msgid "Select the post type where you use videos and want them to be shown in the Video search."
+msgstr ""
+
+msgid "Export 404 Logs"
+msgstr ""
+
+msgid "Export and download 404 logs from a selected period of time in the form of a CSV file. Leave the from/to fields empty to export all logs."
+msgstr ""
+
+msgid "From date"
+msgstr ""
+
+msgid "To date"
+msgstr ""
+
+msgid "Sorry, your user does not seem to have the necessary capabilities to export."
+msgstr ""
+
+msgid "Nonce error. Please try again."
+msgstr ""
+
+msgid "Hits"
+msgstr ""
+
+msgid "Include Images from the ACF Fields."
+msgstr ""
+
+msgid "Include images added in the ACF fields."
+msgstr ""
+
+msgid "Custom"
+msgstr ""
+
+msgid "Post Analytics"
+msgstr ""
+
+msgid "Analytics Report"
+msgstr ""
+
+msgid "Country"
+msgstr ""
+
+msgid "Enter the number of days to keep Analytics data in your database. The maximum allowed days are 180. Though, 2x data will be stored in the DB for calculating the difference properly."
+msgstr ""
+
+msgid "Monitor SEO Performance"
+msgstr ""
+
+#. translators: Link to kb article
+msgid "This option allows you to monitor the SEO performance of all of your sites in one centralized dashboard on RankMath.com, so you can check up on sites at a glance. <a href=\"%1$s\" target=\"_blank\">Learn more</a>."
+msgstr ""
+
+msgid "Google Core Updates in the Graphs"
+msgstr ""
+
+#. translators: Link to kb article
+msgid "This option allows you to show %s in the Analytics graphs."
+msgstr ""
+
+msgid "Google Core Updates"
+msgstr ""
+
+msgid "AdSense"
+msgstr ""
+
+msgid "Analytics"
+msgstr ""
+
+msgid "Logo"
+msgstr ""
+
+msgid "Every 15 Days"
+msgstr ""
+
+msgid "Include Only Tracked Keywords"
+msgstr ""
+
+msgid "When enabled, the Winning Keywords section will only show Tracked Keywords."
+msgstr ""
+
+msgid "Every 7 Days"
+msgstr ""
+
+msgid "Report Email Address"
+msgstr ""
+
+msgid "Address where the reports will be sent. You can add multiple recipients separated with commas."
+msgstr ""
+
+msgid "Report Email Subject"
+msgstr ""
+
+msgid "Subject of the report emails."
+msgstr ""
+
+msgid "Report Logo"
+msgstr ""
+
+msgid "Logo appearing in the header part of the report."
+msgstr ""
+
+msgid "Logo Link"
+msgstr ""
+
+msgid "URL where the logo link should point to."
+msgstr ""
+
+msgid "Report Header Background"
+msgstr ""
+
+msgid "Color hex code or any other valid value for the <code>background:</code> CSS property."
+msgstr ""
+
+msgid "Link to Full Report"
+msgstr ""
+
+msgid "Select whether to include a link to the Full Report admin page in the email or not."
+msgstr ""
+
+msgid "Report Top Text"
+msgstr ""
+
+msgid "Text or basic HTML to insert below the title."
+msgstr ""
+
+msgid "Include Sections"
+msgstr ""
+
+msgid "Select which tables to show in the report."
+msgstr ""
+
+msgid "Basic Summary"
+msgstr ""
+
+msgid "Positions Summary"
+msgstr ""
+
+msgid "Top Winning Posts"
+msgstr ""
+
+msgid "Top Losing Posts"
+msgstr ""
+
+msgid "Top Winning Keywords"
+msgstr ""
+
+msgid "Top Losing Keywords"
+msgstr ""
+
+msgid "When enabled, the Winning Keywords and Losing Keywords sections will only show Tracked Keywords."
+msgstr ""
+
+msgid "Report Footer Text"
+msgstr ""
+
+msgid "Text or basic HTML to insert in the footer area."
+msgstr ""
+
+msgid "Additional CSS code"
+msgstr ""
+
+msgid "Additional CSS code to customize the appearance of the reports. Insert the CSS code directly, without the wrapping style tag. Please note that the CSS support is limited in email clients and the appearance may vary greatly."
+msgstr ""
+
+#. translators: placeholder is a link to the homepage.
+msgid "This email was sent to you as a registered member of %s."
+msgstr ""
+
+#. translators: placeholder is a link to the settings, with "click here" as the anchor text.
+msgid "To update your email preferences, %s. ###ADDRESS###"
+msgstr ""
+
+msgid "click here"
+msgstr ""
+
+msgid "Preview"
+msgstr ""
+
+#. translators: placeholder is the site URL.
+msgid "Rank Math [SEO Report] - %s"
+msgstr ""
+
+msgid "Sorry, no keyword found."
+msgstr ""
+
+msgid "Sorry, no record id found."
+msgstr ""
+
+msgid "Sorry, no post id found."
+msgstr ""
+
+msgid "Mark Unsolved."
+msgstr ""
+
+msgid "Mark Solved."
+msgstr ""
+
+msgid "Image Alt"
+msgstr ""
+
+msgid "Alt text set for the current image."
+msgstr ""
+
+msgid "Image Title"
+msgstr ""
+
+msgid "Title text set for the current image."
+msgstr ""
+
+#. translators: placeholder is the username or email.
+msgid "Avatar of %s"
+msgstr ""
+
+msgid "Add missing image caption"
+msgstr ""
+
+msgid "Add a caption for all images without a caption automatically. The caption is dynamically applied when the content is displayed, the stored content is not changed."
+msgstr ""
+
+msgid "Caption format"
+msgstr ""
+
+msgid "Format used for the new captions."
+msgstr ""
+
+msgid "Add missing image description"
+msgstr ""
+
+msgid "Add a description for all images without a description automatically. The description is dynamically applied when the content is displayed, the stored content is not changed."
+msgstr ""
+
+msgid "Description format"
+msgstr ""
+
+msgid "Format used for the new descriptions."
+msgstr ""
+
+msgid "Change title casing"
+msgstr ""
+
+msgid "Capitalization settings for the <code>title</code> attribute values. This will be applied for <strong>all</strong> <code>title</code> attributes."
+msgstr ""
+
+msgid "No change"
+msgstr ""
+
+msgid "Title Casing"
+msgstr ""
+
+msgid "Sentence casing"
+msgstr ""
+
+msgid "all lowercase"
+msgstr ""
+
+msgid "ALL UPPERCASE"
+msgstr ""
+
+msgid "Change alt attribute casing"
+msgstr ""
+
+msgid "Capitalization settings for the <code>alt</code> attribute values. This will be applied for <strong>all</strong> <code>alt</code> attributes."
+msgstr ""
+
+msgid "Change description casing"
+msgstr ""
+
+msgid "Capitalization settings for the image descriptions. This will be applied for <strong>all</strong> image descriptions."
+msgstr ""
+
+msgid "Change caption casing"
+msgstr ""
+
+msgid "Capitalization settings for the image captions.  This will be applied for <strong>all</strong> image captions."
+msgstr ""
+
+msgid "Add ALT attributes for avatars"
+msgstr ""
+
+msgid "Add <code>alt</code> attributes for commenter profile pictures (avatars) automatically. The alt attribute value will be the username."
+msgstr ""
+
+msgid "Replacements"
+msgstr ""
+
+msgid "Replace characters or words in the alt tags, title tags, or in the captions."
+msgstr ""
+
+msgid "Add another"
+msgstr ""
+
+msgid "Find"
+msgstr ""
+
+msgid "Replace"
+msgstr ""
+
+msgid "Alt"
+msgstr ""
+
+msgid "Title"
+msgstr ""
+
+msgid "Caption"
+msgstr ""
+
+msgid "Local Sitemap"
+msgstr ""
+
+msgid "KML is a file format used to display geographic data in an Earth browser such as Google Earth. More information: <a href=\"https://rankmath.com/kb/kml-sitemap/?utm_source=Plugin&utm_campaign=WP\" target=\"_blank\">Locations KML</a>"
+msgstr ""
+
+#. translators: KML File Url
+msgid "Your Locations KML file can be found here: %s"
+msgstr ""
+
+#. translators: Post Type Plural Name
+msgid "All %s"
+msgstr ""
+
+#. translators: Post Type Singular Name
+msgid "Add New %s"
+msgstr ""
+
+#. translators: Post Type Singular Name
+msgid "New %s"
+msgstr ""
+
+#. translators: Post Type Singular Name
+msgid "Edit %s"
+msgstr ""
+
+#. translators: Post Type Singular Name
+msgid "Update %s"
+msgstr ""
+
+#. translators: Post Type Singular Name
+#. translators: Post Type Plural Name
+msgid "View %s"
+msgstr ""
+
+#. translators: Post Type Singular Name
+msgid "Search %s"
+msgstr ""
+
+#. translators: Post Type Singular Name
+msgid "No %s found."
+msgstr ""
+
+#. translators: Post Type Singular Name
+msgid "No %s found in Trash."
+msgstr ""
+
+#. translators: Post Type Singular Name
+msgid "%s published."
+msgstr ""
+
+#. translators: Post Type Singular Name
+msgid "%s published privately."
+msgstr ""
+
+#. translators: Post Type Singular Name
+msgid "%s reverted to draft."
+msgstr ""
+
+#. translators: Post Type Singular Name
+msgid "%s scheduled."
+msgstr ""
+
+#. translators: Post Type Singular Name
+msgid "%s updated."
+msgstr ""
+
+#. translators: Post Type Singular Name
+#. translators: Post Type Singular Name
+msgid "%s categories"
+msgstr ""
+
+#. translators: Post Type Singular Name
+msgid "%s category"
+msgstr ""
+
+#. translators: Post Type Singular Name
+msgid "All %s categories"
+msgstr ""
+
+#. translators: Post Type Singular Name
+msgid "Edit %s category"
+msgstr ""
+
+#. translators: Post Type Singular Name
+msgid "Update %s category"
+msgstr ""
+
+#. translators: Post Type Singular Name
+msgid "Add New %s category"
+msgstr ""
+
+#. translators: Post Type Singular Name
+msgid "New %s category"
+msgstr ""
+
+msgid "Search categories"
+msgstr ""
+
+msgid "Parent Category"
+msgstr ""
+
+msgid "Parent Category:"
+msgstr ""
+
+msgid "Address"
+msgstr ""
+
+msgid "Phone"
+msgstr ""
+
+#. translators: %s expands to General Settings Link.
+msgid "This page can't load Google Maps correctly. Please add %s."
+msgstr ""
+
+msgid "API Key"
+msgstr ""
+
+msgid "Sorry, no locations were found."
+msgstr ""
+
+msgid "News Sitemaps allow you to control which content you submit to Google News. More information: <a href=\"https://rankmath.com/kb/news-sitemap/?utm_source=Plugin&utm_campaign=WP\" target=\"_blank\">News Sitemaps overview</a>"
+msgstr ""
+
+#. translators: News Sitemap Url
+msgid "Your News Sitemap index can be found here: : %s"
+msgstr ""
+
+#. translators: Post Type
+msgid "Exclude %s Terms "
+msgstr ""
+
+#. translators: 1. Taxonomy Name 2. Post Type
+msgid "%1$s to exclude for %2$s."
+msgstr ""
+
+msgid "XML Sitemap"
+msgstr ""
+
+#. translators: link to rankmath.com
+msgid "This XML Sitemap is generated by <a href=\"%s\" target=\"_blank\">Rank Math WordPress SEO Plugin</a>. It is what search engines like Google use to crawl and re-crawl posts/pages/products/images/archives on your website."
+msgstr ""
+
+#. translators: link to rankmath.com
+msgid "Learn more about <a href=\"%s\" target=\"_blank\">XML Sitemaps</a>."
+msgstr ""
+
+#. translators: xsl value count
+#. translators: xsl value count
+msgid "This XML Sitemap contains <strong>%s</strong> URLs."
+msgstr ""
+
+#. translators: xsl value count
+#. translators: Sitemap index link.
+msgid "<a href=\"%s\">&#8592; Sitemap Index</a>"
+msgstr ""
+
+msgid "Images"
+msgstr ""
+
+msgid "Publication Date"
+msgstr ""
+
+msgid "Sync to .htaccess"
+msgstr ""
+
+msgid "Copy all active redirections to the .htaccess file."
+msgstr ""
+
+msgid "Sorry, you are not allowed to export redirections on this site."
+msgstr ""
+
+msgid "The redirections could not be synced because the .htaccess file does not exist or it is not writable."
+msgstr ""
+
+msgid "No valid redirection found."
+msgstr ""
+
+msgid "Redirections successfully synced to the .htaccess file."
+msgstr ""
+
+msgid "Manage Categories"
+msgstr ""
+
+msgctxt "taxonomy general name"
+msgid "Redirection Categories"
+msgstr ""
+
+msgctxt "taxonomy singular name"
+msgid "Redirection Category"
+msgstr ""
+
+msgid "Search Redirection Categories"
+msgstr ""
+
+msgid "All Redirection Categories"
+msgstr ""
+
+msgid "Edit Category"
+msgstr ""
+
+msgid "Update Category"
+msgstr ""
+
+msgid "Add New Category"
+msgstr ""
+
+msgid "New Category Name"
+msgstr ""
+
+msgid "Redirection Categories"
+msgstr ""
+
+msgid "Add to Category"
+msgstr ""
+
+msgid "No valid ID provided."
+msgstr ""
+
+#. translators: placeholder is the number of updated redirections.
+msgid "%d redirections have been assigned to the category."
+msgstr ""
+
+msgid "Add New"
+msgstr ""
+
+msgid "New Category"
+msgstr ""
+
+msgid "Redirection Category"
+msgstr ""
+
+msgid "Organize your redirections in categories."
+msgstr ""
+
+msgid "Category"
+msgstr ""
+
+msgid "Uncategorized"
+msgstr ""
+
+msgid "Select Category"
+msgstr ""
+
+msgid "Filter"
+msgstr ""
+
+msgid "&larr; Go Back to the Redirections"
+msgstr ""
+
+msgid "DataSet"
+msgstr ""
+
+msgid "Fact Check"
+msgstr ""
+
+msgid "None (Click here to set one)"
+msgstr ""
+
+msgid "Insert/edit link"
+msgstr ""
+
+msgid "Update"
+msgstr ""
+
+msgid "Add Link"
+msgstr ""
+
+msgid "(no title)"
+msgstr ""
+
+msgid "No matches found."
+msgstr ""
+
+msgid "Link selected."
+msgstr ""
+
+msgid "Link inserted."
+msgstr ""
+
+msgid "Use in Schema Markup"
+msgstr ""
+
+msgid "Link Title"
+msgstr ""
+
+msgid "All Taxonomies"
+msgstr ""
+
+msgid "No url found."
+msgstr ""
+
+msgid "No html body found."
+msgstr ""
+
+msgctxt "Post Type General Name"
+msgid "Schemas"
+msgstr ""
+
+msgctxt "Post Type Singular Name"
+msgid "Schema"
+msgstr ""
+
+msgid "Schemas"
+msgstr ""
+
+msgid "Schema"
+msgstr ""
+
+msgid "All Schemas"
+msgstr ""
+
+msgid "Add New Schema"
+msgstr ""
+
+msgid "New Schema"
+msgstr ""
+
+msgid "Edit Schema"
+msgstr ""
+
+msgid "Update Schema"
+msgstr ""
+
+msgid "View Schema"
+msgstr ""
+
+msgid "View Schemas"
+msgstr ""
+
+msgid "Search schemas"
+msgstr ""
+
+msgid "Rank Math Schema Templates"
+msgstr ""
+
+msgid "Schema Templates"
+msgstr ""
+
+msgid "Schema to add."
+msgstr ""
+
+msgid "Sorry, you are not allowed to save template."
+msgstr ""
+
+msgid "Object unique id"
+msgstr ""
+
+msgid "Video URL."
+msgstr ""
+
+msgid "Estimated Cost:"
+msgstr ""
+
+msgid "Supply:"
+msgstr ""
+
+msgid "Tools:"
+msgstr ""
+
+msgid "Materials:"
+msgstr ""
+
+msgid "Rank Math: Added Video Schema to posts successfully."
+msgstr ""
+
+msgid "Autodetect Video"
+msgstr ""
+
+msgid "Populate automatic Video Schema by auto-detecting any video in the content."
+msgstr ""
+
+msgid "Autogenerate Image"
+msgstr ""
+
+msgid "Auto-generate image for the auto detected video."
+msgstr ""
+
+msgid "Remove Media Data from RSS feed"
+msgstr ""
+
+msgid "Generate Video Schema for Old Posts/Pages"
+msgstr ""
+
+msgid "Add Video schema to posts which have YouTube or Vimeo Video in the content. Applies to only those Posts/Pages/CPTs in which Autodetect Video Option is On."
+msgstr ""
+
+msgid "Are you sure you want to add Video Schema to the posts/pages with the video in the content? This action is irreversible."
+msgstr ""
+
+msgid "Generate"
+msgstr ""
+
+msgid "No posts found to convert."
+msgstr ""
+
+msgid "Conversion started. A success message will be shown here once the process completes. You can close this page."
+msgstr ""
+
+msgid "Free version"
+msgstr ""
+
+msgid "PRO version"
+msgstr ""
+
+msgid "Video Sitemaps give search engines information about video content on your site. More information: <a href=\"https://rankmath.com/kb/video-sitemap/?utm_source=Plugin&utm_campaign=WP\" target=\"_blank\">Video Sitemaps</a>"
+msgstr ""
+
+#. translators: Video Sitemap Url
+msgid "Your Video Sitemap index can be found here: %s"
+msgstr ""
+
+msgid "Hide Sitemap"
+msgstr ""
+
+msgid "Hide the sitemap from normal visitors?"
+msgstr ""
+
+msgid "Custom Fields"
+msgstr ""
+
+msgid "List of custom fields name to check for video content. Add one per line."
+msgstr ""
+
+#. translators: link to rankmath.com
+msgid "This Video Sitemap is generated by <a href=\"%s\" target=\"_blank\">Rank Math WordPress SEO Plugin</a>. It is what search engines like Google use to find and understand the video content on your website."
+msgstr ""
+
+#. translators: link to rankmath.com
+msgid "Learn more about <a href=\"%s\" target=\"_blank\">Video Sitemap</a>."
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "Tags"
+msgstr ""
+
+msgid "Last Mod."
+msgstr ""
+
+msgid "Select Brand"
+msgstr ""
+
+msgid "Select Product Brand Taxonomy to use in Schema.org & OpenGraph markup."
+msgstr ""
+
+msgid "Brand"
+msgstr ""
+
+msgid "Brand value to use in Schema.org & OpenGraph markup."
+msgstr ""
+
+msgid "Global Identifier"
+msgstr ""
+
+msgid "Global Identifier key to use in the Product Schema."
+msgstr ""
+
+msgid "GTIN-8"
+msgstr ""
+
+msgid "GTIN-12"
+msgstr ""
+
+msgid "GTIN-13"
+msgstr ""
+
+msgid "GTIN-14"
+msgstr ""
+
+msgid "ISBN"
+msgstr ""
+
+msgid "MPN"
+msgstr ""
+
+msgid "Show Global Identifier"
+msgstr ""
+
+msgid "Display the Global Identified on Product Page along with other product details."
+msgstr ""
+
+msgid "Global Identifier label"
+msgstr ""
+
+msgid "Global Identifier label to show on Product Page."
+msgstr ""
+
+msgid "Noindex Hidden Products"
+msgstr ""
+
+msgid "Set Product Pages to noindex when WooCommerce Catalog visibility is set to hidden."
+msgstr ""
+
+msgid "GTIN"
+msgstr ""
+
+#. translators: Global Identifier name.
+msgid "%s value to use in the Product schema."
+msgstr ""
+
+#. translators: Global Identifier name.
+msgid "%s value to use in Product schema."
+msgstr ""
+
+msgid "Secondary phone"
+msgstr ""
+
+msgid "Fax"
+msgstr ""
+
+msgid "Email"
+msgstr ""
+
+msgid "URL"
+msgstr ""
+
+msgid "VAT ID"
+msgstr ""
+
+msgid "Tax ID"
+msgstr ""
+
+msgid "Chamber of Commerce ID"
+msgstr ""
+
+msgid "Price indication"
+msgstr ""
+
+msgid "Address:"
+msgstr ""
+
+msgid "Open 24/7"
+msgstr ""
+
+msgid "Opening Hours:"
+msgstr ""
+
+msgid "Closed"
+msgstr ""
+
+msgid "Open now"
+msgstr ""
+
+msgid "Address, Suburb, Region, Zip or Landmark"
+msgstr ""
+
+msgid "Search"
+msgstr ""
+
+msgid "Detect Location"
+msgstr ""
+
+msgid "Hide route"
+msgstr ""
+
+msgid "Route"
+msgstr ""
+
+msgid "Your location:"
+msgstr ""
+
+msgid "Show route"
+msgstr ""
+
+msgid "Include KML File in the Sitemap"
+msgstr ""
+
+msgid "locations.kml Sitemap is generated automatically when the Local SEO module is enabled, and the geo-coordinates are added."
+msgstr ""
+
+msgid "Choose a country"
+msgstr ""
+
+msgid "Åland Islands"
+msgstr ""
+
+msgid "Afghanistan"
+msgstr ""
+
+msgid "Albania"
+msgstr ""
+
+msgid "Algeria"
+msgstr ""
+
+msgid "Andorra"
+msgstr ""
+
+msgid "Angola"
+msgstr ""
+
+msgid "Anguilla"
+msgstr ""
+
+msgid "Antarctica"
+msgstr ""
+
+msgid "Antigua and Barbuda"
+msgstr ""
+
+msgid "Argentina"
+msgstr ""
+
+msgid "Armenia"
+msgstr ""
+
+msgid "Aruba"
+msgstr ""
+
+msgid "Australia"
+msgstr ""
+
+msgid "Austria"
+msgstr ""
+
+msgid "Azerbaijan"
+msgstr ""
+
+msgid "Bahamas"
+msgstr ""
+
+msgid "Bahrain"
+msgstr ""
+
+msgid "Bangladesh"
+msgstr ""
+
+msgid "Barbados"
+msgstr ""
+
+msgid "Belarus"
+msgstr ""
+
+msgid "Belau"
+msgstr ""
+
+msgid "Belgium"
+msgstr ""
+
+msgid "Belize"
+msgstr ""
+
+msgid "Benin"
+msgstr ""
+
+msgid "Bermuda"
+msgstr ""
+
+msgid "Bhutan"
+msgstr ""
+
+msgid "Bolivia"
+msgstr ""
+
+msgid "Bonaire, Sint Eustatius and Saba"
+msgstr ""
+
+msgid "Bosnia and Herzegovina"
+msgstr ""
+
+msgid "Botswana"
+msgstr ""
+
+msgid "Bouvet Island"
+msgstr ""
+
+msgid "Brazil"
+msgstr ""
+
+msgid "British Indian Ocean Territory"
+msgstr ""
+
+msgid "British Virgin Islands"
+msgstr ""
+
+msgid "Brunei"
+msgstr ""
+
+msgid "Bulgaria"
+msgstr ""
+
+msgid "Burkina Faso"
+msgstr ""
+
+msgid "Burundi"
+msgstr ""
+
+msgid "Cambodia"
+msgstr ""
+
+msgid "Cameroon"
+msgstr ""
+
+msgid "Canada"
+msgstr ""
+
+msgid "Cape Verde"
+msgstr ""
+
+msgid "Cayman Islands"
+msgstr ""
+
+msgid "Central African Republic"
+msgstr ""
+
+msgid "Chad"
+msgstr ""
+
+msgid "Chile"
+msgstr ""
+
+msgid "China"
+msgstr ""
+
+msgid "Christmas Island"
+msgstr ""
+
+msgid "Cocos (Keeling) Islands"
+msgstr ""
+
+msgid "Colombia"
+msgstr ""
+
+msgid "Comoros"
+msgstr ""
+
+msgid "Congo (Brazzaville)"
+msgstr ""
+
+msgid "Congo (Kinshasa)"
+msgstr ""
+
+msgid "Cook Islands"
+msgstr ""
+
+msgid "Costa Rica"
+msgstr ""
+
+msgid "Croatia"
+msgstr ""
+
+msgid "Cuba"
+msgstr ""
+
+msgid "Curaçao"
+msgstr ""
+
+msgid "Cyprus"
+msgstr ""
+
+msgid "Czech Republic"
+msgstr ""
+
+msgid "Denmark"
+msgstr ""
+
+msgid "Djibouti"
+msgstr ""
+
+msgid "Dominica"
+msgstr ""
+
+msgid "Dominican Republic"
+msgstr ""
+
+msgid "Ecuador"
+msgstr ""
+
+msgid "Egypt"
+msgstr ""
+
+msgid "El Salvador"
+msgstr ""
+
+msgid "Equatorial Guinea"
+msgstr ""
+
+msgid "Eritrea"
+msgstr ""
+
+msgid "Estonia"
+msgstr ""
+
+msgid "Ethiopia"
+msgstr ""
+
+msgid "Falkland Islands"
+msgstr ""
+
+msgid "Faroe Islands"
+msgstr ""
+
+msgid "Fiji"
+msgstr ""
+
+msgid "Finland"
+msgstr ""
+
+msgid "France"
+msgstr ""
+
+msgid "French Guiana"
+msgstr ""
+
+msgid "French Polynesia"
+msgstr ""
+
+msgid "French Southern Territories"
+msgstr ""
+
+msgid "Gabon"
+msgstr ""
+
+msgid "Gambia"
+msgstr ""
+
+msgid "Georgia"
+msgstr ""
+
+msgid "Germany"
+msgstr ""
+
+msgid "Ghana"
+msgstr ""
+
+msgid "Gibraltar"
+msgstr ""
+
+msgid "Greece"
+msgstr ""
+
+msgid "Greenland"
+msgstr ""
+
+msgid "Grenada"
+msgstr ""
+
+msgid "Guadeloupe"
+msgstr ""
+
+msgid "Guatemala"
+msgstr ""
+
+msgid "Guernsey"
+msgstr ""
+
+msgid "Guinea"
+msgstr ""
+
+msgid "Guinea-Bissau"
+msgstr ""
+
+msgid "Guyana"
+msgstr ""
+
+msgid "Haiti"
+msgstr ""
+
+msgid "Heard Island and McDonald Islands"
+msgstr ""
+
+msgid "Honduras"
+msgstr ""
+
+msgid "Hong Kong"
+msgstr ""
+
+msgid "Hungary"
+msgstr ""
+
+msgid "Iceland"
+msgstr ""
+
+msgid "India"
+msgstr ""
+
+msgid "Indonesia"
+msgstr ""
+
+msgid "Iran"
+msgstr ""
+
+msgid "Iraq"
+msgstr ""
+
+msgid "Isle of Man"
+msgstr ""
+
+msgid "Israel"
+msgstr ""
+
+msgid "Italy"
+msgstr ""
+
+msgid "Ivory Coast"
+msgstr ""
+
+msgid "Jamaica"
+msgstr ""
+
+msgid "Japan"
+msgstr ""
+
+msgid "Jersey"
+msgstr ""
+
+msgid "Jordan"
+msgstr ""
+
+msgid "Kazakhstan"
+msgstr ""
+
+msgid "Kenya"
+msgstr ""
+
+msgid "Kiribati"
+msgstr ""
+
+msgid "Kuwait"
+msgstr ""
+
+msgid "Kyrgyzstan"
+msgstr ""
+
+msgid "Laos"
+msgstr ""
+
+msgid "Latvia"
+msgstr ""
+
+msgid "Lebanon"
+msgstr ""
+
+msgid "Lesotho"
+msgstr ""
+
+msgid "Liberia"
+msgstr ""
+
+msgid "Libya"
+msgstr ""
+
+msgid "Liechtenstein"
+msgstr ""
+
+msgid "Lithuania"
+msgstr ""
+
+msgid "Luxembourg"
+msgstr ""
+
+msgid "Macao S.A.R., China"
+msgstr ""
+
+msgid "Macedonia"
+msgstr ""
+
+msgid "Madagascar"
+msgstr ""
+
+msgid "Malawi"
+msgstr ""
+
+msgid "Malaysia"
+msgstr ""
+
+msgid "Maldives"
+msgstr ""
+
+msgid "Mali"
+msgstr ""
+
+msgid "Malta"
+msgstr ""
+
+msgid "Marshall Islands"
+msgstr ""
+
+msgid "Martinique"
+msgstr ""
+
+msgid "Mauritania"
+msgstr ""
+
+msgid "Mauritius"
+msgstr ""
+
+msgid "Mayotte"
+msgstr ""
+
+msgid "Mexico"
+msgstr ""
+
+msgid "Micronesia"
+msgstr ""
+
+msgid "Moldova"
+msgstr ""
+
+msgid "Monaco"
+msgstr ""
+
+msgid "Mongolia"
+msgstr ""
+
+msgid "Montenegro"
+msgstr ""
+
+msgid "Montserrat"
+msgstr ""
+
+msgid "Morocco"
+msgstr ""
+
+msgid "Mozambique"
+msgstr ""
+
+msgid "Myanmar"
+msgstr ""
+
+msgid "Namibia"
+msgstr ""
+
+msgid "Nauru"
+msgstr ""
+
+msgid "Nepal"
+msgstr ""
+
+msgid "Netherlands"
+msgstr ""
+
+msgid "Netherlands Antilles"
+msgstr ""
+
+msgid "New Caledonia"
+msgstr ""
+
+msgid "New Zealand"
+msgstr ""
+
+msgid "Nicaragua"
+msgstr ""
+
+msgid "Niger"
+msgstr ""
+
+msgid "Nigeria"
+msgstr ""
+
+msgid "Niue"
+msgstr ""
+
+msgid "Norfolk Island"
+msgstr ""
+
+msgid "North Korea"
+msgstr ""
+
+msgid "Norway"
+msgstr ""
+
+msgid "Oman"
+msgstr ""
+
+msgid "Pakistan"
+msgstr ""
+
+msgid "Palestinian Territory"
+msgstr ""
+
+msgid "Panama"
+msgstr ""
+
+msgid "Papua New Guinea"
+msgstr ""
+
+msgid "Paraguay"
+msgstr ""
+
+msgid "Peru"
+msgstr ""
+
+msgid "Philippines"
+msgstr ""
+
+msgid "Pitcairn"
+msgstr ""
+
+msgid "Poland"
+msgstr ""
+
+msgid "Portugal"
+msgstr ""
+
+msgid "Qatar"
+msgstr ""
+
+msgid "Republic of Ireland"
+msgstr ""
+
+msgid "Reunion"
+msgstr ""
+
+msgid "Romania"
+msgstr ""
+
+msgid "Russia"
+msgstr ""
+
+msgid "Rwanda"
+msgstr ""
+
+msgid "São Tomé and Príncipe"
+msgstr ""
+
+msgid "Saint Barthélemy"
+msgstr ""
+
+msgid "Saint Helena"
+msgstr ""
+
+msgid "Saint Kitts and Nevis"
+msgstr ""
+
+msgid "Saint Lucia"
+msgstr ""
+
+msgid "Saint Martin (Dutch part)"
+msgstr ""
+
+msgid "Saint Martin (French part)"
+msgstr ""
+
+msgid "Saint Pierre and Miquelon"
+msgstr ""
+
+msgid "Saint Vincent and the Grenadines"
+msgstr ""
+
+msgid "San Marino"
+msgstr ""
+
+msgid "Saudi Arabia"
+msgstr ""
+
+msgid "Senegal"
+msgstr ""
+
+msgid "Serbia"
+msgstr ""
+
+msgid "Seychelles"
+msgstr ""
+
+msgid "Sierra Leone"
+msgstr ""
+
+msgid "Singapore"
+msgstr ""
+
+msgid "Slovakia"
+msgstr ""
+
+msgid "Slovenia"
+msgstr ""
+
+msgid "Solomon Islands"
+msgstr ""
+
+msgid "Somalia"
+msgstr ""
+
+msgid "South Africa"
+msgstr ""
+
+msgid "South Georgia/Sandwich Islands"
+msgstr ""
+
+msgid "South Korea"
+msgstr ""
+
+msgid "South Sudan"
+msgstr ""
+
+msgid "Spain"
+msgstr ""
+
+msgid "Sri Lanka"
+msgstr ""
+
+msgid "Sudan"
+msgstr ""
+
+msgid "Suriname"
+msgstr ""
+
+msgid "Svalbard and Jan Mayen"
+msgstr ""
+
+msgid "Swaziland"
+msgstr ""
+
+msgid "Sweden"
+msgstr ""
+
+msgid "Switzerland"
+msgstr ""
+
+msgid "Syria"
+msgstr ""
+
+msgid "Taiwan"
+msgstr ""
+
+msgid "Tajikistan"
+msgstr ""
+
+msgid "Tanzania"
+msgstr ""
+
+msgid "Thailand"
+msgstr ""
+
+msgid "Timor-Leste"
+msgstr ""
+
+msgid "Togo"
+msgstr ""
+
+msgid "Tokelau"
+msgstr ""
+
+msgid "Tonga"
+msgstr ""
+
+msgid "Trinidad and Tobago"
+msgstr ""
+
+msgid "Tunisia"
+msgstr ""
+
+msgid "Turkey"
+msgstr ""
+
+msgid "Turkmenistan"
+msgstr ""
+
+msgid "Turks and Caicos Islands"
+msgstr ""
+
+msgid "Tuvalu"
+msgstr ""
+
+msgid "Uganda"
+msgstr ""
+
+msgid "Ukraine"
+msgstr ""
+
+msgid "United Arab Emirates"
+msgstr ""
+
+msgid "United Kingdom (UK)"
+msgstr ""
+
+msgid "United States (US)"
+msgstr ""
+
+msgid "Uruguay"
+msgstr ""
+
+msgid "Uzbekistan"
+msgstr ""
+
+msgid "Vanuatu"
+msgstr ""
+
+msgid "Vatican"
+msgstr ""
+
+msgid "Venezuela"
+msgstr ""
+
+msgid "Vietnam"
+msgstr ""
+
+msgid "Wallis and Futuna"
+msgstr ""
+
+msgid "Western Sahara"
+msgstr ""
+
+msgid "Western Samoa"
+msgstr ""
+
+msgid "Yemen"
+msgstr ""
+
+msgid "Zambia"
+msgstr ""
+
+msgid "Zimbabwe"
+msgstr ""
+
+msgid "Person or Company"
+msgstr ""
+
+msgid "Organization"
+msgstr ""
+
+msgid "Choose whether the site represents a person or an organization."
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "Your name or company name"
+msgstr ""
+
+msgid "<strong>Min Size: 160Χ90px, Max Size: 1920X1080px</strong>.<br /> A squared image is preferred by the search engines."
+msgstr ""
+
+msgid "URL of the item."
+msgstr ""
+
+msgid "Use Multiple Locations"
+msgstr ""
+
+msgid "Once you save the changes, we will create a new custom post type called \"Locations\" where you can add multiple locations of your business/organization."
+msgstr ""
+
+msgid "Search engines display your email address."
+msgstr ""
+
+msgid "Search engines may prominently display your contact phone number for mobile users."
+msgstr ""
+
+msgid "Address Format"
+msgstr ""
+
+msgid "Format used when the address is displayed using the <code>[rank_math_contact_info]</code> shortcode.<br><strong>Available Tags: {address}, {locality}, {region}, {postalcode}, {country}, {gps}</strong>"
+msgstr ""
+
+msgid "Business Type"
+msgstr ""
+
+msgid "Opening Hours"
+msgstr ""
+
+msgid "Select opening hours. You can add multiple sets if you have different opening or closing hours on some days or if you have a mid-day break. Times are specified using 24:00 time."
+msgstr ""
+
+msgid "Add time"
+msgstr ""
+
+msgid "Monday"
+msgstr ""
+
+msgid "Tuesday"
+msgstr ""
+
+msgid "Wednesday"
+msgstr ""
+
+msgid "Thursday"
+msgstr ""
+
+msgid "Friday"
+msgstr ""
+
+msgid "Saturday"
+msgstr ""
+
+msgid "Sunday"
+msgstr ""
+
+msgid "e.g. 09:00-17:00"
+msgstr ""
+
+msgid "Opening Hours Format"
+msgstr ""
+
+msgid "Time format used in the contact shortcode."
+msgstr ""
+
+msgid "Phone Number"
+msgstr ""
+
+msgid "Add number"
+msgstr ""
+
+msgid "Format: +1-401-555-1212"
+msgstr ""
+
+msgid "Price Range"
+msgstr ""
+
+msgid "The price range of the business, for example $$$."
+msgstr ""
+
+msgid "Hide Opening Hours"
+msgstr ""
+
+msgid "Don't add opening hours data in Schema"
+msgstr ""
+
+msgid "Closed label"
+msgstr ""
+
+msgid "Text to show in Opening hours when business is closed."
+msgstr ""
+
+msgid "Open 24/7 label"
+msgstr ""
+
+msgid "Select the text to display alongside your opening hours when your store is open 24/7."
+msgstr ""
+
+msgid "Open 24h label"
+msgstr ""
+
+msgid "Measurement system"
+msgstr ""
+
+msgid "Select your preferred measurement system (miles or kilometers)."
+msgstr ""
+
+msgid "Kilometers"
+msgstr ""
+
+msgid "Miles"
+msgstr ""
+
+msgid "Map Style"
+msgstr ""
+
+msgid "Select the map style you wish to use on the frontend of your website."
+msgstr ""
+
+msgid "Hybrid"
+msgstr ""
+
+msgid "Satellite"
+msgstr ""
+
+msgid "Roadmap"
+msgstr ""
+
+msgid "Terrain"
+msgstr ""
+
+msgid "Maximum number of locations to show"
+msgstr ""
+
+msgid "Limit the number of locations shown on your website to those nearest your user."
+msgstr ""
+
+msgid "Primary Country"
+msgstr ""
+
+msgid "Select your organization’s primary country of operation. This helps improve the accuracy of the store locator."
+msgstr ""
+
+msgid "Show Route label"
+msgstr ""
+
+msgid "Customize the label of the option users can use can click to get directions to your business location on the frontend."
+msgstr ""
+
+msgid "Location Detection"
+msgstr ""
+
+msgid "Automatically detect the user's location as the starting point."
+msgstr ""
+
+msgid "All Locations are part of the same Organization"
+msgstr ""
+
+msgid "Enable if all of the locations where you serve customers are a part of the same legal entity."
+msgstr ""
+
+msgid "Enhanced Search"
+msgstr ""
+
+msgid "Include business locations in site-wide search results."
+msgstr ""
+
+msgid "Google Maps API Key"
+msgstr ""
+
+#. translators: %s expands to "Google Maps Embed API" https://developers.google.com/maps/documentation/embed/
+msgid "An API Key is required to display embedded Google Maps on your site. Get it here: %s"
+msgstr ""
+
+msgid "Google Maps Embed API"
+msgstr ""
+
+msgid "Geo Coordinates"
+msgstr ""
+
+msgid "Latitude and longitude values separated by comma."
+msgstr ""
+
+msgid "Locations Post Type Base"
+msgstr ""
+
+msgid "Locations Category Base"
+msgstr ""
+
+msgid "Location Post Type Name"
+msgstr ""
+
+msgid "The label that appears in the sidebar for the custom post type where you can add & manage locations."
+msgstr ""
+
+msgid "Locations Post Type Name (Plural)"
+msgstr ""
+
+msgid "As above, but the label that would be applicable for more than one location (default: RM Locations)."
+msgstr ""
+
+msgid "Select Page"
+msgstr ""
+
+msgid "About Page"
+msgstr ""
+
+msgid "Select a page on your site where you want to show the LocalBusiness meta data."
+msgstr ""
+
+msgid "Contact Page"
+msgstr ""
+
+#. translators: placeholder is a comma-separated list of columns.
+msgid "Use the following columns in the CSV file (the order does not matter): %s"
+msgstr ""
+
+#. translators: placeholder is the column name.
+msgid "If the numeric ID is specified in the %s column, then the redirection will be edited. If it is not set or empty, then a new redirection will be created."
+msgstr ""
+
+#. translators: placeholders are the column names.
+msgid "You can specify multiple source URLs by using JSON format in the %1$s column. The value must be an array of objects with %2$s properties. The %3$s column will be ignored in this case."
+msgstr ""
+
+#. translators: 1 is the command name, 2 is the column name.
+msgid "Use %1$s (case-sensitive) as the value for the %2$s column to delete a redirection."
+msgstr ""
+
+msgid "CSV Import"
+msgstr ""
+
+#. translators: placeholder is a comma-separated list of columns.
+msgid "Import a CSV file to create or update redirections. The file must include at least the following columns: %s"
+msgstr ""
+
+msgid "More details"
+msgstr ""
+
+msgid "Import & Export"
+msgstr ""
+
+msgid "Sorry, you are not allowed to import redirections on this site."
+msgstr ""
+
+msgid "Created"
+msgstr ""
+
+msgid "Updated"
+msgstr ""
+
+msgid "Deleted"
+msgstr ""
+
+msgid "Are you sure you want to import redirections from this CSV file?"
+msgstr ""
+
+#. translators: placeholder is numeric redirection id.
+msgid "Could not update redirection #%d (not found)"
+msgstr ""
+
+msgid "Could not import redirection."
+msgstr ""
+
+msgid "Author Name"
+msgstr ""
+
+msgid "Published Date"
+msgstr ""
+
+msgid "Appearance Headline"
+msgstr ""
+
+msgid "Appearance URL"
+msgstr ""
+
+msgid "Appearance Author"
+msgstr ""
+
+msgid "Appearance Published Date"
+msgstr ""
+
+msgid "Alternate Name"
+msgstr ""
+
+msgid "Reference Web page "
+msgstr ""
+
+msgid "Identifier"
+msgstr ""
+
+msgid "Keywords"
+msgstr ""
+
+msgid "License"
+msgstr ""
+
+msgid "Catalog"
+msgstr ""
+
+msgid "Temporal Coverage"
+msgstr ""
+
+msgid "Special Coverage"
+msgstr ""
+
+msgid "Data Sets"
+msgstr ""
+
+msgid "Format"
+msgstr ""
+
+msgid "Distribution"
+msgstr ""
+
+msgid "Total Time"
+msgstr ""
+
+msgid "Salary"
+msgstr ""
+
+msgid "Salary Currency"
+msgstr ""
+
+msgid "Payroll"
+msgstr ""
+
+msgid "Date Posted"
+msgstr ""
+
+msgid "Posting Expiry Date"
+msgstr ""
+
+msgid "Unpublish when expired"
+msgstr ""
+
+msgid "Employment Type "
+msgstr ""
+
+msgid "Hiring Organization "
+msgstr ""
+
+msgid "Organization URL"
+msgstr ""
+
+msgid "Organization Logo"
+msgstr ""
+
+msgid "Job Type"
+msgstr ""
+
+msgid "Job Location"
+msgstr ""
+
+msgid "Location"
+msgstr ""
+
+msgid "Education Required"
+msgstr ""
+
+msgid "Experience Required"
+msgstr ""
+
+msgid "Months"
+msgstr ""
+
+msgid "Director"
+msgstr ""
+
+msgid "Date Created"
+msgstr ""
+
+msgid "Product SKU"
+msgstr ""
+
+msgid "Product Brand"
+msgstr ""
+
+msgid "Product Currency"
+msgstr ""
+
+msgid "Product Price"
+msgstr ""
+
+msgid "Price Valid Until"
+msgstr ""
+
+msgid "Product In-Stock"
+msgstr ""
+
+msgid "SEO Report of Your Website"
+msgstr ""
+
+msgid "FULL REPORT"
+msgstr ""
+
+msgid "External Link Icon"
+msgstr ""
+
+msgid "Uh-oh"
+msgstr ""
+
+msgid "It seems that there are no stats to show right now."
+msgstr ""
+
+#. translators: placeholders are anchor opening and closing tags.
+msgid "If you can see the site data in your Search Console and Analytics accounts, but not here, then %1$s try reconnecting your account %2$s and make sure that the correct properties are selected in the %1$s Analytics Settings%2$s."
+msgstr ""
+
+msgid "VIEW DETAILED ANALYTICS"
+msgstr ""
+
+msgid "Impressions"
+msgstr ""
+
+msgid "Position"
+msgstr ""
+
+msgid "No data to show."
+msgstr ""
+
+msgid "Post"
+msgstr ""
+
+msgid "Search Traffic"
+msgstr ""
+
+msgid "Total Impressions"
+msgstr ""
+
+msgid "Total Clicks"
+msgstr ""
+
+msgid "Total Keywords"
+msgstr ""
+
+msgid "Average Position"
+msgstr ""
