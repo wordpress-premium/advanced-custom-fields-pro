@@ -1,9 +1,9 @@
 {
-    "name": "wordpress-premium/seo-by-rank-math-pro",
-    "description": "Rank Math is a revolutionary SEO product that combines the features of many SEO tools and lets you multiply your traffic in the easiest way possible.",
+    "name": "wordpress-premium/rank-math-seo",
     "type": "wordpress-plugin",
-	"version": "3.0.4",
-	"homepage": "https://rankmath.com/wordpress/plugin/seo-suite/",
+    "description": "",
+    "homepage": "https://polylang.pro",
+    "version": "3.0.4",
     "require": {
         "composer/installers": "^1.6"
     },
