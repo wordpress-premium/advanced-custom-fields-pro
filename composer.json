@@ -1,11 +1,11 @@
 {
-    "name": "wordpress-premium/advanced-custom-fields-pro",
-    "description": "Customise WordPress with powerful, professional and intuitive fields.",
-    "type": "wordpress-plugin",
-	"version": "5.11.4",
-	"homepage": "https://www.advancedcustomfields.com",
-    "require": {
-        "composer/installers": "^1.6"
-    },
-    "license": "GPL-3.0-or-later"
+  "name": "wordpress-premium/advanced-custom-fields-pro",
+  "description": "Customise WordPress with powerful, professional and intuitive fields.",
+  "type": "wordpress-plugin",
+  "version": "5.12.1",
+  "homepage": "https://www.advancedcustomfields.com",
+  "require": {
+    "composer/installers": "^1.6"
+  },
+  "license": "GPL-3.0-or-later"
 }
