@@ -10,6 +10,8 @@
 
 namespace RankMathPro\Redirections\CSV_Import_Export_Redirections;
 
+use MyThemeShop\Helpers\Arr;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -73,7 +75,7 @@ class Importer {
 		update_option( 'rank_math_csv_import_redirections_settings', $settings );
 		delete_option( 'rank_math_csv_import_redirections_status' );
 
-		$this->settings        = apply_filters( 'rank_math/admin/csv_import_redirections_settings', $settings );
+		$this->settings = apply_filters( 'rank_math/admin/csv_import_redirections_settings', $settings );
 
 		$lines = $this->count_lines( $file );
 		update_option( 'rank_math_csv_import_redirections_total', $lines );
@@ -151,8 +153,7 @@ class Importer {
 			return [];
 		}
 
-		$csv_separator = apply_filters( 'rank_math/csv_import/separator', ',' );
-		$this->column_headers = array_map( 'trim', explode( $csv_separator, $contents ) );
+		$this->column_headers = Arr::from_string( $contents, apply_filters( 'rank_math/csv_import/separator', ',' ) );
 		return $this->column_headers;
 	}
 
@@ -164,7 +165,7 @@ class Importer {
 	 */
 	public function import_line( $line_number ) {
 		// Skip headers.
-		if ( $line_number == 0 ) {
+		if ( 0 === $line_number ) {
 			return;
 		}
 
@@ -175,7 +176,7 @@ class Importer {
 			return;
 		}
 
-		$headers  = $this->get_column_headers( $file );
+		$headers = $this->get_column_headers( $file );
 		if ( empty( $headers ) ) {
 			$this->add_error( esc_html__( 'Missing CSV headers.', 'rank-math-pro' ), 'missing_headers' );
 			return;
@@ -230,7 +231,7 @@ class Importer {
 		}
 
 		global $wpdb;
-		$where = $wpdb->prepare( 'slug = %s', $term_slug );
+		$where                        = $wpdb->prepare( 'slug = %s', $term_slug );
 		self::$term_ids[ $term_slug ] = $wpdb->get_var( "SELECT term_id FROM {$wpdb->terms} WHERE $where" ); // phpcs:ignore
 
 		return self::$term_ids[ $term_slug ];
@@ -278,7 +279,7 @@ class Importer {
 	/**
 	 * Set row import status.
 	 *
-	 * @param string $status New status.
+	 * @param string $row New status.
 	 * @return void
 	 */
 	private function row_failed( $row ) {
@@ -332,7 +333,8 @@ class Importer {
 	/**
 	 * Add import error.
 	 *
-	 * @param string $error New error.
+	 * @param string $error_message New error.
+	 * @param int    $error_id      Error ID.
 	 * @return void
 	 */
 	public function add_error( $error_message, $error_id = null ) {

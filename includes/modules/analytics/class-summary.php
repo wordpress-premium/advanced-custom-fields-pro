@@ -176,8 +176,7 @@ class Summary {
 
 		$sql_daterange = Stats::get()->get_sql_date_intervals( $intervals );
 
-		// phpcs:disable
-		$query = $wpdb->prepare(
+		$query        = $wpdb->prepare(
 			"SELECT DATE_FORMAT( created, '%%Y-%%m-%%d') as date, SUM(pageviews) as pageviews, {$sql_daterange}
 			FROM {$wpdb->prefix}rank_math_analytics_ga
 			WHERE created BETWEEN %s AND %s
@@ -205,8 +204,7 @@ class Summary {
 		if ( DB_Helper::check_table_exists( 'rank_math_analytics_adsense' ) ) {
 			$sql_daterange = Stats::get()->get_sql_date_intervals( $intervals );
 
-			// phpcs:disable
-			$query = $wpdb->prepare(
+			$query        = $wpdb->prepare(
 				"SELECT DATE_FORMAT( created, '%%Y-%%m-%%d') as date, SUM(earnings) as earnings, {$sql_daterange}
 				FROM {$wpdb->prefix}rank_math_analytics_adsense
 				WHERE created BETWEEN %s AND %s

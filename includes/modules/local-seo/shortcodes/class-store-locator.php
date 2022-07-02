@@ -131,7 +131,6 @@ class Store_Locator {
 			);
 		}
 
-		// phpcs:disable
 		$nearby_locations = $wpdb->get_results(
 			$wpdb->prepare(
 				"SELECT DISTINCT

@@ -1,11 +1,11 @@
 {
-    "name": "wordpress-premium/rank-math-seo",
-    "type": "wordpress-plugin",
-    "description": "",
-    "homepage": "https://polylang.pro",
-    "version": "3.0.4",
-    "require": {
-        "composer/installers": "^1.6"
-    },
-    "license": "GPL-3.0-or-later"
+  "name": "wordpress-premium/rank-math-seo-pro",
+  "type": "wordpress-plugin",
+  "description": "",
+  "homepage": "https://polylang.pro",
+  "version": "3.0.15",
+  "require": {
+    "composer/installers": "^1.6"
+  },
+  "license": "GPL-3.0-or-later"
 }

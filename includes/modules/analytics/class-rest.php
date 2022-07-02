@@ -21,6 +21,7 @@ use RankMath\Admin\Admin_Helper;
 use RankMathPro\Google\PageSpeed;
 use RankMath\SEO_Analysis\SEO_Analyzer;
 use RankMathPro\Analytics\DB;
+use MyThemeShop\Helpers\DB as DB_Helper;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -129,6 +130,15 @@ class Rest extends WP_REST_Controller {
 				'permission_callback' => [ $this, 'has_permission' ],
 			]
 		);
+		register_rest_route(
+			$this->namespace,
+			'/deleteTrackedKeywords',
+			[
+				'methods'             => WP_REST_Server::CREATABLE,
+				'callback'            => [ $this, 'delete_all_tracked_keywords' ],
+				'permission_callback' => [ $this, 'has_permission' ],
+			]
+		);
 
 		register_rest_route(
 			$this->namespace,
@@ -146,6 +156,16 @@ class Rest extends WP_REST_Controller {
 			[
 				'methods'             => WP_REST_Server::READABLE,
 				'callback'            => [ Posts::get(), 'get_posts_rows' ],
+				'permission_callback' => [ $this, 'has_permission' ],
+			]
+		);
+
+		register_rest_route(
+			$this->namespace,
+			'/inspectionStats',
+			[
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => [ $this, 'get_inspection_stats' ],
 				'permission_callback' => [ $this, 'has_permission' ],
 			]
 		);
@@ -263,7 +283,7 @@ class Rest extends WP_REST_Controller {
 
 		$keywords_data = [];
 		foreach ( $focus_keywords as $focus_keyword ) {
-			$keywords = explode( ',', $focus_keyword );
+			$keywords = explode( ',', mb_strtolower( $focus_keyword ) );
 			if ( $secondary_keyword ) {
 				$keywords_data = array_merge( $keywords, $keywords_data );
 			} else {
@@ -286,6 +306,7 @@ class Rest extends WP_REST_Controller {
 	 */
 	public function add_track_keyword( WP_REST_Request $request ) {
 		$keywords = $request->get_param( 'keyword' );
+		$keywords = mb_strtolower( filter_var( $keywords, FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_FLAG_NO_ENCODE_QUOTES ) );
 		if ( empty( $keywords ) ) {
 			return new WP_Error(
 				'param_value_empty',
@@ -357,6 +378,28 @@ class Rest extends WP_REST_Controller {
 	}
 
 	/**
+	 * Delete all the manually tracked keywords.
+	 */
+	public function delete_all_tracked_keywords() {
+
+		// Delete all keywords.
+		Keywords::get()->delete_all_tracked_keywords();
+
+		$registered = Admin_Helper::get_registration_data();
+		if ( empty( $registered['username'] ) || empty( $registered['api_key'] ) ) {
+			return false;
+		}
+
+		// Send total keywords count as 0 to RankMath.
+		$response = \RankMathPro\Admin\Api::get()->keywords_info( $registered['username'], $registered['api_key'], 0 );
+		if ( $response ) {
+			update_option( 'rank_math_keyword_quota', $response );
+		}
+
+		return true;
+	}
+
+	/**
 	 * Check if keyword can be added.
 	 *
 	 * @param  string $keywords Comma separated keywords.
@@ -397,8 +440,6 @@ class Rest extends WP_REST_Controller {
 			);
 		}
 
-		$force = \boolval( $request->get_param( 'force' ) );
-
 		if ( Helper::is_localhost() ) {
 			return [
 				'page_score'          => 0,
@@ -411,11 +452,14 @@ class Rest extends WP_REST_Controller {
 		}
 
 		$url = get_permalink( $post_id );
-		$pre = apply_filters( 'rank_math/analytics/pre_pagespeed', false, $post_id, $force );
+		$pre = apply_filters( 'rank_math/analytics/pre_pagespeed', false, $post_id, $request );
 		if ( false !== $pre ) {
 			return $pre;
 		}
-		if ( $force || $this->should_update_pagespeed( $id ) ) {
+
+		$force        = \boolval( $request->get_param( 'force' ) );
+		$is_admin_bar = \boolval( $request->get_param( 'isAdminBar' ) );
+		if ( $force || ( ! $is_admin_bar && $this->should_update_pagespeed( $id ) ) ) {
 			// Page Score.
 			$analyzer = new SEO_Analyzer();
 			$score    = $analyzer->get_page_score( $url );
@@ -458,5 +502,27 @@ class Rest extends WP_REST_Controller {
 		$record = DB::objects()->where( 'id', $id )->one();
 
 		return \time() > ( \strtotime( $record->pagespeed_refreshed ) + ( DAY_IN_SECONDS * 7 ) );
+	}
+
+	/**
+	 * Get inspection stats.
+	 *
+	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 */
+	public function get_inspection_stats() {
+		// Early Bail!!
+		if ( ! DB_Helper::check_table_exists( 'rank_math_analytics_inspections' ) ) {
+			return [
+				'presence' => [],
+				'status'   => [],
+			];
+		}
+
+		return rest_ensure_response(
+			[
+				'presence' => Url_Inspection::get_presence_stats(),
+				'status'   => Url_Inspection::get_status_stats(),
+			]
+		);
 	}
 }

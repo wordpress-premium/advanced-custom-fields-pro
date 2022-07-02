@@ -335,7 +335,7 @@ class Admin {
 	 */
 	private function get_active_templates() {
 		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : false;
-		if ( ! $screen instanceof WP_Screen || 'rank_math_schema' === $screen->post_type ) {
+		if ( $screen instanceof WP_Screen && 'rank_math_schema' === $screen->post_type ) {
 			return [];
 		}
 

@@ -10,6 +10,8 @@
 
 namespace RankMathPro\Admin\CSV_Import_Export;
 
+use MyThemeShop\Helpers\Arr;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -164,8 +166,7 @@ class Importer {
 			return [];
 		}
 
-		$csv_separator = apply_filters( 'rank_math/csv_import/separator', ',' );
-		$this->column_headers = array_map( 'trim', explode( $csv_separator, $contents ) );
+		$this->column_headers = Arr::from_string( $contents, apply_filters( 'rank_math/csv_import/separator', ',' ) );
 		return $this->column_headers;
 	}
 
@@ -214,7 +215,7 @@ class Importer {
 		}
 
 		$csv_separator = apply_filters( 'rank_math/csv_import/separator', ',' );
-		$decoded = str_getcsv( $raw_data, $csv_separator );
+		$decoded       = str_getcsv( $raw_data, $csv_separator );
 		if ( count( $headers ) !== count( $decoded ) ) {
 			$this->add_error( esc_html__( 'Columns number mismatch.', 'rank-math-pro' ), 'columns_number_mismatch' );
 			$this->row_failed( $line_number );

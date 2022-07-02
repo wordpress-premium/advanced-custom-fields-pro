@@ -30,6 +30,7 @@ class Admin {
 	public function __construct() {
 		$this->filter( 'rank_math/settings/title', 'add_settings' );
 		$this->filter( 'rank_math/settings/sitemap', 'add_sitemap_settings', 11 );
+		$this->filter( 'rank_math/settings/snippet/types', 'add_local_business_schema_type', 10, 2 );
 	}
 
 	/**
@@ -64,5 +65,22 @@ class Admin {
 		];
 
 		return $tabs;
+	}
+
+	/**
+	 * Add Pro schema types in Schema settings choices array.
+	 *
+	 * @param array  $types     Schema types.
+	 * @param string $post_type Post type.
+	 */
+	public function add_local_business_schema_type( $types, $post_type ) {
+		if ( 'rank_math_locations' === $post_type ) {
+			$types = [
+				'off'           => esc_html__( 'None', 'rank-math-pro' ),
+				'LocalBusiness' => esc_html__( 'Local Business', 'rank-math-pro' ),
+			];
+		}
+
+		return $types;
 	}
 }

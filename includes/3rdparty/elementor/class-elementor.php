@@ -27,9 +27,31 @@ class Elementor {
 	 * Class constructor.
 	 */
 	public function __construct() {
+		$this->action( 'elementor/editor/before_enqueue_scripts', 'editor_scripts' );
 		$this->action( 'elementor/widgets/widgets_registered', 'add_breadcrumb_widget' );
 		$this->action( 'elementor/element/accordion/section_title/before_section_end', 'add_faq_setting', 99 );
 		$this->filter( 'rank_math/json_ld', 'add_faq_schema', 99 );
+	}
+
+	public function editor_scripts() {
+
+		wp_dequeue_script( 'rank-math-pro-metabox' );
+		wp_enqueue_style(
+			'rank-math-pro-editor',
+			RANK_MATH_PRO_URL . 'assets/admin/css/elementor.css',
+			[],
+			RANK_MATH_PRO_VERSION
+		);
+
+		wp_enqueue_script(
+			'rank-math-pro-editor',
+			RANK_MATH_PRO_URL . 'assets/admin/js/elementor.js',
+			[
+				'rank-math-editor',
+			],
+			RANK_MATH_PRO_VERSION,
+			true
+		);
 	}
 
 	/**

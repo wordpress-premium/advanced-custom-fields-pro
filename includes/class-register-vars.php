@@ -11,6 +11,7 @@ namespace RankMathPro;
 
 use RankMath\Helper;
 use RankMath\Traits\Hooker;
+use MyThemeShop\Helpers\Arr;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -36,7 +37,7 @@ class Register_Vars {
 		rank_math_register_var_replacement(
 			'randomword',
 			[
-				'name'        => esc_html__( 'Random Word', 'rank-math' ),
+				'name'        => esc_html__( 'Random Word', 'rank-math-pro' ),
 				'description' => esc_html__( 'Persistent random word chosen from a list', 'rank-math-pro' ),
 				'variable'    => 'randomword(word1|word2|word3)',
 				'example'     => ' ',
@@ -47,7 +48,7 @@ class Register_Vars {
 		rank_math_register_var_replacement(
 			'randomword_np',
 			[
-				'name'        => esc_html__( 'Random Word', 'rank-math' ),
+				'name'        => esc_html__( 'Random Word', 'rank-math-pro' ),
 				'description' => esc_html__( 'Non-persistent random word chosen from a list. A new random word will be chosen on each page load.', 'rank-math-pro' ),
 				'variable'    => 'randomword_np(word1|word2|word3)',
 				'example'     => ' ',
@@ -64,7 +65,7 @@ class Register_Vars {
 	 * @return string             Random word.
 	 */
 	public function get_randomword( $list = null, $persistent = true ) {
-		$words = array_map( 'trim', explode( '|', $list ) );
+		$words = Arr::from_string( $list, '|' );
 		$max   = count( $words );
 		if ( ! $max ) {
 			return '';
@@ -92,5 +93,4 @@ class Register_Vars {
 	public function get_randomword_np( $list = null ) {
 		return $this->get_randomword( $list, false );
 	}
-
 }

@@ -9,7 +9,7 @@
  *
  * @wordpress-plugin
  * Plugin Name:       Rank Math SEO PRO
- * Version:           3.0.4
+ * Version:           3.0.15
  * Plugin URI:        https://rankmath.com/wordpress/plugin/seo-suite/
  * Description:       Super-charge your website’s SEO with the Rank Math PRO options like Site Analytics, SEO Performance, Custom Schema Templates, News/Video Sitemaps, etc.
  * Author:            Rank Math
@@ -29,10 +29,10 @@ defined( 'ABSPATH' ) || exit;
 add_filter( 'rank_math/admin/sensitive_data_encryption', '__return_false' );
 
 update_option( 'rank_math_connect_data', [
-     'username'  => 'rankmath',
+     'username'  => 'activated',
      'email'     => 'activated@rankmath.com',
      'api_key'   => '*********',
-     'plan'      => 'agency',
+     'plan'      => 'business',
      'connected' => true,
 ] );
 update_option( 'rank_math_registration_skip', 1 );
@@ -47,7 +47,7 @@ add_action( 'init', function() {
                          'body'     => json_encode( [
                               'error' => '',
                               'plan'  => 'business',
-                              'keywords' => get_option( 'rank_math_keyword_quota', [ 'available' => 50000, 'taken' => 0 ] ),
+                              'keywords' => get_option( 'rank_math_keyword_quota', [ 'available' => 10000, 'taken' => 0 ] ),
                               'analytics' => 'on',
                          ] ),
                      ];
@@ -55,7 +55,7 @@ add_action( 'init', function() {
                     if ( isset( $parsed_args['body']['count'] ) ) {
                          return [
                               'response' => [ 'code' => 200, 'message' => 'ОК' ],
-                              'body'     => json_encode( [ 'available' => 50000, 'taken' => $parsed_args['body']['count'] ] ),
+                              'body'     => json_encode( [ 'available' => 10000, 'taken' => $parsed_args['body']['count'] ] ),
                          ];
                     }
 
@@ -78,14 +78,14 @@ final class RankMathPro {
 	 *
 	 * @var string
 	 */
-	public $version = '3.0.4';
+	public $version = '3.0.15';
 
 	/**
 	 * Minimum version of Rank Math SEO.
 	 *
 	 * @var string
 	 */
-	public $rank_math_min_version = '1.0.80';
+	public $rank_math_min_version = '1.0.92';
 
 	/**
 	 * Holds various class instances
@@ -235,7 +235,6 @@ final class RankMathPro {
 	 */
 	public function auto_deactivate() {
 		deactivate_plugins( plugin_basename( __FILE__ ) );
-		// phpcs:disable
 		if ( isset( $_GET['activate'] ) ) {
 			unset( $_GET['activate'] );
 		}
@@ -365,7 +364,7 @@ final class RankMathPro {
 		}
 
 		if ( Helper::is_module_active( 'redirections' ) ) {
-			new \RankMathPro\Redirections\Redirections_Pro();
+			new \RankMathPro\Redirections\Redirections();
 		}
 
 		if ( function_exists( 'acf' ) && Helper::is_module_active( 'acf' ) ) {
@@ -451,7 +450,7 @@ final class RankMathPro {
 	 * @return boolean Whether we are in the process of updating the plugin or not.
 	 */
 	public function is_free_version_being_updated() {
-		$action = isset( $_POST['action'] ) && $_POST['action'] != -1 ? $_POST['action'] : '';
+		$action  = isset( $_POST['action'] ) && $_POST['action'] != -1 ? $_POST['action'] : '';
 		$plugins = isset( $_POST['plugin'] ) ? (array) $_POST['plugin'] : [];
 		if ( empty( $plugins ) ) {
 			$plugins = isset( $_POST['plugins'] ) ? (array) $_POST['plugins'] : [];

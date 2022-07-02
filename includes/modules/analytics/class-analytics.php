@@ -14,7 +14,7 @@ use RankMath\Helper;
 use RankMath\Traits\Hooker;
 use RankMath\Analytics\Stats;
 use MyThemeShop\Helpers\Param;
-use MyThemeShop\Helpers\Arr;
+use MyThemeShop\Helpers\DB as DB_Helper;
 
 
 // Analytics.
@@ -59,9 +59,15 @@ class Analytics {
 		$this->filter( 'rank_math/analytics/pre_filter_data', 'filter_winning_keywords', 10, 3 );
 		$this->action( 'cmb2_save_options-page_fields_rank-math-options-general_options', 'sync_global_settings', 25, 2 );
 		$this->filter( 'rank_math/metabox/post/values', 'add_metadata', 10, 2 );
+		$this->filter( 'rank_math/analytics/date_exists_tables', 'date_exists_tables', 10 );
 
 		if ( Helper::has_cap( 'analytics' ) ) {
 			$this->action( 'rank_math/admin_bar/items', 'admin_bar_items', 11 );
+			$this->action( 'rank_math_seo_details', 'post_column_search_traffic' );
+		}
+
+		if ( Helper::can_add_frontend_stats() ) {
+			$this->action( 'wp_enqueue_scripts', 'enqueue' );
 		}
 
 		Posts::get();
@@ -72,6 +78,22 @@ class Analytics {
 		new Summary();
 		new Ajax();
 		new Email_Reports();
+		new Url_Inspection();
+	}
+
+	/**
+	 * Enqueue Frontend stats script.
+	 */
+	public function enqueue() {
+		if ( ! is_singular() || is_admin() || is_preview() || Helper::is_divi_frontend_editor() ) {
+			return;
+		}
+
+		$uri = untrailingslashit( plugin_dir_url( __FILE__ ) );
+		wp_enqueue_style( 'rank-math-analytics-pro-stats', $uri . '/assets/css/admin-bar.css', [ 'rank-math-analytics-stats' ], rank_math_pro()->version );
+		wp_enqueue_script( 'rank-math-analytics-pro-stats', $uri . '/assets/js/admin-bar.js', [ 'rank-math-analytics-stats' ], rank_math_pro()->version, true );
+
+		Helper::add_json( 'dateFormat', get_option( 'date_format' ) );
 	}
 
 	/**
@@ -98,6 +120,7 @@ class Analytics {
 		Helper::add_json( 'isLinkModuleActive', Helper::is_module_active( 'link-counter' ) );
 		Helper::add_json( 'isSchemaModuleActive', Helper::is_module_active( 'rich-snippet' ) );
 		Helper::add_json( 'isAnalyticsConnected', \RankMath\Google\Analytics::is_analytics_connected() );
+		Helper::add_json( 'dateFormat', get_option( 'date_format' ) );
 
 		$preference['topKeywords']['ctr']    = false;
 		$preference['topKeywords']['ctr']    = false;
@@ -194,6 +217,7 @@ class Analytics {
 				'wp-date',
 				'wp-html-entities',
 				'wp-api-fetch',
+				'rank-math-analytics',
 			],
 			rank_math_pro()->version,
 			true
@@ -261,7 +285,6 @@ class Analytics {
 				'install_code'     => false,
 				'anonymize_ip'     => false,
 				'local_ga_js'      => false,
-				'cookieless_ga'    => false,
 				'exclude_loggedin' => false,
 			]
 		);
@@ -423,47 +446,6 @@ class Analytics {
 	}
 
 	/**
-	 * Inline script for the gtag config.
-	 *
-	 * @copyright Copyright (C) Helge Klein
-	 * The following code is a derivative work of the code from Helge Klein (https://wordpress.org/plugins/cookieless-privacy-focused-google-analytics/), which is licensed under GPL v2.
-	 *
-	 * @return string
-	 */
-	public function cookieless_gtag_inline_script() {
-		return 'const cyrb53 = function(str, seed = 0) {
-			let h1 = 0xdeadbeef ^ seed,
-				h2 = 0x41c6ce57 ^ seed;
-			for (let i = 0, ch; i < str.length; i++) {
-				ch = str.charCodeAt(i);
-				h1 = Math.imul(h1 ^ ch, 2654435761);
-				h2 = Math.imul(h2 ^ ch, 1597334677);
-			}
-			h1 = Math.imul(h1 ^ h1 >>> 16, 2246822507) ^ Math.imul(h2 ^ h2 >>> 13, 3266489909);
-			h2 = Math.imul(h2 ^ h2 >>> 16, 2246822507) ^ Math.imul(h1 ^ h1 >>> 13, 3266489909);
-			return 4294967296 * (2097151 & h2) + (h1 >>> 0);
-		};
-
-		const getNavigatorId = function() {
-			let notAvailable = "unknown";
-
-			let ua = navigator.userAgent || notAvailable;
-			let lang = window.navigator.language || window.navigator.userLanguage || window.navigator.browserLanguage || window.navigator.systemLanguage || not_available;
-			let colors = window.screen.colorDepth || notAvailable;
-			let memKey = window.navigator.deviceMemory || notAvailable;
-			let pixels = window.devicePixelRatio || notAvailable;
-			let res = [window.screen.width, window.screen.height].sort().reverse().join("x");
-
-			return ua + ";" + lang + ";" + colors + ";" + memKey + ";" + pixels + ";" + res;
-		};
-
-		let validityInterval = Math.round (new Date() / 1000 / 3600 / 24 / 7);
-		let clientIDSource = window.location.host + ";" + getNavigatorId() + ";" + validityInterval;
-
-		window.clientIDHashed = cyrb53(clientIDSource).toString(16);';
-	}
-
-	/**
 	 * Filter gtag.js config array.
 	 *
 	 * @param array $config Config parameters.
@@ -471,10 +453,6 @@ class Analytics {
 	 */
 	public function gtag_config( $config ) {
 		$settings = $this->get_settings();
-		if ( ! empty( $settings['cookieless_ga'] ) ) {
-			$config[] = "'client_storage': 'none'";
-			$config[] = "'client_id': window.clientIDHashed";
-		}
 
 		if ( ! empty( $settings['anonymize_ip'] ) ) {
 			$config[] = "'anonymize_ip': true";
@@ -515,10 +493,6 @@ class Analytics {
 		$settings = $this->get_settings();
 		if ( empty( $settings['install_code'] ) ) {
 			return $gtag_data;
-		}
-
-		if ( ! empty( $settings['cookieless_ga'] ) ) {
-			$gtag_data['inline'] = $this->cookieless_gtag_inline_script() . "\n" . $gtag_data['inline'];
 		}
 
 		if ( ! empty( $settings['local_ga_js'] ) ) {
@@ -621,5 +595,80 @@ class Analytics {
 		$data = array_slice( $data, $args['offset'], $args['perpage'], true );
 
 		return $data;
+	}
+
+	/**
+	 * Add search traffic value in seo detail of post lists
+	 *
+	 * @param int $post_id object Id.
+	 */
+	public function post_column_search_traffic( $post_id ) {
+		if ( ! Authentication::is_authorized() ) {
+			return;
+		}
+
+		$analytics           = get_option( 'rank_math_google_analytic_options' );
+		$analytics_connected = ! empty( $analytics ) && ! empty( $analytics['view_id'] );
+
+		static $traffic_data;
+		if ( null === $traffic_data ) {
+			$post_ids = $this->get_queried_post_ids();
+			if ( empty( $post_ids ) ) {
+				$traffic_data = [];
+				return;
+			}
+
+			$traffic_data = $analytics_connected ? Pageviews::get_traffic_by_object_ids( $post_ids ) : Pageviews::get_impressions_by_object_ids( $post_ids );
+		}
+
+		if ( ! isset( $traffic_data[ $post_id ] ) ) {
+			return;
+		}
+		?>
+		<span class="rank-math-column-display rank-math-search-traffic">
+			<strong>
+				<?php
+					$analytics_connected
+						? esc_html_e( 'Search Traffic:', 'rank-math-pro' )
+						: esc_html_e( 'Search Impression:', 'rank-math-pro' );
+				?>
+			</strong>
+			<?php echo esc_html( number_format( $traffic_data[ $post_id ] ) ); ?>
+		</span>
+		<?php
+	}
+
+	/**
+	 * Extend the date_exists() function to include the additional tables.
+	 *
+	 * @param  string $tables Tables.
+	 * @return string
+	 */
+	public function date_exists_tables( $tables ) {
+		$tables['analytics'] = DB_Helper::check_table_exists( 'rank_math_analytics_ga' ) ? 'rank_math_analytics_ga' : '';
+		$tables['adsense']   = DB_Helper::check_table_exists( 'rank_math_analytics_adsense' ) ? 'rank_math_analytics_adsense' : '';
+
+		return $tables;
+	}
+
+	/**
+	 * Get queried post ids.
+	 */
+	private function get_queried_post_ids() {
+		global $wp_query;
+		if ( empty( $wp_query->posts ) ) {
+			return false;
+		}
+
+		$post_ids = array_filter(
+			array_map(
+				function( $post ) {
+					return isset( $post->ID ) ? $post->ID : '';
+				},
+				$wp_query->posts
+			)
+		);
+
+		return $post_ids;
 	}
 }

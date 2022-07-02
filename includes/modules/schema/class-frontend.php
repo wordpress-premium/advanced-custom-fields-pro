@@ -216,6 +216,10 @@ class Frontend {
 				unset( $schema['isPrimary'] );
 			}
 
+			if ( isset( $schema['isCustom'] ) ) {
+				unset( $schema['isCustom'] );
+			}
+
 			if ( isset( $wp_query->query_vars['schema-preview'] ) ) {
 				$subject_of[ $key ] = $schema;
 				continue;

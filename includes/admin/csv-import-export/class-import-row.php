@@ -14,6 +14,7 @@ use RankMath\Helper;
 use RankMath\Redirections\DB;
 use RankMath\Redirections\Cache;
 use RankMath\Redirections\Redirection;
+use MyThemeShop\Helpers\Arr;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -348,7 +349,7 @@ class Import_Row {
 	 * @return void
 	 */
 	public function import_robots( $value ) {
-		$this->update_meta( 'robots', array_map( 'trim', explode( ',', $value ) ) );
+		$this->update_meta( 'robots', Arr::from_string( $value ) );
 	}
 
 	/**
@@ -358,11 +359,11 @@ class Import_Row {
 	 * @return void
 	 */
 	public function import_advanced_robots( $value ) {
-		$robots = [];
-		$robots_rules = array_map( 'trim', explode( ',', $value ) );
+		$robots       = [];
+		$robots_rules = Arr::from_string( $value );
 		foreach ( $robots_rules as $robots_rule ) {
-			$parts = array_map( 'trim', explode( '=', $robots_rule ) );
-			if ( count( $parts ) == 2 ) {
+			$parts = Arr::from_string( $robots_rule, '=' );
+			if ( count( $parts ) === 2 ) {
 				$robots[ $parts[0] ] = $parts[1];
 			}
 		}

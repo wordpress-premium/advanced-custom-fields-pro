@@ -145,7 +145,7 @@ class Plugin_Update {
 			return;
 		}
 
-		if ( Helper::is_site_connected() ) {
+		if ( Helper::is_site_connected() || rank_math()->registration->invalid ) {
 			return;
 		}
 		?>
@@ -168,7 +168,7 @@ class Plugin_Update {
 	private function is_block_editor_page() {
 		$current_screen = get_current_screen();
 
-		if ( method_exists( $current_screen, 'is_block_editor' ) && $current_screen->is_block_editor() ) {
+		if ( $current_screen instanceof \WP_Screen && method_exists( $current_screen, 'is_block_editor' ) && $current_screen->is_block_editor() ) {
 			return true;
 		}
 

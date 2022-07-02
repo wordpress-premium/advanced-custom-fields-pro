@@ -10,8 +10,9 @@
 
 namespace RankMathPro\Schema;
 
-use RankMath\Traits\Hooker;
+use RankMath\Helper;
 use RankMath\Schema\DB;
+use RankMath\Traits\Hooker;
 use MyThemeShop\Helpers\Param;
 
 defined( 'ABSPATH' ) || exit;
@@ -63,7 +64,7 @@ class Display_Conditions {
 				continue;
 			}
 
-			if ( is_admin() ) {
+			if ( is_admin() || Helper::is_divi_frontend_editor()  ) {
 				$newdata[] = [
 					'id'     => $template,
 					'schema' => current( $schema ),
@@ -212,6 +213,6 @@ class Display_Conditions {
 			return 'include' === $operator;
 		}
 
-		return true;
+		return 'exclude' === $operator;
 	}
 }

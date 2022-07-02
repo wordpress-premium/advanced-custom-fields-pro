@@ -14,6 +14,7 @@ use RankMath\Helper;
 use RankMath\Traits\Hooker;
 use MyThemeShop\Helpers\Param;
 use MyThemeShop\Database\Database;
+use RankMathPro\Admin\CSV;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -22,10 +23,15 @@ defined( 'ABSPATH' ) || exit;
  *
  * @codeCoverageIgnore
  */
-class Monitor_Pro {
+class Monitor_Pro extends CSV {
 
 	use Hooker;
 
+	/**
+	 * Total hits cache.
+	 *
+	 * @var array
+	 */
 	private $total_hits_cache = [];
 
 	/**
@@ -121,24 +127,16 @@ class Monitor_Pro {
 		$date_from = $this->sanitize_datetime( Param::get( 'date_from' ) );
 		$date_to   = $this->sanitize_datetime( Param::get( 'date_to' ) );
 
-		$this->headers();
-		$this->export_items( $date_from, $date_to );
+		$data = $this->export_items( $date_from, $date_to );
+
+		$this->export(
+			[
+				'filename' => '404-log',
+				'columns'  => $data['columns'],
+				'items'    => $data['items'],
+			]
+		);
 		die();
-	}
-
-	/**
-	 * Send headers to start export file download.
-	 *
-	 * @return void
-	 */
-	private function headers() {
-		$sitename = sanitize_key( get_bloginfo( 'name' ) );
-		$filename = $sitename . '_404-log-' . date( 'Y-m-d_H-i-s' ) . '.csv';
-
-		header( 'Content-Type: application/csv' );
-		header( 'Content-Description: File Transfer' );
-		header( "Content-Disposition: attachment; filename={$filename}" );
-		header( 'Pragma: no-cache' );
 	}
 
 	/**
@@ -147,7 +145,7 @@ class Monitor_Pro {
 	 * @param  string $time_from Start date (SQL DateTime format).
 	 * @param  string $time_to   End date (SQL DateTime format).
 	 *
-	 * @return void
+	 * @return array
 	 */
 	private function export_items( $time_from = null, $time_to = null ) {
 		global $wpdb;
@@ -161,29 +159,22 @@ class Monitor_Pro {
 			$where .= " AND accessed < '{$time_to} 23:59:59'";
 		}
 		$query .= $where;
-		$items  = $wpdb->get_results( $query, ARRAY_A );
+		$items  = $wpdb->get_results( $query, ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
 		if ( empty( $items ) ) {
-			return;
+			return [
+				'columns' => [],
+				'items'   => [],
+			];
 		}
 
 		$columns = array_keys( $items[0] );
-		$this->output_csv( $columns );
-		foreach ( $items as $line ) {
-			$this->output_csv( array_values( $line ) );
-		}
-	}
 
-	/**
-	 * Output fputcsv instead of saving to a file.
-	 *
-	 * @param array $data Data array.
-	 * @return void
-	 */
-	public function output_csv( $data ) {
-		$out = fopen( 'php://output', 'w' );
-		fputcsv( $out, $data );
-		fclose( $out );
+		return [
+			'columns' => $columns,
+			'items'   => $items,
+		];
+
 	}
 
 	/**

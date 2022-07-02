@@ -13,6 +13,7 @@ namespace RankMathPro\Sitemap;
 use RankMath\Helper;
 use RankMath\Traits\Hooker;
 use RankMath\Sitemap\Router;
+use RankMath\Sitemap\Cache_Watcher;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -42,6 +43,8 @@ class Video_Sitemap {
 		$this->filter( 'rank_math/sitemap/xsl_video', 'sitemap_xsl' );
 		$this->filter( 'rank_math/sitemap/video_stylesheet_url', 'stylesheet_url' );
 		$this->filter( 'rank_math/sitemap/video_sitemap_url', 'sitemap_url', 10, 2 );
+
+		$this->action( 'transition_post_status', 'status_transition', 10, 3 );
 	}
 
 	/**
@@ -134,7 +137,7 @@ class Video_Sitemap {
 				$output .= $renderer->add_cdata( $video['description'], 'video:description', 3 );
 
 				if ( ! empty( $video['player_loc'] ) ) {
-					$output .= $renderer->newline( '<video:player_loc allow_embed="yes">' . esc_url( $video['player_loc'] ) . '</video:player_loc>', 3 );
+					$output .= $renderer->newline( '<video:player_loc>' . esc_url( $video['player_loc'] ) . '</video:player_loc>', 3 );
 				}
 
 				foreach ( [ 'thumbnail_loc', 'content_loc' ] as $prop ) {
@@ -143,10 +146,6 @@ class Video_Sitemap {
 					}
 
 					$output .= $renderer->newline( "<video:{$prop}>" . esc_url( $video[ $prop ] ) . "</video:{$prop}>", 3 );
-				}
-
-				if ( ! empty( $video['category'] ) ) {
-					$output .= $renderer->add_cdata( $video['category'], 'video:category', 3 );
 				}
 
 				if ( ! empty( $video['tags'] ) ) {
@@ -191,5 +190,29 @@ class Video_Sitemap {
 		}
 
 		return isset( $_SERVER['HTTP_USER_AGENT'] ) && preg_match( '/bot|crawl|slurp|spider|mediapartners/i', $_SERVER['HTTP_USER_AGENT'] );
+	}
+
+	/**
+	 * Invalidate News Sitemap cache when a scheduled post is published.
+	 *
+	 * @param string $new_status New Status.
+	 * @param string $old_status Old Status.
+	 * @param object $post       Post Object.
+	 */
+	public function status_transition( $new_status, $old_status, $post ) {
+		if ( $old_status === $new_status || 'publish' !== $new_status ) {
+			return;
+		}
+
+		$post_types = (array) Helper::get_settings( 'sitemap.video_sitemap_post_type', [] );
+		if ( ! in_array( $post->post_type, $post_types, true ) ) {
+			return;
+		}
+
+		if ( false === Helper::is_post_indexable( $post->ID ) ) {
+			return;
+		}
+
+		Cache_Watcher::invalidate( 'video' );
 	}
 }

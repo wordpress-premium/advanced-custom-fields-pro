@@ -153,7 +153,6 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 						<th width="20%"><?php echo esc_html__( 'Title', 'rank-math-pro' ); ?></th>
 						<th width="20%"><?php echo esc_html__( 'Description', 'rank-math-pro' ); ?></th>
 						<th width="15%"><?php echo esc_html__( 'Tags', 'rank-math-pro' ); ?></th>
-						<th width="15%"><?php echo esc_html__( 'Category', 'rank-math-pro' ); ?></th>
 						<th width="15%"><?php echo esc_html__( 'Last Mod.', 'rank-math-pro' ); ?></th>
 					</tr>
 				</thead>
@@ -206,9 +205,6 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 									<xsl:for-each select="video:tag">
 										<xsl:value-of select="."/>,
 									</xsl:for-each>
-								</td>
-								<td>
-									<xsl:value-of select="video:category"/>
 								</td>
 								<td>
 									<xsl:value-of select="concat(substring(video:publication_date,0,11),concat(' ', substring(video:publication_date,12,5)),concat(' ', substring(video:publication_date,20,6)))"/>

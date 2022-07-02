@@ -79,6 +79,7 @@ class Image_Seo_Pro {
 				'description' => esc_html__( 'Alt text set for the current image.', 'rank-math-pro' ),
 				'variable'    => 'imagealt',
 				'example'     => '',
+				'nocache'     => true,
 			],
 			[ $this, 'get_imagealt' ]
 		);
@@ -90,6 +91,7 @@ class Image_Seo_Pro {
 				'description' => esc_html__( 'Title text set for the current image.', 'rank-math-pro' ),
 				'variable'    => 'imagetitle',
 				'example'     => '',
+				'nocache'     => true,
 			],
 			[ $this, 'get_imagetitle' ]
 		);
@@ -479,10 +481,18 @@ class Image_Seo_Pro {
 			return $content;
 		}
 
-		// Todo: change description case but ignore HTML tags & entities.
-		$content = $this->change_case( $content, Helper::get_settings( 'general.img_description_change_case' ) );
+		$parts = preg_split( '/(<[^>]+>)/', $content, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
+		$new   = '';
+		foreach ( $parts as $i => $part ) {
+			if ( '<' === substr( trim( $part ), 0, 1 ) ) {
+				$new .= $part;
+				continue;
+			}
 
-		return $content;
+			$new .= $this->change_case( $part, Helper::get_settings( 'general.img_description_change_case' ) );
+		}
+
+		return $new;
 	}
 
 	/**

@@ -360,93 +360,92 @@ class Location_Shortcode {
 	 * Shortcode & Block default attributes.
 	 */
 	private function get_attributes() {
-		// phpcs:disable
 		return [
-			'type' => [
+			'type'                   => [
 				'default' => 'address',
 				'type'    => 'string',
 			],
-			'locations' => [
+			'locations'              => [
 				'default' => '',
 				'type'    => 'string',
 			],
-			'terms' => [
+			'terms'                  => [
 				'default' => [],
 				'type'    => 'array',
 			],
-			'limit' => [
+			'limit'                  => [
 				'default' => Helper::get_settings( 'titles.limit_results', 10 ),
 				'type'    => 'integer',
 			],
-			'show_company_name' => [
+			'show_company_name'      => [
 				'type'    => 'boolean',
 				'default' => true,
 			],
-			'show_company_address' => [
+			'show_company_address'   => [
 				'type'    => 'boolean',
 				'default' => true,
 			],
-			'show_on_one_line' => [
+			'show_on_one_line'       => [
 				'type'    => 'boolean',
 				'default' => false,
 			],
-			'show_state' => [
+			'show_state'             => [
 				'type'    => 'boolean',
 				'default' => true,
 			],
-			'show_country' => [
+			'show_country'           => [
 				'type'    => 'boolean',
 				'default' => true,
 			],
-			'show_telephone' => [
+			'show_telephone'         => [
 				'type'    => 'boolean',
 				'default' => true,
 			],
-			'show_secondary_number' => [
+			'show_secondary_number'  => [
 				'type'    => 'boolean',
 				'default' => true,
 			],
-			'show_fax' => [
+			'show_fax'               => [
 				'type'    => 'boolean',
 				'default' => false,
 			],
-			'show_email' => [
+			'show_email'             => [
 				'type'    => 'boolean',
 				'default' => true,
 			],
-			'show_url' => [
+			'show_url'               => [
 				'type'    => 'boolean',
 				'default' => true,
 			],
-			'show_logo' => [
+			'show_logo'              => [
 				'type'    => 'boolean',
 				'default' => true,
 			],
-			'show_vat_id' => [
+			'show_vat_id'            => [
 				'type'    => 'boolean',
 				'default' => false,
 			],
-			'show_tax_id' => [
+			'show_tax_id'            => [
 				'type'    => 'boolean',
 				'default' => false,
 			],
-			'show_coc_id' => [
+			'show_coc_id'            => [
 				'type'    => 'boolean',
 				'default' => false,
 			],
-			'show_priceRange' => [
+			'show_priceRange'        => [
 				'type'    => 'boolean',
 				'default' => false,
 			],
-			'show_opening_hours' => [
+			'show_opening_hours'     => [
 				'type'    => 'boolean',
 				'default' => false,
 			],
-			'show_days' => [
+			'show_days'              => [
 				'type'    => 'string',
 				'default' => 'Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday',
 			],
-			'hide_closed_days' => [
+			'hide_closed_days'       => [
 				'type'    => 'boolean',
 				'default' => false,
 			],
@@ -454,51 +453,51 @@ class Location_Shortcode {
 				'type'    => 'boolean',
 				'default' => false,
 			],
-			'opening_hours_note' => [
+			'opening_hours_note'     => [
 				'type'    => 'string',
 				'default' => 'Open Now',
 			],
-			'show_map' => [
+			'show_map'               => [
 				'type'    => 'boolean',
 				'default' => false,
 			],
-			'map_style' => [
+			'map_style'              => [
 				'type'    => 'string',
 				'default' => Helper::get_settings( 'titles.map_style', 'roadmap' ),
 			],
-			'map_width' => [
+			'map_width'              => [
 				'type'    => 'string',
 				'default' => '100%',
 			],
-			'map_height' => [
+			'map_height'             => [
 				'type'    => 'string',
 				'default' => '300px',
 			],
-			'zoom_level' => [
+			'zoom_level'             => [
 				'type'    => 'integer',
 				'default' => -1,
 			],
-			'allow_zoom' => [
+			'allow_zoom'             => [
 				'type'    => 'boolean',
 				'default' => true,
 			],
-			'allow_scrolling' => [
+			'allow_scrolling'        => [
 				'type'    => 'boolean',
 				'default' => true,
 			],
-			'allow_dragging' => [
+			'allow_dragging'         => [
 				'type'    => 'boolean',
 				'default' => true,
 			],
-			'show_route_planner' => [
+			'show_route_planner'     => [
 				'type'    => 'boolean',
 				'default' => true,
 			],
-			'route_label' => [
+			'route_label'            => [
 				'type'    => 'string',
 				'default' => Helper::get_settings( 'titles.route_label' ),
 			],
-			'show_category_filter' => [
+			'show_category_filter'   => [
 				'type'    => 'boolean',
 				'default' => false,
 			],
@@ -506,23 +505,22 @@ class Location_Shortcode {
 				'type'    => 'boolean',
 				'default' => true,
 			],
-			'show_infowindow' => [
+			'show_infowindow'        => [
 				'type'    => 'boolean',
 				'default' => true,
 			],
-			'show_radius' => [
+			'show_radius'            => [
 				'type'    => 'boolean',
 				'default' => true,
 			],
-			'show_nearest_location' => [
+			'show_nearest_location'  => [
 				'type'    => 'boolean',
 				'default' => true,
 			],
-			'search_radius' => [
+			'search_radius'          => [
 				'type'    => 'string',
 				'default' => '10',
 			],
 		];
-		// phpcs:enable
 	}
 }

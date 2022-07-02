@@ -84,7 +84,7 @@ class CSV_Import_Export_Redirections {
 	 * @return array
 	 */
 	public function add_import_tab( $tabs ) {
-		$tabs_new = [];
+		$tabs_new           = [];
 		$tabs_new['import'] = [
 			'name'  => __( 'Import', 'rank-math-pro' ),
 			'icon'  => 'rm-icon-import',
@@ -115,9 +115,9 @@ class CSV_Import_Export_Redirections {
 					<p class="description">
 						<?php // Translators: placeholder is a comma-separated list of columns. ?>
 						<?php printf( esc_html__( 'Import a CSV file to create or update redirections. The file must include at least the following columns: %s', 'rank-math-pro' ), '<code>source, destination</code>' ); ?>
-						<button type="button" id="rank-math-contextual-help-link" class="button button-small show-settings"><?php esc_html_e( 'More details', 'rank-math-pro'  ); ?></button>
+						<button type="button" id="rank-math-contextual-help-link" class="button button-small show-settings"><?php esc_html_e( 'More details', 'rank-math-pro' ); ?></button>
 					</p>
-				<?php else: ?>
+				<?php else : ?>
 					<div id="csv-import-redirections-progress-details">
 						<?php self::import_progress_details(); ?>
 					</div>
@@ -174,7 +174,7 @@ class CSV_Import_Export_Redirections {
 	 * @return bool
 	 */
 	public function is_redirections_screen() {
-		return is_admin() && ! wp_doing_ajax() && isset( $_GET['page'] ) && 'rank-math-redirections' === $_GET['page'];
+		return is_admin() && ! wp_doing_ajax() && isset( $_GET['page'] ) && 'rank-math-redirections' === $_GET['page']; // phpcs:ignore
 	}
 
 	/**
@@ -207,10 +207,10 @@ class CSV_Import_Export_Redirections {
 		}
 
 		$settings = [
-			'include_deactivated' => (bool) ! empty( $_POST['include_deactivated'] )
+			'include_deactivated' => (bool) ! empty( $_POST['include_deactivated'] ),
 		];
 		$exporter = new Exporter( $settings );
-		$exporter->export();
+		$exporter->process_export();
 	}
 
 	/**
@@ -219,7 +219,7 @@ class CSV_Import_Export_Redirections {
 	 * @return void
 	 */
 	public function maybe_do_import() {
-		if ( ! is_admin() || empty( $_POST['object_id'] ) || $_POST['object_id'] !== 'csv-import-redirections-plz' ) {
+		if ( ! is_admin() || empty( $_POST['object_id'] ) || 'csv-import-redirections-plz' !== $_POST['object_id'] ) {
 			return;
 		}
 		if ( empty( $_FILES['csv-redirections-import-me'] ) || empty( $_FILES['csv-redirections-import-me']['name'] ) ) {
@@ -228,7 +228,7 @@ class CSV_Import_Export_Redirections {
 		if ( ! wp_verify_nonce( isset( $_REQUEST['_wpnonce'] ) ? $_REQUEST['_wpnonce'] : '', 'rank_math_pro_csv_import_redirections' ) ) {
 			wp_die( esc_html__( 'Invalid nonce.', 'rank-math-pro' ) );
 		}
-		if ( ! current_user_can( 'import' ) || ! current_user_can( 'rank_math_redirections' )  ) {
+		if ( ! current_user_can( 'import' ) || ! current_user_can( 'rank_math_redirections' ) ) {
 			wp_die( esc_html__( 'Sorry, you are not allowed to import redirections on this site.', 'rank-math-pro' ) );
 		}
 
@@ -237,7 +237,7 @@ class CSV_Import_Export_Redirections {
 		$_FILES['csv-redirections-import-me']['name'] = uniqid( 'rm-csv-redirections-' ) . ( ! empty( $info['extension'] ) ? '.' . $info['extension'] : '' );
 
 		// Handle file.
-		$this->filter( 'upload_mimes', 'allow_csv_upload', 10, 2 );
+		$this->filter( 'upload_mimes', 'allow_csv_upload' );
 		$file = wp_handle_upload( $_FILES['csv-redirections-import-me'], [ 'test_form' => false ] );
 		$this->remove_filter( 'upload_mimes', 'allow_csv_upload', 10 );
 		if ( ! $this->validate_file( $file ) ) {
@@ -255,12 +255,10 @@ class CSV_Import_Export_Redirections {
 	/**
 	 * Allow CSV file upload.
 	 *
-	 * @param array            $types    Mime types keyed by the file extension regex corresponding to those types.
-	 * @param int|WP_User|null $user User ID, User object or null if not provided (indicates current user).
-	 *
+	 * @param array $types    Mime types keyed by the file extension regex corresponding to those types.
 	 * @return array
 	 */
-	public function allow_csv_upload( $types, $user ) {
+	public function allow_csv_upload( $types ) {
 		$types['csv'] = 'text/csv';
 
 		return $types;
@@ -269,7 +267,7 @@ class CSV_Import_Export_Redirections {
 	/**
 	 * Check if uploaded file is valid CSV or not.
 	 *
-	 * @param array $file File data array.
+	 * @param mixed $file File data array or object.
 	 * @return bool
 	 */
 	public function validate_file( $file ) {
@@ -288,7 +286,7 @@ class CSV_Import_Export_Redirections {
 			return false;
 		}
 
-		if ( ! isset( $file['type'] ) || $file['type'] !== 'text/csv' ) {
+		if ( ! isset( $file['type'] ) || 'text/csv' !== $file['type'] ) {
 			\unlink( $file['file'] );
 			Helper::add_notification( esc_html__( 'CSV could not be imported: File type error.', 'rank-math-pro' ), [ 'type' => 'error' ] );
 			return false;
@@ -363,6 +361,7 @@ class CSV_Import_Export_Redirections {
 	/**
 	 * Cancel import.
 	 *
+	 * @param bool $silent Import silently.
 	 * @return void
 	 */
 	public static function cancel_import( $silent = false ) {
@@ -427,7 +426,7 @@ class CSV_Import_Export_Redirections {
 			<p><?php esc_html_e( 'Import in progress...', 'rank-math-pro' ); ?></p>
 			<p class="csv-import-redirections-status">
 				<?php // Translators: placeholders represent count like 15/36. ?>
-				<?php printf( esc_html__( 'Items processed: %1$s/%2$s', 'rank-math-pro' ), min( $total_lines, $total_lines - $remaining_items + 1 ), $total_lines ); ?>
+				<?php printf( esc_html__( 'Items processed: %1$s/%2$s', 'rank-math-pro' ), absint( min( $total_lines, $total_lines - $remaining_items + 1 ) ), absint( $total_lines ) ); ?>
 			</p>
 			<div id="csv-import-redirections-progress-bar">
 				<div class="total">
@@ -457,7 +456,7 @@ class CSV_Import_Export_Redirections {
 	 * @return string
 	 */
 	public static function get_import_complete_message() {
-		$status = (array) get_option( 'rank_math_csv_import_redirections_status', [] );
+		$status  = (array) get_option( 'rank_math_csv_import_redirections_status', [] );
 		$message = sprintf(
 			// Translators: placeholder is the number of rows imported.
 			__( 'CSV import completed. Successfully imported %d rows.', 'rank-math-pro' ),
@@ -477,7 +476,7 @@ class CSV_Import_Export_Redirections {
 				$message .= '<code>' . join( '</code><br><code>', $status['errors'] ) . '</code><br>';
 			}
 			if ( ! empty( $status['failed_rows'] ) ) {
-				$message .=  '<br>' . __( 'The following lines could not be imported: ', 'rank-math-pro' ) . '<br>';
+				$message .= '<br>' . __( 'The following lines could not be imported: ', 'rank-math-pro' ) . '<br>';
 				$message .= '<code>' . join( ', ', $status['failed_rows'] ) . '</code>';
 			}
 		}

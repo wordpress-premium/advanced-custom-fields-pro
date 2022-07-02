@@ -42,7 +42,7 @@ class Frontend {
 			return;
 		}
 
-		$schema = DB::get_schemas( Post::get_simple_page_id() );
+		$schema = DB::get_schemas( Post::get_page_id() );
 		if ( empty( $schema ) ) {
 			return;
 		}

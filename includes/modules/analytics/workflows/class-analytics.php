@@ -61,13 +61,13 @@ class Analytics extends Base {
 		}
 
 		$schema = "CREATE TABLE {$wpdb->prefix}{$table} (
-				id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-				page VARCHAR(500) NOT NULL,
-				created TIMESTAMP NOT NULL,
-				pageviews MEDIUMINT(6) NOT NULL,
-				visitors MEDIUMINT(6) NOT NULL,
-				PRIMARY KEY (id),
-				INDEX analytics_object_analytics (page(190))
+				id bigint(20) unsigned NOT NULL auto_increment,
+				page varchar(500) NOT NULL,
+				created timestamp NOT NULL,
+				pageviews mediumint(6) NOT NULL,
+				visitors mediumint(6) NOT NULL,
+				PRIMARY KEY  (id),
+				KEY analytics_object_analytics (page(190))
 			) $collate;";
 
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';

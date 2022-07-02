@@ -69,26 +69,27 @@ class Post_Filters {
 		}
 
 		$options = [
-			'none'        => esc_html__( 'Turned Off', 'rank-math-pro' ),
-			'Article'     => esc_html__( 'Article', 'rank-math-pro' ),
-			'BlogPosting' => esc_html__( 'Blog Post', 'rank-math-pro' ),
-			'NewsArticle' => esc_html__( 'News Article', 'rank-math-pro' ),
-			'Book'        => esc_html__( 'Book', 'rank-math-pro' ),
-			'Course'      => esc_html__( 'Course', 'rank-math-pro' ),
-			'Event'       => esc_html__( 'Event', 'rank-math-pro' ),
-			'JobPosting'  => esc_html__( 'Job Posting', 'rank-math-pro' ),
-			'Music'       => esc_html__( 'Music', 'rank-math-pro' ),
-			'Movie'       => esc_html__( 'Movie', 'rank-math-pro' ),
-			'Person'      => esc_html__( 'Person', 'rank-math-pro' ),
-			'Product'     => esc_html__( 'Product', 'rank-math-pro' ),
-			'Recipe'      => esc_html__( 'Recipe', 'rank-math-pro' ),
-			'Restaurant'  => esc_html__( 'Restaurant', 'rank-math-pro' ),
-			'Service'     => esc_html__( 'Service', 'rank-math-pro' ),
-			'Software'    => esc_html__( 'Software', 'rank-math-pro' ),
-			'VideoObject' => esc_html__( 'Video', 'rank-math-pro' ),
-			'Dataset'     => esc_html__( 'Dataset', 'rank-math-pro' ),
-			'FAQPage'     => esc_html__( 'FAQ', 'rank-math-pro' ),
-			'FactCheck'   => esc_html__( 'FactCheck', 'rank-math-pro' ),
+			'none'                => esc_html__( 'Turned Off', 'rank-math-pro' ),
+			'Article'             => esc_html__( 'Article', 'rank-math-pro' ),
+			'BlogPosting'         => esc_html__( 'Blog Post', 'rank-math-pro' ),
+			'NewsArticle'         => esc_html__( 'News Article', 'rank-math-pro' ),
+			'Book'                => esc_html__( 'Book', 'rank-math-pro' ),
+			'Course'              => esc_html__( 'Course', 'rank-math-pro' ),
+			'Event'               => esc_html__( 'Event', 'rank-math-pro' ),
+			'JobPosting'          => esc_html__( 'Job Posting', 'rank-math-pro' ),
+			'MusicGroup'          => esc_html__( 'Music', 'rank-math-pro' ),
+			'Movie'               => esc_html__( 'Movie', 'rank-math-pro' ),
+			'Person'              => esc_html__( 'Person', 'rank-math-pro' ),
+			'Product'             => esc_html__( 'Product', 'rank-math-pro' ),
+			'Recipe'              => esc_html__( 'Recipe', 'rank-math-pro' ),
+			'Restaurant'          => esc_html__( 'Restaurant', 'rank-math-pro' ),
+			'Service'             => esc_html__( 'Service', 'rank-math-pro' ),
+			'SoftwareApplication' => esc_html__( 'Software', 'rank-math-pro' ),
+			'VideoObject'         => esc_html__( 'Video', 'rank-math-pro' ),
+			'Dataset'             => esc_html__( 'Dataset', 'rank-math-pro' ),
+			'FAQPage'             => esc_html__( 'FAQ', 'rank-math-pro' ),
+			'ClaimReview'         => esc_html__( 'FactCheck', 'rank-math-pro' ),
+			'HowTo'               => esc_html__( 'How To', 'rank-math-pro' ),
 		];
 
 		$options  = $this->do_filter( 'manage_posts/schema_filter_options', $options, $post_type );
@@ -216,10 +217,32 @@ class Post_Filters {
 			return;
 		}
 
-		$query[] = [
-			'key'     => 'rank_math_schema_' . $filter,
-			'compare' => 'EXISTS',
-		];
+		switch ( $filter ) {
+			case 'Event':
+				$query['relation'] = 'OR';
+				foreach ( [ 'Event', 'BusinessEvent', 'ChildrensEvent', 'ComedyEvent', 'DanceEvent', 'DeliveryEvent', 'EducationEvent', 'ExhibitionEvent', 'Festival', 'FoodEvent', 'LiteraryEvent', 'MusicEvent', 'PublicationEvent', 'SaleEvent', 'ScreeningEvent', 'SocialEvent', 'SportsEvent', 'TheaterEvent', 'VisualArtsEvent' ] as $type ) {
+					$query[] = [
+						'key'     => 'rank_math_schema_' . $type,
+						'compare' => 'LIKE',
+					];
+				}
+				break;
+			case 'Music':
+				$query['relation'] = 'OR';
+				foreach ( [ 'MusicAlbum', 'MusicGroup' ] as $type ) {
+					$query[] = [
+						'key'     => 'rank_math_schema_' . $type,
+						'compare' => 'LIKE',
+					];
+				}
+				break;
+			default:
+				$query[] = [
+					'key'     => 'rank_math_schema_' . $filter,
+					'compare' => 'LIKE',
+				];
+				break;
+		}
 
 		if ( strtolower( $filter ) === $post_type_default ) {
 			// Also get not set because we filter for the default.
@@ -325,8 +348,7 @@ class Post_Filters {
 			}
 		}
 		$clear_classes .= $filtered ? '' : ' hidden';
-		$clear_button   = '<a href="' . $clear_url . '" class="' . esc_attr( $clear_classes ) . '" title="' . esc_attr( $clear_label ) . '"><span class="dashicons dashicons-dismiss"></span> ' . $clear_label . '</a>';
 
-		echo $clear_button;
+		echo '<a href="' . esc_url( $clear_url ) . '" class="' . esc_attr( $clear_classes ) . '" title="' . esc_attr( $clear_label ) . '"><span class="dashicons dashicons-dismiss"></span> ' . esc_html( $clear_label ) . '</a>';
 	}
 }

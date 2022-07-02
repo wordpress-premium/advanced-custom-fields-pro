@@ -61,10 +61,10 @@ class Adsense extends Base {
 		}
 
 		$schema = "CREATE TABLE {$wpdb->prefix}{$table} (
-				id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-				created TIMESTAMP NOT NULL,
-				earnings DOUBLE NOT NULL DEFAULT 0,
-				PRIMARY KEY (id)
+				id bigint(20) unsigned NOT NULL auto_increment,
+				created timestamp NOT NULL,
+				earnings double NOT NULL default 0,
+				PRIMARY KEY  (id)
 			) $collate;";
 
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';

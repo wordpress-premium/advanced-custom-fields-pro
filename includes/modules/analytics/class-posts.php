@@ -388,8 +388,7 @@ class Posts {
 		$sql_daterange = Stats::get()->get_sql_date_intervals( $intervals );
 
 		// Step2. Get analytics data summary for each splitted date intervals.
-		// phpcs:disable
-		$query = $wpdb->prepare(
+		$query   = $wpdb->prepare(
 			"SELECT DATE_FORMAT( created, '%%Y-%%m-%%d') as date, SUM( clicks ) as clicks, SUM(impressions) as impressions, ROUND( AVG(ctr), 2 ) as ctr, {$sql_daterange}
 			FROM {$wpdb->prefix}rank_math_analytics_gsc
 			WHERE created BETWEEN %s AND %s AND page LIKE '%{$page}'
@@ -400,7 +399,7 @@ class Posts {
 		$metrics = $wpdb->get_results( $query );
 
 		// Step3. Get position data summary for each splitted date intervals.
-		$query = $wpdb->prepare(
+		$query     = $wpdb->prepare(
 			"SELECT page, MAX(CONCAT(t.uid, ':', t.range_group)) as range_group FROM
 				(SELECT page, MAX(CONCAT(page, ':', DATE(created), ':', LPAD((100 - position), 3, '0'))) as uid, {$sql_daterange}
 				FROM {$wpdb->prefix}rank_math_analytics_gsc
@@ -415,7 +414,7 @@ class Posts {
 		$positions = Stats::get()->extract_data_from_mixed( $positions, 'range_group', ':', [ 'range_group', 'position', 'date' ] );
 
 		// Step4. Get keywords count for each splitted date intervals.
-		$query = $wpdb->prepare(
+		$query    = $wpdb->prepare(
 			"SELECT DATE_FORMAT( created, '%%Y-%%m-%%d') as date, COUNT(DISTINCT(query)) as keywords, {$sql_daterange}
 			FROM {$wpdb->prefix}rank_math_analytics_gsc
 			WHERE created BETWEEN %s AND %s AND page LIKE '%{$page}'
@@ -455,8 +454,7 @@ class Posts {
 
 		// Step8. Get traffic data in case analytics is connected for each splitted data intervals.
 		if ( \RankMath\Google\Analytics::is_analytics_connected() ) {
-			// phpcs:disable
-			$query = $wpdb->prepare(
+			$query   = $wpdb->prepare(
 				"SELECT DATE_FORMAT( created, '%%Y-%%m-%%d') as date, SUM( pageviews ) as pageviews, {$sql_daterange}
 				FROM {$wpdb->prefix}rank_math_analytics_ga
 				WHERE created BETWEEN %s AND %s AND page LIKE '%{$page}'
@@ -465,7 +463,6 @@ class Posts {
 				Stats::get()->end_date
 			);
 			$traffic = $wpdb->get_results( $query );
-			// phpcs:enable
 
 			// Filter graph data.
 			$traffic = Stats::get()->filter_graph_rows( $traffic );
@@ -722,10 +719,9 @@ class Posts {
 		$pages         = \array_map( 'esc_sql', $pages );
 		$pages         = '(\'' . join( '\', \'', $pages ) . '\')';
 
-		// phpcs:disable
 		$query = $wpdb->prepare(
 			"SELECT page, date, MAX(CONCAT(t.uid, ':', t.range_group)) as range_group FROM
-				(SELECT page, DATE_FORMAT( created,'%%Y-%%m-%%d') as date, MAX(CONCAT(page, ':', DATE(created), ':', LPAD((100 - position), 3, '0'))) as uid, {$sql_daterange}
+				( SELECT page, DATE_FORMAT( created,'%%Y-%%m-%%d') as date, MAX( CONCAT( page, ':', DATE( created ), ':', LPAD( ( 100 - position ), 3, '0' ) ) ) as uid, {$sql_daterange}
 				FROM {$wpdb->prefix}rank_math_analytics_gsc
 				WHERE page IN {$pages} AND created BETWEEN %s AND %s
 				GROUP BY page, range_group, DATE(created)
@@ -735,10 +731,9 @@ class Posts {
 			Stats::get()->start_date,
 			Stats::get()->end_date
 		);
-		$data = $wpdb->get_results( $query );
-		// phpcs:disable
+		$data  = $wpdb->get_results( $query );
 
-		$data = Stats::get()->extract_data_from_mixed( $data, 'range_group', ':', [ 'range_group', 'position' ] );		
+		$data = Stats::get()->extract_data_from_mixed( $data, 'range_group', ':', [ 'range_group', 'position' ] );
 		$data = Stats::get()->filter_graph_rows( $data );
 
 		return array_map( [ Stats::get(), 'normalize_graph_rows' ], $data );

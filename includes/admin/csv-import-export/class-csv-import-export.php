@@ -48,7 +48,7 @@ class CSV_Import_Export {
 	 */
 	public function add_panel( $panels ) {
 		// Insert after "import".
-		$position   = array_search( 'import', array_keys( $panels ) ) + 1;
+		$position   = array_search( 'import', array_keys( $panels ), true ) + 1;
 		$new        = array_slice( $panels, 0, $position );
 		$new['csv'] = [
 			'view'  => RANK_MATH_PRO_PATH . 'includes/views/csv-import-export-panel.php',
@@ -66,7 +66,7 @@ class CSV_Import_Export {
 	 * @return bool
 	 */
 	public function is_import_export_screen() {
-		return is_admin() && ! wp_doing_ajax() && isset( $_GET['page'] ) && 'rank-math-status' === $_GET['page'] && isset( $_GET['view'] ) && 'import_export' === $_GET['view'];
+		return is_admin() && ! wp_doing_ajax() && isset( $_GET['page'] ) && 'rank-math-status' === $_GET['page'] && isset( $_GET['view'] ) && 'import_export' === $_GET['view']; // phpcs:ignore
 	}
 
 	/**
@@ -120,7 +120,7 @@ class CSV_Import_Export {
 		}
 
 		$use_advanced_options = ! empty( $_POST['use_advanced_options'] );
-		$advanced_options = [
+		$advanced_options     = [
 			'post_types'       => isset( $_POST['post_types'] ) && is_array( $_POST['post_types'] ) ? array_map( 'sanitize_title', wp_unslash( $_POST['post_types'] ) ) : [],
 			'taxonomies'       => isset( $_POST['taxonomies'] ) && is_array( $_POST['taxonomies'] ) ? array_map( 'sanitize_title', wp_unslash( $_POST['taxonomies'] ) ) : [],
 			'roles'            => isset( $_POST['roles'] ) && is_array( $_POST['roles'] ) ? array_map( 'sanitize_title', wp_unslash( $_POST['roles'] ) ) : [],
@@ -128,7 +128,7 @@ class CSV_Import_Export {
 		];
 
 		$exporter = new Exporter( array_map( 'sanitize_title', wp_unslash( $_POST['object_types'] ) ), $use_advanced_options ? $advanced_options : false );
-		$exporter->export();
+		$exporter->process_export();
 	}
 
 	/**
@@ -137,7 +137,7 @@ class CSV_Import_Export {
 	 * @return void
 	 */
 	public function maybe_do_import() {
-		if ( ! is_admin() || empty( $_POST['object_id'] ) || $_POST['object_id'] !== 'csv-import-plz' ) {
+		if ( ! is_admin() || empty( $_POST['object_id'] ) || 'csv-import-plz' !== $_POST['object_id'] ) {
 			return;
 		}
 		if ( empty( $_FILES['csv-import-me'] ) || empty( $_FILES['csv-import-me']['name'] ) ) {
@@ -151,11 +151,11 @@ class CSV_Import_Export {
 		}
 
 		// Rename file.
-		$info = pathinfo( $_FILES['csv-import-me']['name'] );
+		$info                            = pathinfo( $_FILES['csv-import-me']['name'] );
 		$_FILES['csv-import-me']['name'] = uniqid( 'rm-csv-' ) . ( ! empty( $info['extension'] ) ? '.' . $info['extension'] : '' );
 
 		// Handle file.
-		$this->filter( 'upload_mimes', 'allow_csv_upload', 10, 2 );
+		$this->filter( 'upload_mimes', 'allow_csv_upload' );
 		$file = wp_handle_upload( $_FILES['csv-import-me'], [ 'test_form' => false ] );
 		$this->remove_filter( 'upload_mimes', 'allow_csv_upload', 10 );
 		if ( ! $this->validate_file( $file ) ) {
@@ -173,17 +173,21 @@ class CSV_Import_Export {
 	/**
 	 * Allow CSV file upload.
 	 *
-	 * @param array            $types    Mime types keyed by the file extension regex corresponding to those types.
-	 * @param int|WP_User|null $user User ID, User object or null if not provided (indicates current user).
-	 *
+	 * @param array $types    Mime types keyed by the file extension regex corresponding to those types.
 	 * @return array
 	 */
-	public function allow_csv_upload( $types, $user ) {
+	public function allow_csv_upload( $types ) {
 		$types['csv'] = 'text/csv';
 
 		return $types;
 	}
 
+	/**
+	 * Validate file.
+	 *
+	 * @param mixed $file File array or object.
+	 * @return bool
+	 */
 	public function validate_file( $file ) {
 		if ( is_wp_error( $file ) ) {
 			Helper::add_notification( esc_html__( 'CSV could not be imported:', 'rank-math-pro' ) . ' ' . $file->get_error_message(), [ 'type' => 'error' ] );
@@ -200,7 +204,7 @@ class CSV_Import_Export {
 			return false;
 		}
 
-		if ( ! isset( $file['type'] ) || $file['type'] !== 'text/csv' ) {
+		if ( ! isset( $file['type'] ) || 'text/csv' !== $file['type'] ) {
 			\unlink( $file['file'] );
 			Helper::add_notification( esc_html__( 'CSV could not be imported: File type error.', 'rank-math-pro' ), [ 'type' => 'error' ] );
 			return false;
@@ -292,6 +296,7 @@ class CSV_Import_Export {
 	/**
 	 * Cancel import.
 	 *
+	 * @param bool $silent Cancel silently.
 	 * @return void
 	 */
 	public static function cancel_import( $silent = false ) {
@@ -356,7 +361,7 @@ class CSV_Import_Export {
 			<p><?php esc_html_e( 'Import in progress...', 'rank-math-pro' ); ?></p>
 			<p class="csv-import-status">
 				<?php // Translators: placeholders represent count like 15/36. ?>
-				<?php printf( esc_html__( 'Items processed: %1$s/%2$s', 'rank-math-pro' ), min( $total_lines, $total_lines - $remaining_items + 1 ), $total_lines ); ?>
+				<?php printf( esc_html__( 'Items processed: %1$s/%2$s', 'rank-math-pro' ), absint( min( $total_lines, $total_lines - $remaining_items + 1 ) ), absint( $total_lines ) ); ?>
 			</p>
 			<div id="csv-import-progress-bar">
 				<div class="total">
@@ -386,7 +391,7 @@ class CSV_Import_Export {
 	 * @return string
 	 */
 	public static function get_import_complete_message() {
-		$status = (array) get_option( 'rank_math_csv_import_status', [] );
+		$status  = (array) get_option( 'rank_math_csv_import_status', [] );
 		$message = sprintf(
 			// Translators: placeholder is the number of rows imported.
 			__( 'CSV import completed. Successfully imported %d rows.', 'rank-math-pro' ),

@@ -16,7 +16,6 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 ?>
 <xsl:stylesheet version="2.0"
 	xmlns:html="http://www.w3.org/TR/REC-html40"
-	xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
 	xmlns:sitemap="http://www.sitemaps.org/schemas/sitemap/0.9"
 	xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
@@ -154,7 +153,6 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 			<thead>
 			<tr>
 				<th width="40%">Title</th>
-				<?php if ( Helper::get_settings( 'sitemap.include_images' ) ) : // @codingStandardsIgnoreLine ?><th width="5%"><?php esc_html_e( 'Images', 'rank-math-pro' ); ?></th><?php endif; ?>
 				<th width="15%"><?php esc_html_e( 'Publication Date', 'rank-math-pro' ); ?></th>
 			</tr>
 			</thead>
@@ -171,11 +169,6 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 							<xsl:value-of select="news:news/news:title"/>
 						</a>
 					</td>
-					<?php if ( Helper::get_settings( 'sitemap.include_images' ) ) : ?>
-					<td>
-						<xsl:value-of select="count(image:image)"/>
-					</td>
-					<?php endif; ?>
 					<td>
 						<xsl:value-of select="concat(substring(news:news/news:publication_date,0,11),concat(' ', substring(news:news/news:publication_date,12,8)),concat(' ', substring(news:news/news:publication_date,20,6)))"/>
 					</td>

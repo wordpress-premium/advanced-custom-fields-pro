@@ -196,7 +196,6 @@ class Video_Provider extends Post_Type {
 				'content_loc'      => ! empty( $schema['contentUrl'] ) ? Helper::replace_vars( $schema['contentUrl'], $post ) : '',
 				'player_loc'       => ! empty( $schema['embedUrl'] ) ? Helper::replace_vars( $schema['embedUrl'], $post ) : '',
 				'duration'         => ! empty( $schema['duration'] ) ? Helper::duration_to_seconds( $schema['duration'] ) : '',
-				'category'         => ! empty( $schema['metadata']['category'] ) ? Helper::replace_vars( $schema['metadata']['category'], $post ) : '',
 				'tags'             => ! empty( $schema['metadata']['tags'] ) ? Helper::replace_vars( $schema['metadata']['tags'], $post ) : '',
 				'family_friendly'  => ! empty( $schema['isFamilyFriendly'] ) ? 'yes' : 'no',
 				'rating'           => ! empty( $schema['metadata']['rating'] ) ? $schema['metadata']['rating'] : '',

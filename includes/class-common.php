@@ -12,7 +12,13 @@ namespace RankMathPro;
 
 use RankMath\Helper;
 use RankMath\Traits\Hooker;
+use RankMath\Admin\Admin_Helper;
+use RankMathPro\Admin\Admin_Helper as PROAdminHelper;
 use MyThemeShop\Helpers\Url;
+use MyThemeShop\Helpers\Str;
+use MyThemeShop\Helpers\Arr;
+use MyThemeShop\Helpers\Conditional;
+
 
 defined( 'ABSPATH' ) || exit;
 
@@ -31,6 +37,11 @@ class Common {
 	public function __construct() {
 		$this->action( 'rank_math/admin_bar/items', 'add_admin_bar_items' );
 		$this->filter( 'rank_math/metabox/values', 'add_json_data' );
+		$this->filter( 'wp_helpers_is_affiliate_link', 'is_affiliate_link', 10, 2 );
+		$this->filter( 'rank_math/link/add_attributes', 'can_add_attributes' );
+
+		$this->filter( 'rank_math/researches/tests', 'add_product_tests', 10, 2 );
+		$this->action( 'rank_math/admin/editor_scripts', 'enqueue' );
 	}
 
 	/**
@@ -68,7 +79,109 @@ class Common {
 			$values['trendsUpgradeLabel'] = esc_html__( 'Activate now', 'rank-math-pro' );
 		}
 
+		if ( Conditional::is_woocommerce_active() && 'product' === PROAdminHelper::get_current_post_type() ) {
+			$values['assessor']['isReviewEnabled'] = 'yes' === get_option( 'woocommerce_enable_reviews', 'yes' );
+		}
+
 		return $values;
+	}
+
+	/**
+	 * Checks whether a link is an affiliate link.
+	 *
+	 * @param string $is_affiliate Is affiliate link.
+	 * @param string $url          Anchor link.
+	 *
+	 * @return string
+	 */
+	public function is_affiliate_link( $is_affiliate, $url ) {
+		$url      = str_replace( home_url(), '', $url );
+		$prefixes = Arr::from_string( Helper::get_settings( 'general.affiliate_link_prefixes' ), "\n" );
+
+		if ( empty( $url ) || empty( $prefixes ) ) {
+			return $is_affiliate;
+		}
+
+		foreach ( $prefixes as $prefix ) {
+			if ( Str::starts_with( $prefix, trim( $url ) ) ) {
+				$is_affiliate = true;
+				break;
+			}
+		}
+
+		return $is_affiliate;
+	}
+
+	/**
+	 * Run a fucntion to add sponsored rel tag to the affiliate links.
+	 *
+	 * @param bool $value Whether to run the function to add link attributes.
+	 */
+	public function can_add_attributes( $value ) {
+		$prefixes = Arr::from_string( Helper::get_settings( 'general.affiliate_link_prefixes' ), "\n" );
+		return ! empty( $prefixes ) ? true : $value;
+	}
+
+	/**
+	 * Remove few tests on static Homepage.
+	 *
+	 * @since 3.0.7
+	 *
+	 * @param array  $tests Array of tests with score.
+	 * @param string $type  Object type. Can be post, user or term.
+	 */
+	public function add_product_tests( $tests, $type ) {
+		if ( 'post' !== $type ) {
+			return $tests;
+		}
+
+		$post_type      = PROAdminHelper::get_current_post_type();
+		$is_woocommerce = Conditional::is_woocommerce_active() && 'product' === $post_type;
+		$is_edd         = Conditional::is_edd_active() && 'download' === $post_type;
+
+		if ( ! $is_woocommerce && ! $is_edd ) {
+			return $tests;
+		}
+
+		$exclude_tests = [
+			'keywordInSubheadings' => true,
+			'linksHasExternals'    => true,
+			'linksNotAllExternals' => true,
+			'linksHasInternal'     => true,
+			'titleSentiment'       => true,
+			'titleHasNumber'       => true,
+			'contentHasTOC'        => true,
+		];
+
+		$tests = array_diff_assoc( $tests, $exclude_tests );
+
+		$tests['hasProductSchema'] = true;
+		if ( $is_woocommerce ) {
+			$tests['isReviewEnabled'] = true;
+		}
+
+		return $tests;
+	}
+
+	/**
+	 * Enqueue script to analyze product data.
+	 *
+	 * @since 3.0.7
+	 */
+	public function enqueue() {
+		if ( ! Admin_Helper::is_post_edit() ) {
+			return;
+		}
+
+		$post_type      = PROAdminHelper::get_current_post_type();
+		$is_woocommerce = Conditional::is_woocommerce_active() && 'product' === $post_type;
+		$is_edd         = Conditional::is_edd_active() && 'download' === $post_type;
+
+		if ( ! $is_woocommerce && ! $is_edd ) {
+			return;
+		}
+
+		wp_enqueue_script( 'rank-math-gallery-analysis', RANK_MATH_PRO_URL . 'assets/admin/js/product-analysis.js', [ 'rank-math-editor' ], rank_math_pro()->version, true );
 	}
 
 	/**

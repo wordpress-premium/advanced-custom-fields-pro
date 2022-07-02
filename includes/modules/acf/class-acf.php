@@ -25,6 +25,7 @@ class ACF {
 	 */
 	public function __construct() {
 		$this->action( 'rank_math/sitemap/urlimages', 'add_acf_images', 10, 2 );
+		$this->filter( 'rank_math/sitemap/content_before_parse_html_images', 'parse_html_images', 10, 2 );
 		$this->action( 'rank_math/admin/settings/general', 'acf_sitemap_settings' );
 	}
 
@@ -55,6 +56,46 @@ class ACF {
 	}
 
 	/**
+	 * Add images from the ACF fields content in the Sitemap.
+	 *
+	 * @param string $content Post content.
+	 * @param int    $post_id Post ID.
+	 */
+	public function parse_html_images( $content, $post_id ) {
+		if ( ! Helper::get_settings( 'sitemap.include_acf_images' ) ) {
+			return $content;
+		}
+
+		$fields = get_field_objects( $post_id );
+		if ( empty( $fields ) ) {
+			return $content;
+		}
+
+		foreach ( $fields as $field ) {
+			if ( empty( $field['value'] ) ) {
+				continue;
+			}
+
+			if ( in_array( $field['type'], [ 'wysiwyg', 'textarea' ], true ) ) {
+				$content .= $field['value'];
+				continue;
+			}
+
+			if ( 'flexible_content' === $field['type'] ) {
+				$this->get_flexible_content( $content, $field, $post_id );
+				continue;
+			}
+
+			if ( 'repeater' === $field['type'] || 'group' === $field['type'] ) {
+				$this->get_sub_fields_content( $content, $field['sub_fields'], $field );
+				continue;
+			}
+		}
+
+		return $content;
+	}
+
+	/**
 	 * Filter images to be included for the post in XML sitemap.
 	 *
 	 * @param array $images  Array of image items.
@@ -71,7 +112,7 @@ class ACF {
 		}
 
 		foreach ( $fields as $field ) {
-			if ( ! in_array( $field['type'], [ 'image', 'gallery', 'group', 'repeater' ], true ) ) {
+			if ( ! in_array( $field['type'], [ 'image', 'gallery', 'group', 'repeater', 'flexible_content' ], true ) ) {
 				continue;
 			}
 
@@ -79,6 +120,45 @@ class ACF {
 		}
 
 		return $images;
+	}
+
+	/**
+	 * Get content from flexible_content field.
+	 *
+	 * @param string $content Post content.
+	 * @param array  $field   Current field data.
+	 * @param int    $post_id Post ID.
+	 */
+	private function get_flexible_content( &$content, $field, $post_id ) {
+		if ( empty( $field['layouts'] ) || empty( current( $field['layouts'] ) ) ) {
+			return;
+		}
+
+		$this->get_sub_fields_content( $content, current( $field['layouts'] )['sub_fields'], $field );
+	}
+
+	/**
+	 * Get content from ACF sub-fields.
+	 *
+	 * @param string $content    Post content.
+	 * @param array  $sub_fields Array of subfields.
+	 * @param array  $field      Current field data.
+	 */
+	private function get_sub_fields_content( &$content, $sub_fields, $field ) {
+		foreach (  $sub_fields as $layout ) {
+			if ( ! in_array( $layout['type'], [ 'wysiwyg', 'textarea' ], true ) ) {
+				continue;
+			}
+
+			foreach ( $field['value'] as $key => $value ) {
+				if ( $key === $layout['name'] ) {
+					$content .= $value;
+					continue;
+				}
+
+				$content .= is_array( $value ) && ! empty( $value[ $layout['name'] ] ) ? $value[ $layout['name'] ] : '';
+			}
+		}
 	}
 
 	/**
@@ -93,7 +173,7 @@ class ACF {
 			return;
 		}
 
-		if ( 'repeater' === $field_type ) {
+		if ( in_array( $field_type, [ 'repeater', 'flexible_content' ], true ) ) {
 			$this->add_images_from_repeater_field( $images, $field_data );
 			return;
 		}

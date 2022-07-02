@@ -28,7 +28,12 @@ class Adsense {
 	public static function get_adsense_accounts() {
 		$accounts = [];
 		$response = Api::get()->http_get( 'https://adsense.googleapis.com/v2/accounts' );
-		if ( ! Api::get()->is_success() || isset( $response->error ) ) {
+		if (
+			! Api::get()->is_success() ||
+			isset( $response->error ) ||
+			! isset( $response['accounts'] ) ||
+			! is_array( $response['accounts'] )
+		) {
 			return $accounts;
 		}
 

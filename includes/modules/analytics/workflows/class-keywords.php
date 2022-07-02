@@ -49,11 +49,11 @@ class Keywords extends Base {
 		}
 
 		$schema = "CREATE TABLE {$wpdb->prefix}{$table} (
-				id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-				keyword VARCHAR(1000) NOT NULL,
-				collection VARCHAR(200) NULL,
-				is_active TINYINT(1) NOT NULL DEFAULT 1,
-				PRIMARY KEY (id)
+				id bigint(20) unsigned NOT NULL auto_increment,
+				keyword varchar(1000) NOT NULL,
+				collection varchar(200) NULL,
+				is_active tinyint(1) NOT NULL default 1,
+				PRIMARY KEY  (id)
 			) $collate;";
 
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';

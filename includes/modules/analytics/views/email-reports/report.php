@@ -8,7 +8,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-// phpcs:disable
 $sections = $this->get_setting( 'sections', [ 'summary', 'positions', 'winning_posts', 'winning_keywords', 'losing_keywords' ] );
 
 $analytics              = get_option( 'rank_math_google_analytic_options' );
