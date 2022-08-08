@@ -180,7 +180,7 @@ if ( ! class_exists( 'acf_field__group' ) ) :
 				return null;
 			}
 
-			// bail ealry if no sub fields
+			// bail early if no sub fields
 			if ( empty( $field['sub_fields'] ) ) {
 				return null;
 			}
@@ -372,7 +372,7 @@ if ( ! class_exists( 'acf_field__group' ) ) :
 				// prepare field (allow sub fields to be removed)
 				$sub_field = acf_prepare_field( $sub_field );
 
-				// bail ealry if no field
+				// bail early if no field
 				if ( ! $sub_field ) {
 					continue;
 				}
@@ -624,7 +624,7 @@ if ( ! class_exists( 'acf_field__group' ) ) :
 
 		function delete_value( $post_id, $meta_key, $field ) {
 
-			// bail ealry if no sub fields
+			// bail early if no sub fields
 			if ( empty( $field['sub_fields'] ) ) {
 				return null;
 			}

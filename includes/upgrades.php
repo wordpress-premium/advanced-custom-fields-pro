@@ -31,20 +31,16 @@ function acf_has_upgrade() {
 }
 
 /**
- *  acf_upgrade_all
+ *  Runs upgrade routines if this site has an upgrade available.
  *
- *  Returns true if this site has an upgrade avaialble.
- *
- *  @date    24/8/18
- *  @since   5.7.4
- *
- *  @param   void
- *  @return  bool
+ *  @date  24/8/18
+ *  @since 5.7.4
  */
 function acf_upgrade_all() {
-
-	// increase time limit
-	@set_time_limit( 600 );
+	// Increase time limit if possible.
+	if ( function_exists( 'set_time_limit' ) ) {
+		set_time_limit( 600 );
+	}
 
 	// start timer
 	timer_start();

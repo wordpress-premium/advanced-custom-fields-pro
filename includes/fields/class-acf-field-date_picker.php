@@ -47,7 +47,7 @@ if ( ! class_exists( 'acf_field_date_picker' ) ) :
 
 		function input_admin_enqueue_scripts() {
 
-			// bail ealry if no enqueue
+			// bail early if no enqueue
 			if ( ! acf_get_setting( 'enqueue_datepicker' ) ) {
 				return;
 			}

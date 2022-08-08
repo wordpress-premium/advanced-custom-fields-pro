@@ -1,7 +1,14 @@
+<?php
+$field_groups     = acf_get_field_groups();
+$num_field_groups = 0;
+if ( is_array( $field_groups ) ) {
+	$num_field_groups = count( $field_groups );
+}
+?>
 <div class="acf-field-list-wrap">
 	
 	<ul class="acf-hl acf-thead">
-		<li class="li-field-order"><?php _e( 'Order', 'acf' ); ?></li>
+		<li class="li-field-order"><?php /* translators: The positional order number of the field. */ _e( 'Order', 'acf' ); ?></li>
 		<li class="li-field-label"><?php _e( 'Label', 'acf' ); ?></li>
 		<li class="li-field-name"><?php _e( 'Name', 'acf' ); ?></li>
 		<li class="li-field-key"><?php _e( 'Key', 'acf' ); ?></li>
@@ -27,8 +34,9 @@
 				acf_get_view(
 					'field-group-field',
 					array(
-						'field' => $field,
-						'i'     => $i,
+						'field'            => $field,
+						'i'                => $i,
+						'num_field_groups' => $num_field_groups,
 					)
 				);
 
@@ -65,8 +73,9 @@ if ( ! $parent ) :
 	acf_get_view(
 		'field-group-field',
 		array(
-			'field' => $clone,
-			'i'     => 0,
+			'field'            => $clone,
+			'i'                => 0,
+			'num_field_groups' => $num_field_groups,
 		)
 	);
 	?>

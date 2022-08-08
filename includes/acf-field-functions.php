@@ -604,6 +604,8 @@ function acf_render_fields( $fields, $post_id = 0, $el = 'div', $instruction = '
 	if ( $fields ) {
 		foreach ( $fields as $field ) {
 
+			$field = apply_filters( 'acf/pre_render_field', $field, $post_id );
+
 			// Load value if not already loaded.
 			if ( $field['value'] === null ) {
 				$field['value'] = acf_get_value( $post_id, $field );
@@ -941,7 +943,7 @@ function acf_render_field_setting( $field, $setting, $global = false ) {
  *
  * @param   array $field The field array.
  * @param   array $specific An array of specific field attributes to update.
- * @return  void
+ * @return  array
  */
 function acf_update_field( $field, $specific = array() ) {
 

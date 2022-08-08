@@ -172,6 +172,7 @@ if ( ! class_exists( 'acf_field_file' ) ) :
 					array(
 						'name' => $field['name'],
 						'id'   => $field['id'],
+						'key'  => $field['key'],
 					)
 				);
 				?>
@@ -412,12 +413,12 @@ if ( ! class_exists( 'acf_field_file' ) ) :
 				return $valid;
 			}
 
-			// bail ealry if is numeric
+			// bail early if is numeric
 			if ( is_numeric( $value ) ) {
 				return $valid;
 			}
 
-			// bail ealry if not basic string
+			// bail early if not basic string
 			if ( ! is_string( $value ) ) {
 				return $valid;
 			}

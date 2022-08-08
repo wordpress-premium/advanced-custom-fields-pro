@@ -19,6 +19,9 @@ $div_attrs = array(
 $field_label      = acf_get_field_label( $field, 'admin' );
 $field_type_label = acf_get_field_type_label( $field['type'] );
 
+if ( ! isset( $num_field_groups ) ) {
+	$num_field_groups = 0;
+}
 ?>
 <div <?php echo acf_esc_attr( $div_attrs ); ?>>
 	
@@ -55,7 +58,9 @@ $field_type_label = acf_get_field_type_label( $field['type'] );
 				<div class="row-options">
 					<a class="edit-field" title="<?php _e( 'Edit field', 'acf' ); ?>" href="#"><?php _e( 'Edit', 'acf' ); ?></a>
 					<a class="duplicate-field" title="<?php _e( 'Duplicate field', 'acf' ); ?>" href="#"><?php _e( 'Duplicate', 'acf' ); ?></a>
+					<?php if ( $num_field_groups > 1 ) : ?>
 					<a class="move-field" title="<?php _e( 'Move field to another group', 'acf' ); ?>" href="#"><?php _e( 'Move', 'acf' ); ?></a>
+					<?php endif; ?>
 					<a class="delete-field" title="<?php _e( 'Delete field', 'acf' ); ?>" href="#"><?php _e( 'Delete', 'acf' ); ?></a>
 				</div>
 			</li>

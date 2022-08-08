@@ -769,7 +769,7 @@ if ( ! class_exists( 'acf_field_flexible_content' ) ) :
 					// get sub field
 					$sub_field = $layout[ $j ];
 
-					// bail ealry if no name (tab)
+					// bail early if no name (tab)
 					if ( acf_is_empty( $sub_field['name'] ) ) {
 						continue;
 					}
@@ -848,7 +848,7 @@ if ( ! class_exists( 'acf_field_flexible_content' ) ) :
 					// get sub field
 					$sub_field = $layout[ $j ];
 
-					// bail ealry if no name (tab)
+					// bail early if no name (tab)
 					if ( acf_is_empty( $sub_field['name'] ) ) {
 						continue;
 					}

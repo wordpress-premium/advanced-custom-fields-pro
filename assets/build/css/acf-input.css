@@ -2239,7 +2239,11 @@ tr.acf-accordion + tr.acf-accordion {
   padding: 15px;
 }
 .block-editor .edit-post-sidebar .acf-fields > .acf-field.acf-accordion .acf-accordion-title label {
-  font-weight: bold;
+  font-weight: 500;
+  color: #1e1e1e;
+}
+.block-editor .edit-post-sidebar .acf-fields > .acf-field.acf-accordion .acf-accordion-title svg.acf-accordion-icon {
+  right: 16px;
 }
 .block-editor .edit-post-sidebar .acf-fields > .acf-field.acf-accordion .acf-accordion-content > .acf-fields {
   border-top-width: 0;

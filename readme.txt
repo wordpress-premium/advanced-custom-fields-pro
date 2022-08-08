@@ -2,9 +2,9 @@
 Contributors: elliotcondon
 Tags: acf, fields, custom fields, meta, repeater
 Requires at least: 4.7
-Tested up to: 5.9.3
+Tested up to: 6.0
 Requires PHP: 5.6
-Stable tag: 5.12.2
+Stable tag: 6.0.0-beta1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -13,6 +13,8 @@ Customize WordPress with powerful, professional and intuitive fields. Proudly po
 == Description ==
 
 Advanced Custom Fields turns WordPress sites into a fully-fledged content management system by giving you all the tools to do more with your data.
+
+https://deliciousbrains.wistia.com/medias/md7ea4ep8z
 
 Use the Advanced Custom Fields plugin to take full control of your WordPress edit screens & custom field data.
 
@@ -75,6 +77,73 @@ From your WordPress dashboard
 
 
 == Changelog ==
+
+= 6.0.0-beta1 =
+*Release Date 4th August 2022*
+
+* New - Repeaters now have an optional "Pagination" setting which can be used to control the number of rows displayed at once. More details can be found on our [beta announcement post](https://www.advancedcustomfields.com/blog/acf-pro-6-0-beta-1/)
+* New - ACF Blocks now have a versioning system allowing developers to opt in to new features
+* New - ACF Blocks now support version 2, enabling block.json support, reduced wrapper markup and significant other new features
+* New - ACF Blocks no use Block IDs saved in the block comment
+* Enhancement: Bulk actions for field groups now include "Activate" and "Deactivate" options
+* Fix - ACF Blocks preloading now works for blocks saved in edit mode
+* Fix - ACF Blocks edit forms now behave correctly if they are not visible when loaded
+* Fix - ACF Blocks now always fire `render_block_preview` events when a block preview is displayed or redisplayed
+* Fix - ACF Blocks with no fields now display advisory text and are selectable in the block editor. This message is filterable with the acf/blocks/no_fields_assigned_message filter, providing both the message to be displayed and the block name it's being displayed against
+* Fix - Accordions inside ACF Blocks now match the current native block styling
+* Fix - ACF Blocks which contain no fields now preload correctly
+* Fix - Changes to an ACF Block's context now trigger a re-render
+* Fix - The field “move” option now no longer displays for fields when only one field group exists
+* Fix - Language for field group activation state now standardized to "active" and "inactive"
+* Fix - SVGs containing `foreignObject` tags now correctly render in JSX rendered ACF Blocks
+* i18n - ACF translations are now synced with contributions from translation.wordpress.org at each release, increasing ACF's supported languages and updating many other translations. PRO strings should still be submitted as pull requests on GitHub (Additional thanks to maximebj, emreerkan and Timothée Moulin for their contributions which are included here)
+
+= 6.0.0-alpha4 =
+*Release Date 20th July 2022*
+
+* Enhancement - This build continues the preview of upcoming block changes. View the [full release notes on GitHub](https://github.com/AdvancedCustomFields/acf/issues/654)
+* Fix - A valid jQuery block element is now always passed to the `render_block_preview` JS filter
+* Fix - ACF Block users on WordPress 5.5 and earlier now have the "acf-block-preview" wrapper restored
+* Fix - Block.json blocks now support the post_type argument to restrict where a block can be used
+* Fix - SVGs containing `foreignObject` tags now correctly render in JSX rendered blocks
+* Security Fix - The security fix from ACF 5.12.3 is now present in the ACF 6.0 alpha
+* i18n - Updated French and Turkish translations (Thanks to maximebj and emreerkan)
+
+= 6.0.0-alpha3 =
+*Release Date 27th June 2022
+
+* Enhancement - This build continues the preview of upcoming block changes. View the [full release notes on GitHub](https://github.com/AdvancedCustomFields/acf/issues/654)
+* Enhancement - Changes to a block context now trigger a re-render in the block editor
+* Enhancement - The block’s name is now passed to the `acf/blocks/wrap_frontend_innerblocks` filter as a second parameter to enable per block type filtering
+* Enhancement - Block template `<InnerBlocks>` tags now support a class attribute which will be used as the wrapper’s class name
+* Enhancement - User default values for ACF Blocks default attributes are now correctly applied
+* Fix - Block rendering cache now excludes frontend output to solve issues with different InnerBlock contents in duplicated parent blocks
+* Fix - Blocks which contain no fields now preload correctly
+
+= 6.0.0-alpha2 =
+*Release Date 9th June 2022*
+
+* Enhancement - This build continues the preview of upcoming block changes. View the [full release notes on GitHub](https://github.com/AdvancedCustomFields/acf/issues/654)
+* Enhancement - User provided attributes in block.json blocks now correctly get passed to block registration
+* Enhancement - Block markup for v2 blocks is now simplified further
+* Enhancement - Disabling blocks v2 front-end wrapping of innerBlocks now possible with the new `acf/blocks/wrap_frontend_innerblocks` boolean filter
+* Fix - Block preloading now works for blocks saved in edit mode
+* Fix - Block v2 upgrades now no longer overwrite user defined values with defaults
+* Fix - Block edit forms now behave correctly if they are not visible when loaded
+* Fix - The field “move” option now no longer displays for fields when only one field group exists
+* Fix - Language for field group activation state now standardized to "active" and "inactive"
+* New - Bulk actions for field groups now include "Activate" and "Deactivate" options
+* i18n - French translation now updated from user contributions (Thanks to Timothée Moulin)
+
+= 6.0.0-alpha1 =
+*Release Date 12th May 2022*
+
+* Enhancement - This build provides a preview of upcoming block changes. View the [full release notes on GitHub](https://github.com/AdvancedCustomFields/acf/issues/654)
+
+= 5.12.3 =
+*Release Date 14th July 2022*
+
+* Security Fix - Inputs for basic file uploads are now nonced to prevent an issue which could allow arbitrary file uploads to forms with ACF fields (Thanks to James Golovich from Pritect, Inc.)
 
 = 5.12.2 =
 *Release Date 6th April 2022*

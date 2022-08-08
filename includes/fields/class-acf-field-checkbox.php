@@ -193,7 +193,7 @@ if ( ! class_exists( 'acf_field_checkbox' ) ) :
 					'value' => $value,
 				);
 
-				// bail ealry if choice already exists
+				// bail early if choice already exists
 				if ( in_array( $esc_value, $this->_values ) ) {
 					continue;
 				}
@@ -214,7 +214,7 @@ if ( ! class_exists( 'acf_field_checkbox' ) ) :
 
 		function walk( $choices = array(), $args = array(), $depth = 0 ) {
 
-			// bail ealry if no choices
+			// bail early if no choices
 			if ( empty( $choices ) ) {
 				return '';
 			}

@@ -161,7 +161,7 @@ if ( ! class_exists( 'acf_revisions' ) ) :
 				// attempt to find key value
 				$key = acf_maybe_get( $meta, '_' . $name );
 
-				// bail ealry if no key
+				// bail early if no key
 				if ( ! $key ) {
 					continue;
 				}
@@ -247,7 +247,7 @@ if ( ! class_exists( 'acf_revisions' ) ) :
 
 		function wp_post_revision_field( $value, $field_name, $post = null, $direction = false ) {
 
-			// bail ealry if is empty
+			// bail early if is empty
 			if ( empty( $value ) ) {
 				return $value;
 			}

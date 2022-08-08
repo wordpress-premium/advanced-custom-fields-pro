@@ -598,7 +598,7 @@ if ( ! class_exists( 'acf_field_select' ) ) :
 
 		function format_value_single( $value, $post_id, $field ) {
 
-			// bail ealry if is empty
+			// bail early if is empty
 			if ( acf_is_empty( $value ) ) {
 				return $value;
 			}
