@@ -139,15 +139,17 @@ if ( ! class_exists( 'ACF_Media' ) ) :
 		private function get_source_field() {
 			$field = false;
 
+			// phpcs:disable WordPress.Security.NonceVerification.Missing -- Verified elsewhere.
 			// Search for field key within available data.
 			// Case 1) Media modal query.
 			if ( isset( $_POST['query']['_acfuploader'] ) ) {
-				$field_key = (string) $_POST['query']['_acfuploader'];
+				$field_key = sanitize_text_field( $_POST['query']['_acfuploader'] );
 
 				// Case 2) Media modal upload.
 			} elseif ( isset( $_POST['_acfuploader'] ) ) {
-				$field_key = (string) $_POST['_acfuploader'];
+				$field_key = sanitize_text_field( $_POST['_acfuploader'] );
 			}
+			// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 			// Attempt to load field.
 			// Note the `acf_get_field()` function will return false if not found.

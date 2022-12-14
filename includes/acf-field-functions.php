@@ -223,6 +223,7 @@ function acf_validate_field( $field = array() ) {
 			'key'               => '',
 			'label'             => '',
 			'name'              => '',
+			'aria-label'        => '',
 			'prefix'            => '',
 			'type'              => 'text',
 			'value'             => null,
@@ -629,19 +630,17 @@ function acf_render_fields( $fields, $post_id = 0, $el = 'div', $instruction = '
 }
 
 /**
- * acf_render_field_wrap
- *
  * Render the wrapping element for a given field.
  *
- * @date    28/09/13
  * @since   5.0.0
  *
- * @param   array  $field The field array.
- * @param   string $element The wrapping element type.
- * @param   string $instruction The instruction render position (label|field).
+ * @param   array  $field         The field array.
+ * @param   string $element       The wrapping element type.
+ * @param   string $instruction   The instruction render position (label|field).
+ * @param   bool   $field_setting If a field setting is being rendered.
  * @return  void
  */
-function acf_render_field_wrap( $field, $element = 'div', $instruction = 'label' ) {
+function acf_render_field_wrap( $field, $element = 'div', $instruction = 'label', $field_setting = false ) {
 
 	// Ensure field is complete (adds all settings).
 	$field = acf_validate_field( $field );
@@ -748,16 +747,20 @@ function acf_render_field_wrap( $field, $element = 'div', $instruction = 'label'
 		echo "<$inner_element class=\"acf-label\">" . "\n";
 			acf_render_field_label( $field );
 		if ( $instruction == 'label' ) {
-			acf_render_field_instructions( $field );
+			acf_render_field_instructions( $field, $field_setting );
 		}
 			echo "</$inner_element>" . "\n";
 	}
 		echo "<$inner_element class=\"acf-input\">" . "\n";
 			acf_render_field( $field );
-	if ( $instruction == 'field' ) {
+	if ( ! $field_setting && $instruction == 'field' ) {
 		acf_render_field_instructions( $field );
 	}
 		echo "</$inner_element>" . "\n";
+
+	if ( $field_setting && $instruction == 'field' ) {
+		acf_render_field_instructions( $field );
+	}
 	echo "</$element>" . "\n";
 }
 
@@ -865,21 +868,26 @@ function acf_get_field_label( $field, $context = '' ) {
 }
 
 /**
- * acf_render_field_instructions
- *
  * Renders the field's instructions.
  *
- * @date    19/9/17
  * @since   5.6.3
  *
- * @param   array $field The field array.
- * @return  void
+ * @param array   $field   The field array.
+ * @param boolean $tooltip If the instructions are being rendered as a tooltip.
+ * @return void
  */
-function acf_render_field_instructions( $field ) {
-
-	// Output instructions.
+function acf_render_field_instructions( $field, $tooltip = false ) {
 	if ( $field['instructions'] ) {
-		echo '<p class="description">' . acf_esc_html( $field['instructions'] ) . '</p>';
+		$instructions = acf_esc_html( $field['instructions'] );
+
+		if ( $tooltip ) {
+			printf( '<div class="acf-tip"><i tabindex="0" class="acf-icon acf-icon-help acf-js-tooltip" title="%s">?</i></div>', $instructions );
+		} else {
+			printf( '<p class="description">%s</p>', $instructions );
+		}
+	} elseif ( ! empty( $field['hint'] ) ) {
+		$instructions = acf_esc_html( $field['hint'] );
+		printf( '<p class="description">%s</p>', $instructions );
 	}
 }
 
@@ -908,6 +916,14 @@ function acf_render_field_setting( $field, $setting, $global = false ) {
 		$setting['wrapper']['data-setting'] = $field['type'];
 	}
 
+	// Add classes for appended and prepended fields.
+	if ( ! empty( $setting['append'] ) ) {
+		$setting['wrapper']['class'] .= ' acf-field-appended';
+	}
+	if ( ! empty( $setting['prepend'] ) ) {
+		$setting['wrapper']['class'] .= ' acf-field-prepended';
+	}
+
 	// Copy across prefix.
 	$setting['prefix'] = $field['prefix'];
 
@@ -929,8 +945,16 @@ function acf_render_field_setting( $field, $setting, $global = false ) {
 		$setting['wrapper']['data-append'] = $setting['_append'];
 	}
 
+	// If we're using a hint, set the label location as field so it appears after.
+	$label_location = ! empty( $setting['instructions'] ) ? 'field' : 'label';
+
+	// If we're a true false field, force label location to label.
+	if ( $setting['type'] === 'true_false' ) {
+		$label_location = 'label';
+	}
+
 	// Render setting.
-	acf_render_field_wrap( $setting, 'tr', 'label' );
+	acf_render_field_wrap( $setting, 'div', $label_location );
 }
 
 /**

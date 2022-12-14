@@ -11,11 +11,11 @@ if ( ! class_exists( 'acf_field__accordion' ) ) :
 		 *
 		 *  This function will setup the field type data
 		 *
-		 *  @date    30/10/17
-		 *  @since   5.6.3
+		 * @date  30/10/17
+		 * @since 5.6.3
 		 *
-		 *  @param   n/a
-		 *  @return  n/a
+		 * @param  n/a
+		 * @return n/a
 		 */
 
 		function initialize() {
@@ -29,7 +29,6 @@ if ( ! class_exists( 'acf_field__accordion' ) ) :
 				'multi_expand' => 0,
 				'endpoint'     => 0,
 			);
-
 		}
 
 
@@ -38,11 +37,11 @@ if ( ! class_exists( 'acf_field__accordion' ) ) :
 		 *
 		 *  Create the HTML interface for your field
 		 *
-		 *  @date    30/10/17
-		 *  @since   5.6.3
+		 * @date  30/10/17
+		 * @since 5.6.3
 		 *
-		 *  @param   array $field
-		 *  @return  n/a
+		 * @param  array $field
+		 * @return n/a
 		 */
 
 		function render_field( $field ) {
@@ -56,7 +55,7 @@ if ( ! class_exists( 'acf_field__accordion' ) ) :
 			);
 
 			?>
-		<div <?php acf_esc_attr_e( $atts ); ?>></div>
+		<div <?php echo acf_esc_attrs( $atts ); ?>></div>
 			<?php
 
 		}
@@ -75,27 +74,7 @@ if ( ! class_exists( 'acf_field__accordion' ) ) :
 		*  @since   3.6
 		*  @date    23/01/13
 		*/
-
 		function render_field_settings( $field ) {
-
-			/*
-			// message
-			$message = '';
-			$message .= '<p>' . __( 'Accordions help you organize fields into panels that open and close.', 'acf') . '</p>';
-			$message .= '<p>' . __( 'All fields following this accordion (or until another accordion is defined) will be grouped together.','acf') . '</p>';
-
-
-			// default_value
-			acf_render_field_setting( $field, array(
-			'label'         => __('Instructions','acf'),
-			'instructions'  => '',
-			'name'          => 'notes',
-			'type'          => 'message',
-			'message'       => $message,
-			));
-			*/
-
-			// active
 			acf_render_field_setting(
 				$field,
 				array(
@@ -107,7 +86,6 @@ if ( ! class_exists( 'acf_field__accordion' ) ) :
 				)
 			);
 
-			// multi_expand
 			acf_render_field_setting(
 				$field,
 				array(
@@ -119,7 +97,6 @@ if ( ! class_exists( 'acf_field__accordion' ) ) :
 				)
 			);
 
-			// endpoint
 			acf_render_field_setting(
 				$field,
 				array(
@@ -130,7 +107,6 @@ if ( ! class_exists( 'acf_field__accordion' ) ) :
 					'ui'           => 1,
 				)
 			);
-
 		}
 
 
@@ -161,7 +137,6 @@ if ( ! class_exists( 'acf_field__accordion' ) ) :
 
 			// return
 			return $field;
-
 		}
 
 	}
@@ -169,7 +144,6 @@ if ( ! class_exists( 'acf_field__accordion' ) ) :
 
 	// initialize
 	acf_register_field_type( 'acf_field__accordion' );
-
 endif; // class_exists check
 
 ?>

@@ -134,36 +134,20 @@ if ( ! class_exists( 'acf_field_button_group' ) ) :
 		 *  @param   array $field The field settings array
 		 *  @return  n/a
 		 */
-
 		function render_field_settings( $field ) {
-
-			// encode choices (convert from array)
+			// Encode choices (convert from array).
 			$field['choices'] = acf_encode_choices( $field['choices'] );
 
-			// choices
 			acf_render_field_setting(
 				$field,
 				array(
 					'label'        => __( 'Choices', 'acf' ),
-					'instructions' => __( 'Enter each choice on a new line.', 'acf' ) . '<br /><br />' . __( 'For more control, you may specify both a value and label like this:', 'acf' ) . '<br /><br />' . __( 'red : Red', 'acf' ),
+					'instructions' => __( 'Enter each choice on a new line.', 'acf' ) . '<br />' . __( 'For more control, you may specify both a value and label like this:', 'acf' ) . '<br /><span class="acf-field-setting-example">' . __( 'red : Red', 'acf' ) . '</span>',
 					'type'         => 'textarea',
 					'name'         => 'choices',
 				)
 			);
 
-			// allow_null
-			acf_render_field_setting(
-				$field,
-				array(
-					'label'        => __( 'Allow Null?', 'acf' ),
-					'instructions' => '',
-					'name'         => 'allow_null',
-					'type'         => 'true_false',
-					'ui'           => 1,
-				)
-			);
-
-			// default_value
 			acf_render_field_setting(
 				$field,
 				array(
@@ -174,23 +158,6 @@ if ( ! class_exists( 'acf_field_button_group' ) ) :
 				)
 			);
 
-			// layout
-			acf_render_field_setting(
-				$field,
-				array(
-					'label'        => __( 'Layout', 'acf' ),
-					'instructions' => '',
-					'type'         => 'radio',
-					'name'         => 'layout',
-					'layout'       => 'horizontal',
-					'choices'      => array(
-						'horizontal' => __( 'Horizontal', 'acf' ),
-						'vertical'   => __( 'Vertical', 'acf' ),
-					),
-				)
-			);
-
-			// return_format
 			acf_render_field_setting(
 				$field,
 				array(
@@ -209,6 +176,51 @@ if ( ! class_exists( 'acf_field_button_group' ) ) :
 
 		}
 
+		/**
+		 * Renders the field settings used in the "Validation" tab.
+		 *
+		 * @since 6.0
+		 *
+		 * @param array $field The field settings array.
+		 * @return void
+		 */
+		function render_field_validation_settings( $field ) {
+			acf_render_field_setting(
+				$field,
+				array(
+					'label'        => __( 'Allow Null?', 'acf' ),
+					'instructions' => '',
+					'name'         => 'allow_null',
+					'type'         => 'true_false',
+					'ui'           => 1,
+				)
+			);
+		}
+
+		/**
+		 * Renders the field settings used in the "Presentation" tab.
+		 *
+		 * @since 6.0
+		 *
+		 * @param array $field The field settings array.
+		 * @return void
+		 */
+		function render_field_presentation_settings( $field ) {
+			acf_render_field_setting(
+				$field,
+				array(
+					'label'        => __( 'Layout', 'acf' ),
+					'instructions' => '',
+					'type'         => 'radio',
+					'name'         => 'layout',
+					'layout'       => 'horizontal',
+					'choices'      => array(
+						'horizontal' => __( 'Horizontal', 'acf' ),
+						'vertical'   => __( 'Vertical', 'acf' ),
+					),
+				)
+			);
+		}
 
 		/*
 		*  update_field()

@@ -158,17 +158,18 @@ if ( ! class_exists( 'acf_third_party' ) ) :
 			// vars
 			$post_type = '';
 
-			// check $_GET becuase it is too early to use functions / global vars
+			// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Verified elsewhere.
+			// check $_GET because it is too early to use functions / global vars.
 			if ( ! empty( $_GET['post_type'] ) ) {
 
-				$post_type = $_GET['post_type'];
+				$post_type = sanitize_text_field( $_GET['post_type'] );
 
 			} elseif ( ! empty( $_GET['post'] ) ) {
 
-				$post_type = get_post_type( $_GET['post'] );
+				$post_type = get_post_type( $_GET['post'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitized when get_post_type() calls get_post().
 
 			}
-
+			// phpcs:enable WordPress.Security.NonceVerification.Recommended
 			// check post type
 			if ( $post_type == 'acf-field-group' ) {
 

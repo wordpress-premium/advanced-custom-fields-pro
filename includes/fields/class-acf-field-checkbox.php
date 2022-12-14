@@ -121,6 +121,32 @@ if ( ! class_exists( 'acf_field_checkbox' ) ) :
 
 		}
 
+		/**
+		 * Validates values for the checkbox field
+		 *
+		 * @date  09/12/2022
+		 * @since 6.0.0
+		 *
+		 * @param bool   $valid  If the field is valid.
+		 * @param mixed  $value  The value to validate.
+		 * @param array  $field  The main field array.
+		 * @param string $input  The input element's name attribute.
+		 *
+		 * @return bool
+		 */
+		function validate_value( $valid, $value, $field, $input ) {
+			if ( ! is_array( $value ) || empty( $field['allow_custom'] ) ) {
+				return $valid;
+			}
+
+			foreach ( $value as $value ) {
+				if ( empty( $value ) ) {
+					return __( 'Checkbox custom values cannot be empty. Uncheck any empty values.', 'acf' );
+				}
+			}
+
+			return $valid;
+		}
 
 		/*
 		*  render_field_toggle
@@ -310,56 +336,21 @@ if ( ! class_exists( 'acf_field_checkbox' ) ) :
 		*
 		*  @param   $field  - an array holding all the field's data
 		*/
-
 		function render_field_settings( $field ) {
-
-			// encode choices (convert from array)
+			// Encode choices (convert from array).
 			$field['choices']       = acf_encode_choices( $field['choices'] );
 			$field['default_value'] = acf_encode_choices( $field['default_value'], false );
 
-			// choices
 			acf_render_field_setting(
 				$field,
 				array(
 					'label'        => __( 'Choices', 'acf' ),
-					'instructions' => __( 'Enter each choice on a new line.', 'acf' ) . '<br /><br />' . __( 'For more control, you may specify both a value and label like this:', 'acf' ) . '<br /><br />' . __( 'red : Red', 'acf' ),
+					'instructions' => __( 'Enter each choice on a new line.', 'acf' ) . '<br />' . __( 'For more control, you may specify both a value and label like this:', 'acf' ) . '<br /><span class="acf-field-setting-example">' . __( 'red : Red', 'acf' ) . '</span>',
 					'type'         => 'textarea',
 					'name'         => 'choices',
 				)
 			);
 
-			// other_choice
-			acf_render_field_setting(
-				$field,
-				array(
-					'label'        => __( 'Allow Custom', 'acf' ),
-					'instructions' => '',
-					'name'         => 'allow_custom',
-					'type'         => 'true_false',
-					'ui'           => 1,
-					'message'      => __( "Allow 'custom' values to be added", 'acf' ),
-				)
-			);
-
-			// save_other_choice
-			acf_render_field_setting(
-				$field,
-				array(
-					'label'        => __( 'Save Custom', 'acf' ),
-					'instructions' => '',
-					'name'         => 'save_custom',
-					'type'         => 'true_false',
-					'ui'           => 1,
-					'message'      => __( "Save 'custom' values to the field's choices", 'acf' ),
-					'conditions'   => array(
-						'field'    => 'allow_custom',
-						'operator' => '==',
-						'value'    => 1,
-					),
-				)
-			);
-
-			// default_value
 			acf_render_field_setting(
 				$field,
 				array(
@@ -370,35 +361,6 @@ if ( ! class_exists( 'acf_field_checkbox' ) ) :
 				)
 			);
 
-			// layout
-			acf_render_field_setting(
-				$field,
-				array(
-					'label'        => __( 'Layout', 'acf' ),
-					'instructions' => '',
-					'type'         => 'radio',
-					'name'         => 'layout',
-					'layout'       => 'horizontal',
-					'choices'      => array(
-						'vertical'   => __( 'Vertical', 'acf' ),
-						'horizontal' => __( 'Horizontal', 'acf' ),
-					),
-				)
-			);
-
-			// layout
-			acf_render_field_setting(
-				$field,
-				array(
-					'label'        => __( 'Toggle', 'acf' ),
-					'instructions' => __( 'Prepend an extra checkbox to toggle all choices', 'acf' ),
-					'name'         => 'toggle',
-					'type'         => 'true_false',
-					'ui'           => 1,
-				)
-			);
-
-			// return_format
 			acf_render_field_setting(
 				$field,
 				array(
@@ -417,6 +379,78 @@ if ( ! class_exists( 'acf_field_checkbox' ) ) :
 
 		}
 
+		/**
+		 * Renders the field settings used in the "Validation" tab.
+		 *
+		 * @since 6.0
+		 *
+		 * @param array $field The field settings array.
+		 * @return void
+		 */
+		function render_field_validation_settings( $field ) {
+			acf_render_field_setting(
+				$field,
+				array(
+					'label'        => __( 'Allow Custom Values', 'acf' ),
+					'name'         => 'allow_custom',
+					'type'         => 'true_false',
+					'ui'           => 1,
+					'instructions' => __( "Allow 'custom' values to be added", 'acf' ),
+				)
+			);
+
+			acf_render_field_setting(
+				$field,
+				array(
+					'label'        => __( 'Save Custom Values', 'acf' ),
+					'name'         => 'save_custom',
+					'type'         => 'true_false',
+					'ui'           => 1,
+					'instructions' => __( "Save 'custom' values to the field's choices", 'acf' ),
+					'conditions'   => array(
+						'field'    => 'allow_custom',
+						'operator' => '==',
+						'value'    => 1,
+					),
+				)
+			);
+		}
+
+		/**
+		 * Renders the field settings used in the "Presentation" tab.
+		 *
+		 * @since 6.0
+		 *
+		 * @param array $field The field settings array.
+		 * @return void
+		 */
+		function render_field_presentation_settings( $field ) {
+			acf_render_field_setting(
+				$field,
+				array(
+					'label'        => __( 'Layout', 'acf' ),
+					'instructions' => '',
+					'type'         => 'radio',
+					'name'         => 'layout',
+					'layout'       => 'horizontal',
+					'choices'      => array(
+						'vertical'   => __( 'Vertical', 'acf' ),
+						'horizontal' => __( 'Horizontal', 'acf' ),
+					),
+				)
+			);
+
+			acf_render_field_setting(
+				$field,
+				array(
+					'label'        => __( 'Add Toggle All', 'acf' ),
+					'instructions' => __( 'Prepend an extra checkbox to toggle all choices', 'acf' ),
+					'name'         => 'toggle',
+					'type'         => 'true_false',
+					'ui'           => 1,
+				)
+			);
+		}
 
 		/*
 		*  update_field()

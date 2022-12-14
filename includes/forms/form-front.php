@@ -221,7 +221,7 @@ if ( ! class_exists( 'acf_form_front' ) ) :
 			foreach ( $this->fields as $k => $field ) {
 
 				// bail early if no in $_POST
-				if ( ! isset( $_POST['acf'][ $k ] ) ) {
+				if ( ! isset( $_POST['acf'][ $k ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Verified elsewhere.
 					continue;
 				}
 
@@ -231,7 +231,7 @@ if ( ! class_exists( 'acf_form_front' ) ) :
 			}
 
 			// honeypot
-			if ( ! empty( $_POST['acf']['_validate_email'] ) ) {
+			if ( ! empty( $_POST['acf']['_validate_email'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Data not used; presence indicates spam.
 
 				acf_add_validation_error( '', __( 'Spam Detected', 'acf' ) );
 
@@ -278,22 +278,24 @@ if ( ! class_exists( 'acf_form_front' ) ) :
 
 			}
 
+			// phpcs:disable WordPress.Security.NonceVerification.Missing -- Verified in check_submit_form().
 			// save post_title
 			if ( isset( $_POST['acf']['_post_title'] ) ) {
 
-				$save['post_title'] = acf_extract_var( $_POST['acf'], '_post_title' );
+				$save['post_title'] = acf_extract_var( $_POST['acf'], '_post_title' ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitized by WP when saved.
 
 			}
 
 			// save post_content
 			if ( isset( $_POST['acf']['_post_content'] ) ) {
 
-				$save['post_content'] = acf_extract_var( $_POST['acf'], '_post_content' );
+				$save['post_content'] = acf_extract_var( $_POST['acf'], '_post_content' ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitized by WP when saved.
 
 			}
+			// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 			// honeypot
-			if ( ! empty( $_POST['acf']['_validate_email'] ) ) {
+			if ( ! empty( $_POST['acf']['_validate_email'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Data not used; presence indicates spam.
 				return false;
 			}
 
@@ -371,11 +373,11 @@ if ( ! class_exists( 'acf_form_front' ) ) :
 			}
 
 			// Load registered form using id.
-			$form = $this->get_form( $_POST['_acf_form'] );
+			$form = $this->get_form( acf_sanitize_request_args( $_POST['_acf_form'] ) );
 
 			// Fallback to encrypted JSON.
 			if ( ! $form ) {
-				$form = json_decode( acf_decrypt( $_POST['_acf_form'] ), true );
+				$form = json_decode( acf_decrypt( sanitize_text_field( $_POST['_acf_form'] ) ), true );
 				if ( ! $form ) {
 					return false;
 				}
@@ -383,7 +385,7 @@ if ( ! class_exists( 'acf_form_front' ) ) :
 
 			// Run kses on all $_POST data.
 			if ( $form['kses'] && isset( $_POST['acf'] ) ) {
-				$_POST['acf'] = wp_kses_post_deep( $_POST['acf'] );
+				$_POST['acf'] = wp_kses_post_deep( $_POST['acf'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- False positive.
 			}
 
 			// Validate data and show errors.
@@ -558,7 +560,7 @@ if ( ! class_exists( 'acf_form_front' ) ) :
 			}
 
 			// Display updated_message
-			if ( ! empty( $_GET['updated'] ) && $args['updated_message'] ) {
+			if ( ! empty( $_GET['updated'] ) && $args['updated_message'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Used as a flag; data not used.
 				printf( $args['html_updated_message'], $args['updated_message'] );
 			}
 

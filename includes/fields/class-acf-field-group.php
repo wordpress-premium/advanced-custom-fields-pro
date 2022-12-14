@@ -393,7 +393,7 @@ if ( ! class_exists( 'acf_field__group' ) ) :
 				}
 
 				?>
-			<th <?php acf_esc_attr_e( $atts ); ?>>
+			<th <?php echo acf_esc_attrs( $atts ); ?>>
 				<?php acf_render_field_label( $sub_field ); ?>
 				<?php acf_render_field_instructions( $sub_field ); ?>
 			</th>
@@ -436,23 +436,24 @@ if ( ! class_exists( 'acf_field__group' ) ) :
 
 			// vars
 			$args = array(
-				'fields' => $field['sub_fields'],
-				'parent' => $field['ID'],
+				'fields'      => $field['sub_fields'],
+				'parent'      => $field['ID'],
+				'is_subfield' => true,
 			);
 
 			?>
-		<tr class="acf-field acf-field-setting-sub_fields" data-setting="group" data-name="sub_fields">
-			<td class="acf-label">
-				<label><?php _e( 'Sub Fields', 'acf' ); ?></label>	
-			</td>
-			<td class="acf-input">
-				<?php
+			<div class="acf-field acf-field-setting-sub_fields" data-setting="group" data-name="sub_fields">
+				<div class="acf-label">
+					<label><?php _e( 'Sub Fields', 'acf' ); ?></label>	
+				</div>
+				<div class="acf-input acf-input-sub">
+					<?php
 
-				acf_get_view( 'field-group-fields', $args );
+					acf_get_view( 'field-group-fields', $args );
 
-				?>
-			</td>
-		</tr>
+					?>
+				</div>
+			</div>
 			<?php
 
 			// layout

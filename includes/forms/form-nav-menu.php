@@ -182,18 +182,19 @@ if ( ! class_exists( 'acf_form_nav_menu' ) ) :
 
 		function update_nav_menu_items( $menu_id ) {
 
-			// bail early if not set
+			// phpcs:disable WordPress.Security.NonceVerification.Missing -- Verified elsewhere.
 			if ( empty( $_POST['menu-item-acf'] ) ) {
 				return;
 			}
 
-			// loop
-			foreach ( $_POST['menu-item-acf'] as $post_id => $values ) {
+			$posted_values = acf_sanitize_request_args( $_POST['menu-item-acf'] );
+
+			foreach ( $posted_values as $post_id => $values ) {
 
 				acf_save_post( $post_id, $values );
 
 			}
-
+			// phpcs:enable WordPress.Security.NonceVerification.Missing
 		}
 
 
@@ -258,13 +259,14 @@ if ( ! class_exists( 'acf_form_nav_menu' ) ) :
 
 		function acf_validate_save_post() {
 
-			// bail early if not set
+			// phpcs:disable WordPress.Security.NonceVerification.Missing -- Verified elsewhere.
 			if ( empty( $_POST['menu-item-acf'] ) ) {
 				return;
 			}
 
-			// loop
-			foreach ( $_POST['menu-item-acf'] as $post_id => $values ) {
+			$posted_values = acf_sanitize_request_args( $_POST['menu-item-acf'] );
+
+			foreach ( $posted_values as $post_id => $values ) {
 
 				// vars
 				$prefix = 'menu-item-acf[' . $post_id . ']';
@@ -273,9 +275,9 @@ if ( ! class_exists( 'acf_form_nav_menu' ) ) :
 				acf_validate_values( $values, $prefix );
 
 			}
+			// phpcs:enable // phpcs:disable WordPress.Security.NonceVerification.Missing
 
 		}
-
 
 		/*
 		*  admin_footer
@@ -398,5 +400,4 @@ if ( ! class_exists( 'acf_form_nav_menu' ) ) :
 	acf_new_instance( 'acf_form_nav_menu' );
 
 endif;
-
 ?>

@@ -198,7 +198,7 @@ if ( ! class_exists( 'acf_field_oembed' ) ) :
 			}
 
 			?>
-<div <?php acf_esc_attr_e( $atts ); ?>>
+<div <?php echo acf_esc_attrs( $atts ); ?>>
 	
 			<?php
 			acf_hidden_input(
@@ -255,10 +255,7 @@ if ( ! class_exists( 'acf_field_oembed' ) ) :
 		*  @since   3.6
 		*  @date    23/01/13
 		*/
-
 		function render_field_settings( $field ) {
-
-			// width
 			acf_render_field_setting(
 				$field,
 				array(
@@ -271,7 +268,6 @@ if ( ! class_exists( 'acf_field_oembed' ) ) :
 				)
 			);
 
-			// height
 			acf_render_field_setting(
 				$field,
 				array(
@@ -284,9 +280,7 @@ if ( ! class_exists( 'acf_field_oembed' ) ) :
 					'_append'     => 'width',
 				)
 			);
-
 		}
-
 
 		/**
 		 *  format_value()

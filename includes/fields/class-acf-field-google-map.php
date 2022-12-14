@@ -138,7 +138,7 @@ if ( ! class_exists( 'acf_field_google_map' ) ) :
 			}
 
 			?>
-<div <?php acf_esc_attr_e( $attrs ); ?>>
+<div <?php echo acf_esc_attrs( $attrs ); ?>>
 	
 			<?php
 			acf_hidden_input(
@@ -190,7 +190,7 @@ if ( ! class_exists( 'acf_field_google_map' ) ) :
 				$field,
 				array(
 					'label'        => __( 'Center', 'acf' ),
-					'instructions' => __( 'Center the initial map', 'acf' ),
+					'hint' => __( 'Center the initial map', 'acf' ),
 					'type'         => 'text',
 					'name'         => 'center_lat',
 					'prepend'      => 'lat',
@@ -203,7 +203,7 @@ if ( ! class_exists( 'acf_field_google_map' ) ) :
 				$field,
 				array(
 					'label'        => __( 'Center', 'acf' ),
-					'instructions' => __( 'Center the initial map', 'acf' ),
+					'hint' => __( 'Center the initial map', 'acf' ),
 					'type'         => 'text',
 					'name'         => 'center_lng',
 					'prepend'      => 'lng',

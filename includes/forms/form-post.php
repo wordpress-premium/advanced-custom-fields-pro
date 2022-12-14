@@ -50,6 +50,8 @@ if ( ! class_exists( 'ACF_Form_Post' ) ) :
 			// globals
 			global $typenow;
 
+			remove_meta_box( 'submitdiv', 'acf-field-group', 'side' );
+
 			// restrict specific post types
 			$restricted = array( 'acf-field-group', 'attachment' );
 			if ( in_array( $typenow, $restricted ) ) {
