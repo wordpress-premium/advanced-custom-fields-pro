@@ -1,17 +1,18 @@
 <?php
 /**
- * Advanced Custom Fields
+ * Advanced Custom Fields PRO
  *
  * @package       ACF
  * @author        WP Engine
  *
  * @wordpress-plugin
- * Plugin Name:   Advanced Custom Fields
+ * Plugin Name:   Advanced Custom Fields PRO
  * Plugin URI:    https://www.advancedcustomfields.com
  * Description:   Customize WordPress with powerful, professional and intuitive fields.
  * Version:       6.0.6
  * Author:        WP Engine
  * Author URI:    https://wpengine.com/?utm_source=wordpress.org&utm_medium=referral&utm_campaign=plugin_directory&utm_content=advanced_custom_fields
+ * Update URI:    https://www.advancedcustomfields.com/pro
  * Text Domain:   acf
  * Domain Path:   /lang
  */
@@ -501,9 +502,9 @@ if ( ! class_exists( 'ACF' ) ) {
 				return;
 			}
 
-			$message = __( "Advanced Custom Fields and Advanced Custom Fields should not be active at the same time. We've automatically deactivated Advanced Custom Fields.", 'acf' );
+			$message = __( "Advanced Custom Fields and Advanced Custom Fields PRO should not be active at the same time. We've automatically deactivated Advanced Custom Fields.", 'acf' );
 			if ( 2 === $deactivated_notice_id ) {
-				$message = __( "Advanced Custom Fields and Advanced Custom Fields should not be active at the same time. We've automatically deactivated Advanced Custom Fields PRO.", 'acf' );
+				$message = __( "Advanced Custom Fields and Advanced Custom Fields PRO should not be active at the same time. We've automatically deactivated Advanced Custom Fields PRO.", 'acf' );
 			}
 
 			?>
