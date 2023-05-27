@@ -25,10 +25,15 @@ if ( ! class_exists( 'acf_field_repeater' ) ) :
 		 * @since 5.0.0
 		 */
 		public function initialize() {
-			$this->name     = 'repeater';
-			$this->label    = __( 'Repeater', 'acf' );
-			$this->category = 'layout';
-			$this->defaults = array(
+			$this->name          = 'repeater';
+			$this->label         = __( 'Repeater', 'acf' );
+			$this->category      = 'layout';
+			$this->description   = __( 'Allows you to select and display existing fields. It does not duplicate any fields in the database, but loads and displays the selected fields at run-time. The Clone field can either replace itself with the selected fields or display the selected fields as a group of subfields.', 'acf' );
+			$this->preview_image = acf_get_url() . '/assets/images/field-type-previews/field-preview-repeater.png';
+			$this->doc_url       = acf_add_url_utm_tags( 'https://www.advancedcustomfields.com/resources/repeater/', 'docs', 'field-type-selection' );
+			$this->tutorial_url  = acf_add_url_utm_tags( 'https://www.advancedcustomfields.com/resources/repeater/how-to-use-the-repeater-field/', 'docs', 'field-type-selection' );
+			$this->pro           = true;
+			$this->defaults      = array(
 				'sub_fields'    => array(),
 				'min'           => 0,
 				'max'           => 0,
@@ -58,7 +63,7 @@ if ( ! class_exists( 'acf_field_repeater' ) ) :
 		public function input_admin_enqueue_scripts() {
 			acf_localize_text(
 				array(
-					'Minimum rows reached ({min} rows)' => __( 'Minimum rows reached ({min} rows)', 'acf' ),
+					'Minimum rows not reached ({min} rows)' => __( 'Minimum rows not reached ({min} rows)', 'acf' ),
 					'Maximum rows reached ({max} rows)' => __( 'Maximum rows reached ({max} rows)', 'acf' ),
 					'Error loading page'                => __( 'Error loading page', 'acf' ),
 					'Order will be assigned upon save'  => __( 'Order will be assigned upon save', 'acf' ),
@@ -160,7 +165,7 @@ if ( ! class_exists( 'acf_field_repeater' ) ) :
 				<div class="acf-input acf-input-sub">
 					<?php
 
-					acf_get_view( 'field-group-fields', $args );
+					acf_get_view( 'acf-field-group/fields', $args );
 
 					?>
 				</div>
@@ -455,7 +460,7 @@ if ( ! class_exists( 'acf_field_repeater' ) ) :
 			if ( empty( $field['pagination'] ) && $min && $count < $min ) {
 
 				// create error
-				$error = __( 'Minimum rows reached ({min} rows)', 'acf' );
+				$error = __( 'Minimum rows not reached ({min} rows)', 'acf' );
 				$error = str_replace( '{min}', $min, $error );
 
 				// return
@@ -995,7 +1000,7 @@ if ( ! class_exists( 'acf_field_repeater' ) ) :
 		 */
 		public function get_field_name_from_input_name( $input_name ) {
 			$parts = array();
-			preg_match_all( '/\[([^\]]*)\]/', $input_name, $parts );
+			preg_match_all( '/\[([^\]]*)\]/', is_null( $input_name ) ? '' : $input_name, $parts );
 
 			if ( ! isset( $parts[1] ) ) {
 				return false;

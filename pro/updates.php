@@ -303,7 +303,7 @@ function acf_pro_get_license() {
 	}
 
 	// decode
-	$license = maybe_unserialize( base64_decode( $license ) );
+	$license = acf_maybe_unserialize( base64_decode( $license ) );
 
 	// bail early if corrupt
 	if ( ! is_array( $license ) ) {

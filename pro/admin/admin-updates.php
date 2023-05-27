@@ -137,6 +137,9 @@ if ( ! class_exists( 'ACF_Admin_Updates' ) ) :
 		 * @return  void
 		 */
 		function load() {
+
+			add_action( 'admin_body_class', array( $this, 'admin_body_class' ) );
+
 			// Check activate.
 			if ( acf_verify_nonce( 'activate_pro_license' ) ) {
 				acf_pro_activate_license( sanitize_text_field( $_POST['acf_pro_license'] ) );
@@ -223,7 +226,18 @@ if ( ! class_exists( 'ACF_Admin_Updates' ) ) :
 			}
 		}
 
-
+		/**
+		 * Modifies the admin body class.
+		 *
+		 * @since 6.0.0
+		 *
+		 * @param string $classes Space-separated list of CSS classes.
+		 * @return string
+		 */
+		public function admin_body_class( $classes ) {
+			$classes .= ' acf-admin-page';
+			return $classes;
+		}
 
 		/**
 		 * html

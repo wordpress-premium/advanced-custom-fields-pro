@@ -21,18 +21,22 @@ if ( ! class_exists( 'acf_field_clone' ) ) :
 		function initialize() {
 
 			// vars
-			$this->name      = 'clone';
-			$this->label     = _x( 'Clone', 'noun', 'acf' );
-			$this->category  = 'layout';
-			$this->defaults  = array(
+			$this->name          = 'clone';
+			$this->label         = _x( 'Clone', 'noun', 'acf' );
+			$this->category      = 'layout';
+			$this->description   = __( 'Allows you to select and display existing fields. It does not duplicate any fields in the database, but loads and displays the selected fields at run-time. The Clone field can either replace itself with the selected fields or display the selected fields as a group of subfields.', 'acf' );
+			$this->preview_image = acf_get_url() . '/assets/images/field-type-previews/field-preview-clone.png';
+			$this->doc_url       = acf_add_url_utm_tags( 'https://www.advancedcustomfields.com/resources/clone/', 'docs', 'field-type-selection' );
+			$this->pro           = true;
+			$this->defaults      = array(
 				'clone'        => '',
 				'prefix_label' => 0,
 				'prefix_name'  => 0,
 				'display'      => 'seamless',
 				'layout'       => 'block',
 			);
-			$this->cloning   = array();
-			$this->have_rows = 'single';
+			$this->cloning       = array();
+			$this->have_rows     = 'single';
 
 			// register filter
 			acf_enable_filter( 'clone' );

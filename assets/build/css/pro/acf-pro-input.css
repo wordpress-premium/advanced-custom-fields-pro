@@ -177,6 +177,7 @@ body.acf-keydown-shift .acf-repeater .acf-row:hover > .acf-row-handle .acf-icon.
 }
 .acf-repeater .acf-actions .acf-button {
   float: right;
+  pointer-events: auto !important;
 }
 .acf-repeater .acf-actions .acf-tablenav {
   float: right;

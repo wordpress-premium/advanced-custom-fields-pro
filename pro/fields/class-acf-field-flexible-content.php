@@ -21,10 +21,15 @@ if ( ! class_exists( 'acf_field_flexible_content' ) ) :
 		function initialize() {
 
 			// vars
-			$this->name     = 'flexible_content';
-			$this->label    = __( 'Flexible Content', 'acf' );
-			$this->category = 'layout';
-			$this->defaults = array(
+			$this->name          = 'flexible_content';
+			$this->label         = __( 'Flexible Content', 'acf' );
+			$this->category      = 'layout';
+			$this->description   = __( 'Allows you to define, create and manage content with total control by creating layouts that contain subfields that content editors can choose from.', 'acf' ) . ' ' . __( 'We do not recommend using this field in ACF Blocks.', 'acf' );
+			$this->preview_image = acf_get_url() . '/assets/images/field-type-previews/field-preview-flexible-content.png';
+			$this->doc_url       = acf_add_url_utm_tags( 'https://www.advancedcustomfields.com/resources/flexible-content/', 'docs', 'field-type-selection' );
+			$this->tutorial_url  = acf_add_url_utm_tags( 'https://www.advancedcustomfields.com/resources/building-layouts-with-the-flexible-content-field-in-a-theme/', 'docs', 'field-type-selection' );
+			$this->pro           = true;
+			$this->defaults      = array(
 				'layouts'      => array(),
 				'min'          => '',
 				'max'          => '',
@@ -300,6 +305,10 @@ if ( ! class_exists( 'acf_field_flexible_content' ) ) :
 				foreach ( $field['value'] as $i => $value ) :
 
 					// validate
+					if ( ! is_array( $value ) ) {
+						continue;
+					}
+
 					if ( empty( $layouts[ $value['acf_fc_layout'] ] ) ) {
 						continue;
 					}
@@ -546,8 +555,7 @@ if ( ! class_exists( 'acf_field_flexible_content' ) ) :
 				<div class="acf-field acf-field-setting-fc_layout" data-name="fc_layout" data-setting="flexible_content" data-layout-label="<?php echo esc_attr( $layout['label'] ); ?>" data-id="<?php echo esc_attr( $layout['key'] ); ?>">
 					<div class="acf-label acf-field-settings-fc_head">
 						<div class="acf-fc_draggable">
-							<label class="reorder-layout"><?php esc_attr_e( 'Layout', 'acf' ); ?>
-							<span class="acf-fc-layout-name"></span></label>
+							<label class="acf-fc-layout-name reorder-layout" ><?php esc_attr_e( 'Layout', 'acf' ); ?></label>
 						</div>
 
 						<ul class="acf-bl acf-fl-actions">
@@ -668,7 +676,7 @@ if ( ! class_exists( 'acf_field_flexible_content' ) ) :
 						'is_subfield' => true,
 					);
 
-					acf_get_view( 'field-group-fields', $args );
+					acf_get_view( 'acf-field-group/fields', $args );
 
 					?>
 					</div>

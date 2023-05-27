@@ -568,7 +568,9 @@ function acf_rendered_block( $attributes, $content = '', $is_preview = false, $p
 		// Capture block render output.
 		acf_render_block( $attributes, $content, $is_preview, $post_id, $wp_block, $context );
 	}
+
 	$html = ob_get_clean();
+	$html = is_string( $html ) ? $html : '';
 
 	// Replace <InnerBlocks /> placeholder on front-end, or if we're rendering an ACF block inside another ACF block template.
 	if ( ! $is_preview || doing_action( 'acf_block_render_template' ) ) {

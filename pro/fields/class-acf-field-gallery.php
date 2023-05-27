@@ -21,10 +21,15 @@ if ( ! class_exists( 'acf_field_gallery' ) ) :
 		function initialize() {
 
 			// vars
-			$this->name     = 'gallery';
-			$this->label    = __( 'Gallery', 'acf' );
-			$this->category = 'content';
-			$this->defaults = array(
+			$this->name          = 'gallery';
+			$this->label         = __( 'Gallery', 'acf' );
+			$this->category      = 'content';
+			$this->description   = __( 'An interactive interface for managing a collection of attachments, such as images.', 'acf' );
+			$this->preview_image = acf_get_url() . '/assets/images/field-type-previews/field-preview-gallery.png';
+			$this->doc_url       = acf_add_url_utm_tags( 'https://www.advancedcustomfields.com/resources/gallery/', 'docs', 'field-type-selection' );
+			$this->tutorial_url  = acf_add_url_utm_tags( 'https://www.advancedcustomfields.com/resources/how-to-use-the-gallery-field/', 'docs', 'field-type-selection' );
+			$this->pro           = true;
+			$this->defaults      = array(
 				'return_format' => 'array',
 				'preview_size'  => 'medium',
 				'insert'        => 'append',

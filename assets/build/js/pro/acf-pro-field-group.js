@@ -228,13 +228,8 @@
     updateLayoutTitles: function () {
       const label = this.get('layoutLabel');
       const parentLabel = this.$el.find('> .acf-label .acf-fc-layout-name');
-      const subFieldsLabel = this.$el.find('> .acf-input > .acf-input-sub > .acf-sub-field-list-header > h3.acf-sub-field-list-title');
       if (label) {
-        parentLabel.html(': ' + label);
-        subFieldsLabel.html(acf.__('Fields') + ': ' + label);
-      } else {
-        parentLabel.html('');
-        subFieldsLabel.html(acf.__('Fields'));
+        parentLabel.html(label);
       }
     },
     onClickEdit: function (e) {
@@ -319,8 +314,7 @@
           // reset layout meta values
           $el2.attr('data-layout-label', '');
           $el2.find('.acf-fc-meta input').val('');
-          $el2.find('.acf-fc-layout-name').html('');
-          $el2.find('.acf-sub-field-list-title').html(acf.__('Fields '));
+          $el2.find('.acf-fc-layout-name').html(acf.__('Layout'));
         }
       });
 
@@ -357,6 +351,11 @@
         children.map(function (child) {
           // wipe field
           child.wipe();
+
+          // if the child is open, re-fire the open method to ensure it's initialised correctly.
+          if (child.isOpen()) {
+            child.open();
+          }
 
           // update parent
           child.updateParent();

@@ -1583,7 +1583,7 @@
 
       // vars
       var min = this.get('min');
-      var text = acf.__('Minimum rows reached ({min} rows)');
+      var text = acf.__('Minimum rows not reached ({min} rows)');
 
       // replace
       text = text.replace('{min}', min);
