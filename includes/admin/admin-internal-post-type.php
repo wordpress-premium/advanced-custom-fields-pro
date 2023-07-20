@@ -111,7 +111,8 @@ if ( ! class_exists( 'ACF_Admin_Internal_Post_Type' ) ) :
 		 * @return string
 		 */
 		public function admin_body_class( $classes ) {
-			return $classes . ' acf-admin-page acf-internal-post-type ' . esc_attr( $this->admin_body_class );
+			$classes .= " acf-admin-page acf-internal-post-type {$this->admin_body_class}";
+			return $classes;
 		}
 
 		/**
