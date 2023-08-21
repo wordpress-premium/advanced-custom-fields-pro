@@ -1,0 +1,11 @@
+{
+    "name": "wordpress-premium/advanced-custom-fields-pro",
+    "description": "Customise WordPress with powerful, professional and intuitive fields.",
+    "type": "wordpress-plugin",
+	"version": "6.1.6",
+	"homepage": "https://www.advancedcustomfields.com",
+    "require": {
+        "composer/installers": ">=1.0"
+    },
+    "license": "GPLv2 or later"
+}
