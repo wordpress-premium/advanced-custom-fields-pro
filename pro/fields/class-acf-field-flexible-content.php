@@ -940,7 +940,7 @@ if ( ! class_exists( 'acf_field_flexible_content' ) ) :
 
 				// vars
 				$error      = __( 'This field requires at least {min} {label} {identifier}', 'acf' );
-				$identifier = _n( 'layout', 'layouts', $min );
+				$identifier = _n( 'layout', 'layouts', $min, 'acf' );
 
 				// replace
 				$error = str_replace( '{min}', $min, $error );
@@ -1019,7 +1019,7 @@ if ( ! class_exists( 'acf_field_flexible_content' ) ) :
 
 					// vars
 					$error      = __( 'This field requires at least {min} {label} {identifier}', 'acf' );
-					$identifier = _n( 'layout', 'layouts', $min );
+					$identifier = _n( 'layout', 'layouts', $min, 'acf' );
 
 					// replace
 					$error = str_replace( '{min}', $min, $error );

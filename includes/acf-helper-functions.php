@@ -505,27 +505,42 @@ function acf_get_current_url() {
  *
  * @since 6.0.0
  *
- * @param string $url The URL to be tagged.
+ * @param string $url      The URL to be tagged.
  * @param string $campaign The campaign tag.
- * @param string $content The UTM content tag.
+ * @param string $content  The UTM content tag.
+ * @param bool   $anchor   An optional anchor ID.
+ * @param string $source   An optional UTM source tag.
+ * @param string $medium   An optional UTM medium tag.
  * @return string
  */
-function acf_add_url_utm_tags( $url, $campaign, $content, $anchor = false ) {
+function acf_add_url_utm_tags( $url, $campaign, $content, $anchor = false, $source = '', $medium = '' ) {
 	$anchor_url = $anchor ? '#' . $anchor : '';
-	$query      = http_build_query(
+	$medium     = ! empty( $medium ) ? $medium : 'insideplugin';
+
+	if ( empty( $source ) ) {
+		$source = acf_is_pro() ? 'ACF PRO' : 'ACF Free';
+	}
+
+	$query = http_build_query(
 		apply_filters(
 			'acf/admin/acf_url_utm_parameters',
 			array(
-				'utm_source'   => ( defined( 'ACF_PRO' ) && ACF_PRO ) ? 'ACF PRO' : 'ACF Free',
-				'utm_medium'   => 'insideplugin',
+				'utm_source'   => $source,
+				'utm_medium'   => $medium,
 				'utm_campaign' => $campaign,
 				'utm_content'  => $content,
 			)
 		)
 	);
+
 	if ( $query ) {
-		$query = '?' . $query;
+		if ( strpos( $url, '?' ) !== false ) {
+			$query = '&' . $query;
+		} else {
+			$query = '?' . $query;
+		}
 	}
+
 	return esc_url( $url . $query . $anchor_url );
 }
 
@@ -652,4 +667,15 @@ function acf_maybe_unserialize( $data ) {
 	}
 
 	return $data;
+}
+
+/**
+ * Check if current install is ACF PRO
+ *
+ * @since 6.2
+ *
+ * @return boolean True if the current install is ACF PRO
+ */
+function acf_is_pro() {
+	return defined( 'ACF_PRO' ) && ACF_PRO;
 }

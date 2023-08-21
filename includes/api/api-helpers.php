@@ -131,7 +131,7 @@ function acf_get_setting( $name, $value = null ) {
  * @return array An array of ACF's internal post type names
  */
 function acf_get_internal_post_types() {
-	return array( 'acf-field-group', 'acf-post-type', 'acf-taxonomy' );
+	return array( 'acf-field-group', 'acf-post-type', 'acf-taxonomy', 'acf-ui-options-page' );
 }
 
 /*
@@ -629,6 +629,7 @@ function acf_get_post_types( $args = array() ) {
 	$exclude[] = 'acf-field-group';
 	$exclude[] = 'acf-post-type';
 	$exclude[] = 'acf-taxonomy';
+	$exclude[] = 'acf-ui-options-page';
 
 	// Get post type objects.
 	$objects = get_post_types( $args, 'objects' );
@@ -1406,6 +1407,15 @@ function acf_get_posts( $args = array() ) {
 		$args['post__in'] = array_map( 'intval', acf_array( $args['post__in'] ) );
 	}
 
+	/**
+	 * Filters the args used in `acf_get_posts()` that are passed to `get_posts()`.
+	 *
+	 * @since 6.1.7
+	 *
+	 * @param array $args The args passed to `get_posts()`.
+	 */
+	$args = apply_filters( 'acf/acf_get_posts/args', $args );
+
 	// Query posts.
 	$posts = get_posts( $args );
 
@@ -1421,8 +1431,15 @@ function acf_get_posts( $args = array() ) {
 		array_multisort( $order, $posts );
 	}
 
-	// Return posts.
-	return $posts;
+
+	/**
+	 * Filters the results found in the `acf_get_posts()` function.
+	 *
+	 * @since 6.1.7
+	 *
+	 * @param array $posts The results from the `get_posts()` call.
+	 */
+	return apply_filters( 'acf/acf_get_posts/results', $posts );
 }
 
 

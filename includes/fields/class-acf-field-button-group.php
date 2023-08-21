@@ -191,7 +191,7 @@ if ( ! class_exists( 'acf_field_button_group' ) ) :
 			acf_render_field_setting(
 				$field,
 				array(
-					'label'        => __( 'Allow Null?', 'acf' ),
+					'label'        => __( 'Allow Null', 'acf' ),
 					'instructions' => '',
 					'name'         => 'allow_null',
 					'type'         => 'true_false',
@@ -316,17 +316,7 @@ if ( ! class_exists( 'acf_field_button_group' ) ) :
 				$schema['default'] = $field['default_value'];
 			}
 
-			/**
-			 * If a user has defined keys for the buttons,
-			 * we should use the keys for the available options to POST to,
-			 * since they are what is displayed in GET requests.
-			 */
-			$button_keys = array_diff(
-				array_keys( $field['choices'] ),
-				array_values( $field['choices'] )
-			);
-
-			$schema['enum']   = empty( $button_keys ) ? $field['choices'] : $button_keys;
+			$schema['enum']   = acf_get_field_type( 'select' )->format_rest_choices( $field['choices'] );
 			$schema['enum'][] = null;
 
 			// Allow null via UI will value to empty string.
