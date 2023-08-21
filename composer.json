@@ -4,5 +4,5 @@
     "type": "wordpress-plugin",
 	"version": "6.1.6",
 	"homepage": "https://www.advancedcustomfields.com",
-    "license": "GPLv2 or later"
+    "license": "GPL-2.0-or-later"
 }
