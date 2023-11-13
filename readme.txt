@@ -4,7 +4,7 @@ Tags: acf, fields, custom fields, meta, repeater
 Requires at least: 5.8
 Tested up to: 6.3
 Requires PHP: 7.0
-Stable tag: 6.2.0
+Stable tag: 6.2.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -91,6 +91,39 @@ From your WordPress dashboard
 
 
 == Changelog ==
+
+= 6.2.2 =
+*Release Date 25th October 2023*
+
+* Enhancement - ACF Blocks which have not been initialized by the editor will now render correctly
+* Enhancement - Added a new `acf/filesize` filter to allow third party media plugins to bypass ACF calling `filesize()` on attachments with uncached file sizes, which may result in a remote download if offloaded
+* Enhancement - ACF PRO license status and subscription expiry dates are now displayed on the “Updates” page
+* Fix - Product pages for WooCommerce version 8.2 or newer now correctly support field group location rules
+* Fix - Relationship field items can now be removed on mobile devices
+* Fix - Color picker fields no longer autocomplete immediately after typing 3 valid hex characters
+* Fix - Field settings no longer appear misaligned when the viewport is something other than 100%
+* Fix - Select fields without an aria-label no longer throw a warning
+* Fix - CPTs and Taxonomies with a custom text domain now export correctly when using PHP export
+
+= 6.2.1.1 =
+*Release Date 8th September 2023*
+
+* Fix - Editing a field group no longer generates an error when UI options pages are disabled
+
+= 6.2.1 =
+*Release Date 7th September 2023*
+
+* New - Options Pages created in the admin UI can now be assigned as child pages for any top-level menu item
+* New - Added a "Title Placeholder" setting to ACF Post Types which filters the "Add title" text when editing posts
+* Enhancement - ACF PRO will now warn when it can’t update due to PHP version incompatibilities
+* Enhancement - ACF PRO will now work correctly with WordPress automatic updates
+* Enhancement - The internal ACF Blocks template attribute parser function `parseNodeAttr` can now be shortcut with the new `acf_blocks_parse_node_attr` filter.
+* Enhancement - Removed legacy code for supporting WordPress versions under 5.8
+* Fix - The "Menu Position" setting is no longer hidden for child options pages
+* Fix - The tabs for the "Advanced" settings in Post Types and Taxonomies are now rendered inside a wrapper div
+* Fix - Options pages will no longer display as a child page in the list view when set to a top level page after previously being a child
+* Fix - Conflict with Elementor CSS breaking the ACF PRO banner
+* Fix - Errors generated during the block editor’s `savePost` function will no longer be caught and ignored by ACF
 
 = 6.2.0 =
 *Release Date 9th August 2023*

@@ -73,6 +73,7 @@ if ( ! class_exists( 'ACF_Post_Type' ) ) {
 			parent::__construct();
 
 			add_action( 'acf/init', array( $this, 'register_post_types' ), 6 );
+			add_filter( 'enter_title_here', array( $this, 'enter_title_here' ), 10, 2 );
 		}
 
 		/**
@@ -137,6 +138,27 @@ if ( ! class_exists( 'ACF_Post_Type' ) ) {
 					$store->set( $post_type['key'], $store_value );
 				}
 			}
+		}
+
+		/**
+		 * Filters the "Add title" text for ACF post types.
+		 *
+		 * @since 6.2.1
+		 *
+		 * @param string  $default The default text.
+		 * @param WP_Post $post    The WP_Post object.
+		 * @return string
+		 */
+		public function enter_title_here( $default, $post ) {
+			$post_types = $this->get_posts( array( 'active' => true ) );
+
+			foreach ( $post_types as $post_type ) {
+				if ( $post->post_type === $post_type['post_type'] && ! empty( $post_type['enter_title_here'] ) ) {
+					return (string) $post_type['enter_title_here'];
+				}
+			}
+
+			return $default;
 		}
 
 		/**
@@ -227,6 +249,7 @@ if ( ! class_exists( 'ACF_Post_Type' ) ) {
 				'can_export'               => true,
 				'delete_with_user'         => false,
 				'register_meta_box_cb'     => '',
+				'enter_title_here'         => '',
 			);
 		}
 
@@ -317,13 +340,13 @@ if ( ! class_exists( 'ACF_Post_Type' ) ) {
 				$post_id    = (int) acf_sanitize_request_args( $_POST['post_id'] ); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Verified elsewhere.
 				$matches    = array_filter(
 					$store->get_data(),
-					function( $item ) use ( $post_type_key ) {
+					function ( $item ) use ( $post_type_key ) {
 						return $item['post_type'] === $post_type_key && empty( $item['not_registered'] );
 					}
 				);
 				$duplicates = array_filter(
 					$matches,
-					function( $item ) use ( $post_id ) {
+					function ( $item ) use ( $post_id ) {
 						return $item['ID'] !== $post_id;
 					}
 				);
@@ -354,17 +377,19 @@ if ( ! class_exists( 'ACF_Post_Type' ) ) {
 		 *
 		 * @since 6.1
 		 *
-		 * @param array $post The main ACF post type settings array.
+		 * @param  array   $post The main ACF post type settings array.
+		 * @param  boolean $escape_labels Determines if the label values should be escaped.
 		 * @return array
 		 */
-		public function get_post_type_args( $post ) {
+		public function get_post_type_args( $post, $escape_labels = true ) {
 			$args = array();
 
 			// Make sure any provided labels are escaped strings and not empty.
 			$labels = array_filter( $post['labels'] );
 			$labels = array_map( 'strval', $labels );
-			$labels = array_map( 'esc_html', $labels );
-
+			if ( $escape_labels ) {
+				$labels = array_map( 'esc_html', $labels );
+			}
 			if ( ! empty( $labels ) ) {
 				$args['labels'] = $labels;
 			}
@@ -597,7 +622,7 @@ if ( ! class_exists( 'ACF_Post_Type' ) ) {
 
 			// Validate and prepare the post for export.
 			$post = $this->validate_post( $post );
-			$args = $this->get_post_type_args( $post );
+			$args = $this->get_post_type_args( $post, false );
 			$code = var_export( $args, true ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions -- Used for PHP export.
 
 			if ( ! $code ) {
@@ -785,11 +810,6 @@ if ( ! class_exists( 'ACF_Post_Type' ) ) {
 			if ( isset( $args['query_var_slug'] ) ) {
 				$acf_args['query_var_name'] = (string) $args['query_var_slug'];
 				unset( $args['query_var_slug'] );
-			}
-
-			// ACF doesn't support custom "Enter title here" text.
-			if ( isset( $args['enter_title_here'] ) ) {
-				unset( $args['enter_title_here'] );
 			}
 
 			$acf_args = wp_parse_args( $args, $acf_args );
