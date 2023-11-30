@@ -49,7 +49,7 @@ if ( ! class_exists( 'ACF_Admin_Updates' ) ) :
 			// Create new notice.
 			acf_new_admin_notice(
 				array(
-					'text' => __( '<b>Error</b>. Could not connect to update server', 'acf' ) . ' <span class="description">(' . esc_html( $wp_error->get_error_message() ) . ').</span>',
+					'text' => __( '<strong>Error</strong>. Could not connect to the update server', 'acf' ) . ' <span class="description">(' . esc_html( $wp_error->get_error_message() ) . ').</span>',
 					'type' => 'error',
 				)
 			);
@@ -64,7 +64,7 @@ if ( ! class_exists( 'ACF_Admin_Updates' ) ) :
 		 * @since   5.7.10
 		 *
 		 * @param   string $changelog The changelog text.
-		 * @param   string $version The version to find.
+		 * @param   string $version   The version to find.
 		 * @return  string
 		 */
 		function get_changelog_changes( $changelog = '', $version = '' ) {
@@ -108,13 +108,8 @@ if ( ! class_exists( 'ACF_Admin_Updates' ) ) :
 				return;
 			}
 
-			// Bail early if no show_updates.
-			if ( ! acf_get_setting( 'show_updates' ) ) {
-				return;
-			}
-
-			// Bail early if not a plugin (included in theme).
-			if ( ! acf_is_plugin_active() ) {
+			// Bail early if the updates page is not visible.
+			if ( ! acf_is_updates_page_visible() ) {
 				return;
 			}
 
@@ -206,22 +201,20 @@ if ( ! class_exists( 'ACF_Admin_Updates' ) ) :
 
 				if ( $license ) {
 					if ( isset( $update['license_valid'] ) && ! $update['license_valid'] ) {
-
 						$this->view['license_error'] = true;
 						acf_new_admin_notice(
 							array(
-								'text' => __( '<b>Error</b>. Your license for this site has expired or been deactivated. Please reactivate your ACF PRO license.', 'acf' ),
+								'text' => __( '<strong>Error</strong>. Your license for this site has expired or been deactivated. Please reactivate your ACF PRO license.', 'acf' ),
 								'type' => 'error',
 							)
 						);
-
 					} else {
 						// display error if no package url - possible if license key or site URL has been modified.
 						if ( $update && ! $update['package'] ) {
 							$this->view['license_error'] = true;
 							acf_new_admin_notice(
 								array(
-									'text' => __( '<b>Error</b>. Could not authenticate update package. Please check again or deactivate and reactivate your ACF PRO license.', 'acf' ),
+									'text' => __( '<strong>Error</strong>. Could not authenticate update package. Please check again or deactivate and reactivate your ACF PRO license.', 'acf' ),
 									'type' => 'error',
 								)
 							);
@@ -261,11 +254,10 @@ if ( ! class_exists( 'ACF_Admin_Updates' ) ) :
 		 * @return  void
 		 */
 		function html() {
-			acf_get_view( dirname( __FILE__ ) . '/views/html-settings-updates.php', $this->view );
+			acf_get_view( __DIR__ . '/views/html-settings-updates.php', $this->view );
 		}
 	}
 
 	// Initialize.
 	acf_new_instance( 'ACF_Admin_Updates' );
-
 endif; // class_exists check
