@@ -11,7 +11,7 @@
 namespace RankMathPro\Schema\Video;
 
 use RankMath\Helper;
-use MyThemeShop\Helpers\Str;
+use RankMath\Helpers\Str;
 
 defined( 'ABSPATH' ) || exit;
 

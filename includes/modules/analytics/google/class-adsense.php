@@ -12,6 +12,8 @@ namespace RankMathPro\Google;
 
 use RankMath\Google\Api;
 use RankMath\Helpers\Security;
+use RankMath\Analytics\Workflow\Base;
+use WP_Error;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -54,12 +56,16 @@ class Adsense {
 	 *
 	 * @return array
 	 */
-	public static function get_adsense( $start_date, $end_date ) {
-		if ( ! self::get_adsense_id() ) {
+	public static function get_adsense( $options = [] ) {
+		$account_id = isset( $options['account_id'] ) ? $options['account_id'] : self::get_adsense_id();
+		$start_date = isset( $options['start_date'] ) ? $options['start_date'] : '';
+		$end_date   = isset( $options['end_date'] ) ? $options['end_date'] : '';
+
+		if ( ! $account_id || ! $start_date || ! $end_date ) {
 			return false;
 		}
-		$account_id = self::get_adsense_id();
-		$request    = Security::add_query_arg_raw(
+
+		$request = Security::add_query_arg_raw(
 			[
 				'startDate.year'  => gmdate( 'Y', strtotime( $start_date ) ),
 				'startDate.month' => gmdate( 'n', strtotime( $start_date ) ),
@@ -73,11 +79,19 @@ class Adsense {
 			],
 			'https://adsense.googleapis.com/v2/' . $account_id . '/reports:generate'
 		);
-		$response   = Api::get()->http_get( $request );
 
-		Api::get()->log_failed_request( $response, 'adsense', $start_date, func_get_args() );
+		$workflow = 'adsense';
+		Api::get()->set_workflow( $workflow );
 
-		if ( ! Api::get()->is_success() || ! isset( $response['rows'] ) ) {
+		$response = Api::get()->http_get( $request );
+
+		Api::get()->log_failed_request( $response, $workflow, $start_date, func_get_args() );
+
+		if ( ! Api::get()->is_success() ) {
+			return new WP_Error( 'adsense_api_fail', 'Google AdSense API request failed.' );
+		}
+
+		if ( ! isset( $response['rows'] ) ) {
 			return false;
 		}
 

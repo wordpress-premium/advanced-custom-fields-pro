@@ -5,14 +5,13 @@
  * @since      1.0.0
  * @package    RankMath
  * @subpackage RankMathPro
- * @author     MyThemeShop <admin@mythemeshop.com>
+ * @author     RankMath <support@rankmath.com>
  */
 
 namespace RankMathPro\Sitemap;
 
 use RankMath\Helper;
 use RankMath\Traits\Hooker;
-use MyThemeShop\Helpers\WordPress;
 use RankMath\Sitemap\Cache_Watcher;
 
 defined( 'ABSPATH' ) || exit;

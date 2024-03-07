@@ -62,6 +62,13 @@ class Api {
 	protected $user_agent = '';
 
 	/**
+	 * Is request blocking (do we wait for response)?
+	 *
+	 * @var bool
+	 */
+	protected $is_blocking = true;
+
+	/**
 	 * Main instance
 	 *
 	 * Ensure only one instance is loaded or can be loaded.

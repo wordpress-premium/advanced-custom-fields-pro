@@ -24,6 +24,13 @@ class Local_Seo {
 	use Hooker;
 
 	/**
+	 * Post Singular Name.
+	 *
+	 * @var string
+	 */
+	private $post_singular_name = 'Location';
+
+	/**
 	 * Post Type.
 	 *
 	 * @var string
@@ -77,7 +84,7 @@ class Local_Seo {
 			return;
 		}
 
-		$this->post_singular_name = Helper::get_settings( 'titles.locations_post_type_label', 'Locations' );
+		$this->post_singular_name = Helper::get_settings( 'titles.locations_post_type_label', 'Location' );
 
 		$this->register_location_post_type();
 		$this->register_location_taxonomy();

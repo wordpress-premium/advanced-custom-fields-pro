@@ -75,7 +75,7 @@ class Media_RSS {
 		$rating      = ! empty( $video_schema['isFamilyFriendly'] ) ? 'nonadult' : 'adult';
 
 		$this->newline( '<media:content url="' . esc_url( $url ) . '" medium="video"' . $attrs . '>' );
-		$this->newline( '<media:player>' . esc_url( $url ) . '</media:player>', 3 );
+		$this->newline( '<media:player url="' . esc_url( $url ) . '" />', 3 );
 
 		if ( $name ) {
 			$this->newline( '<media:title type="plain">' . esc_html( $name ) . '</media:title>', 3 );

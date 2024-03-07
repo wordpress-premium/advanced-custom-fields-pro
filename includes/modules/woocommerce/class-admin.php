@@ -10,9 +10,8 @@
 namespace RankMathPro;
 
 use RankMath\Helper;
+use RankMath\Helpers\Param;
 use RankMath\Traits\Hooker;
-use MyThemeShop\Helpers\Param;
-use MyThemeShop\Helpers\Conditional;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -34,6 +33,8 @@ class Admin {
 		$this->action( 'woocommerce_product_after_variable_attributes', 'add_variation_gtin_field', 10, 3 );
 		$this->action( 'woocommerce_admin_process_product_object', 'save_gtin_data' );
 		$this->action( 'woocommerce_save_product_variation', 'save_variation_gtin_data', 10, 2 );
+		$this->filter( 'rank_math/metabox/post/values', 'updated_localized_data', 99, 2 );
+		$this->filter( 'rank_math/admin/robots', 'update_rank_math_product_robots', 99, 2 );
 	}
 
 	/**
@@ -194,5 +195,56 @@ class Admin {
 		$variation = wc_get_product( $variation_id );
 		$variation->update_meta_data( '_rank_math_gtin_code', wc_clean( wp_unslash( $gtin_code ) ) );
 		$variation->save_meta_data();
+	}
+
+	/**
+	 * Change robots for Hidden Products according to settings.
+	 *
+	 * @param array  $values Metabox values.
+	 * @param Screen $screen The current screen.
+	 *
+	 * @return mixed
+	 */
+	public function updated_localized_data( $values, $screen ) {
+		$object_id = $screen->get_object_id();
+
+		// Early bail if current post type is not Product or the Hidden product option is disabled.
+		if ( 'product' !== get_post_type( $object_id ) || ! Helper::get_settings( 'general.noindex_hidden_products' ) ) {
+			return $values;
+		}
+
+		$product = wc_get_product( $object_id );
+
+		// Early bail.
+		if ( 'hidden' !== $product->get_catalog_visibility() ) {
+			return $values;
+		}
+
+		if ( isset( $values['assessor']['serpData']['robots']['index'] ) ) {
+			unset( $values['assessor']['serpData']['robots']['index'] );
+		}
+		$values['assessor']['serpData']['robots']['noindex'] = 1;
+
+		return $values;
+	}
+
+	/**
+	 * Change robots for Hidden Products according to settings for post columns.
+	 *
+	 * @param mixed $robots  The rank_math_robots from the FORM post.
+	 * @param int   $post_id The post id.
+	 * @return mixed|string[]
+	 */
+	public function update_rank_math_product_robots( $robots, $post_id ) {
+		if ( 'product' !== get_post_type( $post_id ) || ! Helper::get_settings( 'general.noindex_hidden_products' ) ) {
+			return $robots;
+		}
+
+		$product = \wc_get_product( $post_id );
+		if ( $product && 'hidden' !== $product->get_catalog_visibility() ) {
+			return $robots;
+		}
+
+		return [ 'noindex' ];
 	}
 }

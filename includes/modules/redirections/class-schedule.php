@@ -11,10 +11,9 @@
 namespace RankMathPro\Redirections;
 
 use RankMath\Helper;
+use RankMath\Helpers\Param;
 use RankMath\Traits\Hooker;
 use RankMath\Redirections\DB;
-use MyThemeShop\Helpers\Param;
-use MyThemeShop\Helpers\WordPress;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -26,17 +25,24 @@ class Schedule {
 	use Hooker;
 
 	/**
+	 * Save start and end date.
+	 *
+	 * @var array
+	 */
+	private $save_start_end = [];
+
+	/**
 	 * Register hooks.
 	 */
 	public function __construct() {
+		$this->action( 'init', 'disallow_scheduled_bulk_status_change', 5 );
 		$this->action( 'cmb2_admin_init', 'cmb_init', 99 );
-
 		$this->action( 'admin_post_rank_math_save_redirections', 'save_start_end', 9 );
 		$this->action( 'rank_math/redirections/scheduled_activate', 'scheduled_activation_event', 10, 1 );
 		$this->action( 'rank_math/redirections/scheduled_deactivate', 'scheduled_deactivation_event', 10, 1 );
+		$this->action( 'rank_math/redirection/deleted', 'delete_scheduled_event', 10, 1 );
 
 		$this->filter( 'rank_math/redirection/row_classes', 'row_classes', 10, 2 );
-		$this->action( 'init', 'disallow_scheduled_bulk_status_change', 5 );
 	}
 
 	/**
@@ -343,7 +349,7 @@ class Schedule {
 	 * Disable bulk status change if the selected item has a locked status.
 	 */
 	public function disallow_scheduled_bulk_status_change() {
-		$action = WordPress::get_request_action();
+		$action = Helper::get_request_action();
 		if ( false === $action || empty( $_REQUEST['redirection'] ) || ! in_array( $action, [ 'activate', 'deactivate' ], true ) ) {
 			return;
 		}
@@ -367,6 +373,22 @@ class Schedule {
 		if ( ! empty( $could_not_change ) ) {
 			$message = __( 'One or more of the selected redirections could not be changed because they are scheduled for future activation/deactivation.', 'rank-math-pro' );
 			Helper::add_notification( $message, [ 'type' => 'error' ] );
+		}
+	}
+
+	/**
+	 * Make sure to delete scheduled actions when a redirection is deleted.
+	 *
+	 * @param array $redirection_ids Redirection IDs.
+	 */
+	public function delete_scheduled_event( $redirection_ids ) {
+		if ( ! is_array( $redirection_ids ) ) {
+			$redirection_ids = [ $redirection_ids ];
+		}
+
+		foreach ( $redirection_ids as $redirection_id ) {
+			$this->clear_scheduled_activation( $redirection_id );
+			$this->clear_scheduled_deactivation( $redirection_id );
 		}
 	}
 

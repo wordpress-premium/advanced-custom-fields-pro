@@ -11,8 +11,8 @@
 namespace RankMathPro\Admin;
 
 use RankMath\Helper;
+use RankMath\Helpers\Param;
 use RankMath\Traits\Hooker;
-use MyThemeShop\Helpers\Param;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -76,6 +76,7 @@ class Post_Filters {
 			'Book'                => esc_html__( 'Book', 'rank-math-pro' ),
 			'Course'              => esc_html__( 'Course', 'rank-math-pro' ),
 			'Event'               => esc_html__( 'Event', 'rank-math-pro' ),
+			'PodcastEpisode'      => esc_html__( 'Podcast', 'rank-math-pro' ),
 			'JobPosting'          => esc_html__( 'Job Posting', 'rank-math-pro' ),
 			'MusicGroup'          => esc_html__( 'Music', 'rank-math-pro' ),
 			'Movie'               => esc_html__( 'Movie', 'rank-math-pro' ),
@@ -264,7 +265,7 @@ class Post_Filters {
 	 */
 	public function posts_where_no_schema( $where, \WP_Query $wp_query ) {
 		global $wpdb;
-		$where .= " AND NOT EXISTS ( SELECT meta_id FROM {$wpdb->postmeta} WHERE post_id = wp_posts.ID AND meta_key LIKE 'rank_math_schema_%' )";
+		$where .= " AND NOT EXISTS ( SELECT meta_id FROM {$wpdb->postmeta} WHERE post_id = {$wpdb->posts}.ID AND meta_key LIKE 'rank_math_schema_%' )";
 		// Remove this filter for subsequent queries.
 		$this->remove_filter( 'posts_where', 'posts_where_no_schema', 20, 2 );
 

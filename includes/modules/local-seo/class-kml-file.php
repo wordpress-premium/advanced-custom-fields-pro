@@ -75,19 +75,23 @@ class KML_File {
 			$name        = ! empty( $locations_data['name'] ) ? $locations_data['name'] : '%seo_title%';
 			$description = ! empty( $locations_data['description'] ) ? $locations_data['description'] : '%seo_description%';
 			$address     = '';
-			if ( ! empty( $locations_data['address'] ) ) {
-				if ( isset( $locations_data['address']['@type'] ) ) {
-					unset( $locations_data['address']['@type'] );
-					$address = $locations_data['address'];
-				}
+			if ( ! empty( $locations_data['address'] ) && isset( $locations_data['address']['@type'] ) ) {
+				unset( $locations_data['address']['@type'] );
+				$address = array_map(
+					function( $value ) use ( $rm_location ) {
+						return Helper::replace_vars( $value, $rm_location );
+					},
+					$locations_data['address']
+				);
 			}
+
 			$locations[] = [
 				'name'        => Helper::replace_vars( $name, $rm_location ),
 				'description' => Helper::replace_vars( $description, $rm_location ),
-				'email'       => ! empty( $locations_data['email'] ) ? $locations_data['email'] : '',
-				'phone'       => ! empty( $locations_data['telephone'] ) ? $locations_data['telephone'] : '',
+				'email'       => ! empty( $locations_data['email'] ) ? Helper::replace_vars( $locations_data['email'], $rm_location ) : '',
+				'phone'       => ! empty( $locations_data['telephone'] ) ? Helper::replace_vars( $locations_data['telephone'], $rm_location ) : '',
 				'url'         => get_the_permalink( $rm_location ),
-				'address'     => ! empty( $locations_data['address'] ) ? $locations_data['address'] : '',
+				'address'     => $address,
 				'coords'      => ! empty( $locations_data['geo'] ) ? $locations_data['geo'] : '',
 			];
 		}

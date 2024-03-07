@@ -11,7 +11,6 @@ namespace RankMathPro;
 
 use RankMath\Helper;
 use RankMath\Traits\Hooker;
-use MyThemeShop\Helpers\Conditional;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -40,11 +39,12 @@ class WooCommerce {
 	 * Filter/Hooks to add GTIN value on Product page.
 	 */
 	public function init() {
+		$this->filter( 'rank_math/frontend/robots', 'robots' );
+
 		if ( ! is_product() ) {
 			return;
 		}
 
-		$this->filter( 'rank_math/frontend/robots', 'robots' );
 		$this->filter( 'rank_math/snippet/rich_snippet_product_entity', 'add_gtin_in_schema' );
 		$this->filter( 'rank_math/woocommerce/product_brand', 'add_custom_product_brand' );
 		$this->filter( 'rank_math/snippet/rich_snippet_product_entity', 'add_variations_data' );
@@ -87,9 +87,23 @@ class WooCommerce {
 	 * @return array Modified robots.
 	 */
 	public function robots( $robots ) {
-		$is_hidden = \wc_get_product()->get_catalog_visibility() === 'hidden';
+		if ( ! Helper::get_settings( 'general.noindex_hidden_products' ) ) {
+			return $robots;
+		}
 
-		if ( Helper::get_settings( 'general.noindex_hidden_products' ) && $is_hidden ) {
+		if ( is_product() ) {
+			$product   = \wc_get_product();
+			$is_hidden = $product && $product->get_catalog_visibility() === 'hidden';
+			if ( $is_hidden ) {
+				return [
+					'noindex'  => 'noindex',
+					'nofollow' => 'nofollow',
+				];
+			}
+		}
+
+		global $wp_query;
+		if ( is_product_taxonomy() && ! $wp_query->post_count && $wp_query->queried_object->count ) {
 			return [
 				'noindex'  => 'noindex',
 				'nofollow' => 'nofollow',
@@ -256,7 +270,7 @@ class WooCommerce {
 				$price_valid_until = strtotime( ( date( 'Y' ) + 1 ) . '-12-31' );
 			}
 
-			$offer_entity      = [
+			$offer_entity = [
 				'@type'           => 'Offer',
 				'description'     => wp_strip_all_tags( $variation->get_description() ),
 				'price'           => wc_get_price_to_display( $variation ),
@@ -298,10 +312,6 @@ class WooCommerce {
 	 * @param array $entity       Offer entity.
 	 */
 	private function add_variable_gtin( $variation_id, &$entity ) {
-		if ( ! Helper::get_settings( 'general.show_gtin' ) ) {
-			return;
-		}
-
 		$gtin_key = Helper::get_settings( 'general.gtin', 'gtin8' );
 		$gtin     = get_post_meta( $variation_id, '_rank_math_gtin_code', true );
 		if ( ! $gtin || 'isbn' === $gtin_key ) {

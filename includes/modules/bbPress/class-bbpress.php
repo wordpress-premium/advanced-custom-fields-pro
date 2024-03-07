@@ -12,7 +12,7 @@ namespace RankMathPro;
 
 use RankMath\Traits\Hooker;
 use RankMath\Traits\Ajax;
-use MyThemeShop\Helpers\Param;
+use RankMath\Helpers\Param;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -24,6 +24,13 @@ defined( 'ABSPATH' ) || exit;
 class BBPress {
 
 	use Hooker, Ajax;
+
+	/**
+	 * Post meta key for solved answers.
+	 *
+	 * @var string
+	 */
+	public $meta_key = '';
 
 	/**
 	 * Constructor.

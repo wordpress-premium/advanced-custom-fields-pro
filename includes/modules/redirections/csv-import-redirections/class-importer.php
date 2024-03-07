@@ -10,7 +10,7 @@
 
 namespace RankMathPro\Redirections\CSV_Import_Export_Redirections;
 
-use MyThemeShop\Helpers\Arr;
+use RankMath\Helpers\Arr;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -62,6 +62,20 @@ class Importer {
 	 * @var array
 	 */
 	private $errors = [];
+
+	/**
+	 * SPL file object.
+	 *
+	 * @var \SplFileObject
+	 */
+	private $spl;
+
+	/**
+	 * Column headers.
+	 *
+	 * @var array
+	 */
+	private $column_headers = [];
 
 	/**
 	 * Start import from file.

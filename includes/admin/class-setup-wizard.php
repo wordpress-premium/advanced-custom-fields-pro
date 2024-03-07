@@ -12,10 +12,9 @@ namespace RankMathPro\Admin;
 
 use RankMath\KB;
 use RankMath\Helper;
+use RankMath\Helpers\Param;
 use RankMath\Traits\Ajax;
 use RankMath\Traits\Hooker;
-use MyThemeShop\Helpers\Param;
-use MyThemeShop\Helpers\WordPress;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -81,7 +80,7 @@ class Setup_Wizard {
 			$import_html .= __( 'Select a Rank Math settings file on your computer and upload it to use the custom settings.', 'rank-math-pro' ) . ' ';
 			// Translators: placeholder is a list of filetypes.
 			$import_html .= sprintf( __( 'Allowed filetypes: %s', 'rank-math-pro' ), '<code>.txt, .json</code>' ) . ' ';
-			$import_html .= '<a href="' . KB::get( 'import-export-settings' ) . '">' . __( 'More information', 'rank-math-pro' ) . '</a> ';
+			$import_html .= '<a href="' . KB::get( 'import-export-settings', 'SW Import Settings Option' ) . '">' . __( 'More information', 'rank-math-pro' ) . '</a> ';
 			$import_html .= '</p>';
 			$import_html .= '</div>';
 
@@ -115,7 +114,7 @@ class Setup_Wizard {
 		}
 
 		// Parse Options.
-		$wp_filesystem = WordPress::get_filesystem();
+		$wp_filesystem = Helper::get_filesystem();
 		if ( is_null( $wp_filesystem ) ) {
 			return false;
 		}

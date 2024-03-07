@@ -5,12 +5,12 @@
  * @since      1.0.0
  * @package    RankMath
  * @subpackage RankMathPro
- * @author     MyThemeShop <admin@mythemeshop.com>
+ * @author     RankMath <support@rankmath.com>
  */
 
 namespace RankMathPro\Schema;
 
-use MyThemeShop\Helpers\Param;
+use RankMath\Helpers\Param;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -81,7 +81,7 @@ class Ajax {
 	private function get_singular( $search, $type, $value, $taxonomy ) {
 		if ( 'null' === $search && $value ) {
 
-			if ( $taxonomy ) {
+			if ( $taxonomy && taxonomy_exists( $taxonomy ) ) {
 				$data = [
 					'value' => $value,
 					'title' => get_term( $value )->name,
@@ -96,11 +96,13 @@ class Ajax {
 			return $data;
 		}
 
-		if ( $taxonomy ) {
+		if ( $taxonomy && 'all' !== $taxonomy ) {
 			$terms = get_terms(
 				[
-					'taxonomy' => $taxonomy,
-					'fields'   => 'id=>name',
+					'taxonomy'   => $taxonomy,
+					'fields'     => 'id=>name',
+					'search'     => $search,
+					'hide_empty' => false,
 				]
 			);
 
@@ -144,9 +146,10 @@ class Ajax {
 	/**
 	 * Get terms by searched string and taxonomy.
 	 *
-	 * @param string $search Searched String.
-	 * @param string $type   Taxonomy Name.
-	 * @param int    $value  Term ID.
+	 * @param string $search   Searched String.
+	 * @param string $type     Object type.
+	 * @param int    $value    Term ID.
+	 * @param string $taxonomy Taxonomy name.
 	 */
 	private function get_terms( $search, $type, $value, $taxonomy ) {
 		$data = [];
@@ -164,8 +167,9 @@ class Ajax {
 
 		$terms = get_terms(
 			[
-				'taxonomy' => $type,
-				'search'   => $search,
+				'taxonomy'   => $type,
+				'search'     => $search,
+				'hide_empty' => false,
 			]
 		);
 

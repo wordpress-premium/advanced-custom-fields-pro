@@ -3,7 +3,7 @@
   "type": "wordpress-plugin",
   "description": "",
   "homepage": "https://polylang.pro",
-  "version": "3.0.15",
+  "version": "3.0.56",
   "require": {
     "composer/installers": "^1.6"
   },

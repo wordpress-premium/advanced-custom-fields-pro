@@ -13,7 +13,7 @@ namespace RankMathPro;
 use stdClass;
 use RankMath\Helper;
 use RankMath\Traits\Hooker;
-use MyThemeShop\Helpers\HTML;
+use RankMath\Helpers\HTML;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -25,6 +25,20 @@ defined( 'ABSPATH' ) || exit;
 class Image_Seo_Pro {
 
 	use Hooker;
+
+	/**
+	 * Change the case of the alt attribute.
+	 *
+	 * @var string
+	 */
+	public $alt_change_case;
+
+	/**
+	 * Change the case of the title attribute.
+	 *
+	 * @var string
+	 */
+	public $title_change_case;
 
 	/**
 	 * Constructor.
@@ -114,7 +128,7 @@ class Image_Seo_Pro {
 			return $args;
 		}
 
-		if ( strpos( $args['id'], 'img_' ) !== false ) {
+		if ( ! is_string( $args['id'] ) || strpos( $args['id'], 'img_' ) !== false ) {
 			return $args;
 		}
 
@@ -136,7 +150,7 @@ class Image_Seo_Pro {
 	 * @codeCoverageIgnore
 	 *
 	 * @param  string $var_args         Variable name, for example %custom%. The '%' signs are optional.
-	 * @param  array  $replacement_args Array with additional title, description and example values for the variable.
+	 * @param  object $replacement_args Additional title, description and example values for the variable.
 	 *
 	 * @return bool Replacement was registered successfully or not.
 	 */
@@ -155,7 +169,7 @@ class Image_Seo_Pro {
 	 * @codeCoverageIgnore
 	 *
 	 * @param  string $var_args         Variable name, for example %custom%. The '%' signs are optional.
-	 * @param  array  $replacement_args Array with additional title, description and example values for the variable.
+	 * @param  object $replacement_args Additional title, description and example values for the variable.
 	 *
 	 * @return bool Replacement was registered successfully or not.
 	 */
@@ -406,7 +420,7 @@ class Image_Seo_Pro {
 	 * @return string New output.
 	 */
 	public function change_content_caption_case( $content ) {
-		$content = preg_replace_callback( '/(<figure class="([^"]+ )?wp-block-image .+<figcaption>)([^<]+)(<\/figcaption>)/sU', [ $this, 'caption_case_cb' ], $content );
+		$content = preg_replace_callback( '/(<figure[^<]+class="([^"]+ )?(wp-block-image|wp-caption).+<figcaption[^>]*>)([^<]+)(<\/figcaption>)/sU', [ $this, 'caption_case_cb' ], $content );
 		return $content;
 	}
 
@@ -430,7 +444,7 @@ class Image_Seo_Pro {
 	 * @return string New output.
 	 */
 	public function caption_case_cb( $matches ) {
-		return $matches[1] . $this->change_case( $matches[2], Helper::get_settings( 'general.img_caption_change_case' ) ) . $matches[3];
+		return $matches[1] . $this->change_case( $matches[4], Helper::get_settings( 'general.img_caption_change_case' ) ) . $matches[5];
 	}
 
 	/**

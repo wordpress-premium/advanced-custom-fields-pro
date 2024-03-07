@@ -21,19 +21,27 @@ defined( 'ABSPATH' ) || exit;
 class WordPress {
 
 	/**
+	 * The current post content.
+	 *
+	 * @var string
+	 */
+	private static $post_content = '';
+
+
+	/**
 	 * Match url.
 	 *
-	 * @param  string $url Url to match.
-	 * @return bool
+	 * @param  array $data contains the Url to match and the current post.
+	 * @return array
 	 */
-	public static function match( $url ) {
-		$type = wp_check_filetype( $url, wp_get_mime_types() );
+	public static function match( $data ) {
+		$type = wp_check_filetype( $data['url'], wp_get_mime_types() );
 
 		if ( ! in_array( strtolower( $type['ext'] ), wp_get_video_extensions(), true ) ) {
 			return [];
 		}
-
-		return self::fetch_data( $url );
+		self::$post_content = $data['post']->post_content;
+		return self::fetch_data( $data['url'] );
 	}
 
 	/**
@@ -48,8 +56,9 @@ class WordPress {
 		if ( $attachment_id ) {
 			$video_details = wp_get_attachment_metadata( $attachment_id );
 			$data          = [
-				'width'  => ! empty( $video_details['width'] ) ? $video_details['width'] : '',
-				'height' => ! empty( $video_details['height'] ) ? $video_details['height'] : '',
+				'width'     => ! empty( $video_details['width'] ) ? $video_details['width'] : '',
+				'height'    => ! empty( $video_details['height'] ) ? $video_details['height'] : '',
+				'thumbnail' => self::get_video_thumbnail( $url, $attachment_id ),
 			];
 		}
 
@@ -60,5 +69,33 @@ class WordPress {
 			],
 			$data
 		);
+	}
+
+	/**
+	 * Gets the video thumbnail URL.
+	 *
+	 * @param string $url           The Video URL.
+	 * @param int    $attachment_id The attachment post ID.
+	 *
+	 * @return false|string
+	 */
+	private static function get_video_thumbnail( $url, $attachment_id ) {
+		$blocks      = parse_blocks( self::$post_content );
+		$url_pattern = str_replace( '/', '\/', $url );
+		foreach ( $blocks as $block ) {
+			if ( 'core/video' !== $block['blockName'] ) {
+				continue;
+			}
+
+			$pattern = '/<video controls( poster="(.*)?")? src="(' . $url_pattern . ')"><\/video>/sU';
+			preg_match( $pattern, $block['innerHTML'], $matches );
+
+			if ( empty( $matches ) || ( ! empty( $matches[3] ) && $url !== $matches[3] ) ) {
+				continue;
+			}
+			return ! empty( $matches[2] ) ? $matches[2] : get_the_post_thumbnail_url( $attachment_id );
+
+		}
+		return '';
 	}
 }

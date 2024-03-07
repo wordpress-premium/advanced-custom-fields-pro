@@ -65,7 +65,7 @@ class Import_Background_Process extends \WP_Background_Process {
 	/**
 	 * Start creating batches.
 	 *
-	 * @param [type] $posts [description].
+	 * @param int $lines_number The line number to process.
 	 */
 	public function start( $lines_number ) {
 		$chunks = array_chunk( range( 0, $lines_number ), apply_filters( 'rank_math/admin/csv_import_redirections_chunk_size', 100 ) );
@@ -130,8 +130,8 @@ class Import_Background_Process extends \WP_Background_Process {
 			CSV_Import_Export_Redirections::get_import_complete_message(),
 			$notification_args
 		);
-
-		parent::complete();
+		parent::clear_scheduled_event();
+		do_action( $this->identifier. '_completed' ); // phpcs:ignore
 	}
 
 	/**
@@ -153,5 +153,16 @@ class Import_Background_Process extends \WP_Background_Process {
 		}
 
 		return $count;
+	}
+
+	/**
+	 * Has the process been cancelled?
+	 *
+	 * @return bool
+	 */
+	public function is_cancelled() {
+		// Fixes bug in parent is_cancelled()!
+		// where get_site_option( 'rank_math_csv_import_redirections_status' ) is not yet set when is_cancelled is called for the first time.
+		return is_multisite() ? parent::is_cancelled() : ! get_site_option( $this->identifier );
 	}
 }

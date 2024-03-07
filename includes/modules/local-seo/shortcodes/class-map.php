@@ -18,6 +18,14 @@ defined( 'ABSPATH' ) || exit;
  * Map class.
  */
 class Map {
+
+	/**
+	 * Shortcode Instance.
+	 *
+	 * @var Location_Shortcode
+	 */
+	public $shortcode;
+
 	/**
 	 * Get Address Data.
 	 *

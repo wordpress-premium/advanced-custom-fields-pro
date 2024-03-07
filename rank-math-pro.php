@@ -9,28 +9,26 @@
  *
  * @wordpress-plugin
  * Plugin Name:       Rank Math SEO PRO
- * Version:           3.0.15
+ * Version:           3.0.56
  * Plugin URI:        https://rankmath.com/wordpress/plugin/seo-suite/
  * Description:       Super-charge your website’s SEO with the Rank Math PRO options like Site Analytics, SEO Performance, Custom Schema Templates, News/Video Sitemaps, etc.
  * Author:            Rank Math
- * Author URI:        https://s.rankmath.com/pro
- * License:           GPL-2.0+
+ * Author URI:        https://rankmath.com/?utm_source=Plugin&utm_medium=Readme%20Author%20URI&utm_campaign=WP
+ * License:           GPL-3.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       rank-math-pro
  * Domain Path:       /languages
  */
 
 use RankMath\Helper;
-use MyThemeShop\Helpers\Param;
-use MyThemeShop\Helpers\Conditional;
 
 defined( 'ABSPATH' ) || exit;
 
 add_filter( 'rank_math/admin/sensitive_data_encryption', '__return_false' );
 
 update_option( 'rank_math_connect_data', [
-     'username'  => 'activated',
-     'email'     => 'activated@rankmath.com',
+     'username'  => 'user420',
+     'email'     => 'user420@gmail.com',
      'api_key'   => '*********',
      'plan'      => 'business',
      'connected' => true,
@@ -78,14 +76,14 @@ final class RankMathPro {
 	 *
 	 * @var string
 	 */
-	public $version = '3.0.15';
+	public $version = '3.0.56';
 
 	/**
 	 * Minimum version of Rank Math SEO.
 	 *
 	 * @var string
 	 */
-	public $rank_math_min_version = '1.0.92';
+	public $rank_math_min_version = '1.0.213';
 
 	/**
 	 * Holds various class instances
@@ -152,7 +150,7 @@ final class RankMathPro {
 	 */
 	public function setup() {
 		if ( ! $this->is_free_version_compatible() ) {
-			$this->messages[] = esc_html__( 'Please update Rank Math Free to the latest version first before activating the PRO version.', 'rank-math-pro' );
+			$this->messages[] = esc_html__( 'Please update Rank Math Free to the latest version first before using Rank Math PRO.', 'rank-math-pro' );
 			add_action( 'admin_notices', [ $this, 'activation_error' ] );
 			return false;
 		}
@@ -176,19 +174,19 @@ final class RankMathPro {
 		$dont_load = false;
 		if ( $this->is_free_version_being_deactivated() ) {
 			// Todo: this message is not displayed because of a redirect.
-			$this->messages[] = esc_html__( 'Rank Math free version is required to run Rank Math Pro. Both plugins are now disabled.', 'rank-math-pro' );
+			$this->messages[] = esc_html__( 'Rank Math free version is required to run Rank Math PRO. Both plugins are now disabled.', 'rank-math-pro' );
 		} elseif ( $this->is_free_version_being_rolled_back() || $this->is_free_version_being_updated() || $this->is_troubleshooting() ) {
 			$dont_load = true;
 		} else {
 			if ( ! $this->is_free_version_installed() ) {
 				if ( ! $this->install_free_version() ) {
-					$this->messages[] = esc_html__( 'Rank Math free version is required to run Rank Math Pro, but it could not be installed automatically. Please install and activate the free version first.', 'rank-math-pro' );
+					$this->messages[] = esc_html__( 'Rank Math free version is required to run Rank Math PRO, but it could not be installed automatically. Please install and activate the free version first.', 'rank-math-pro' );
 				}
 			}
 
 			if ( ! $this->is_free_version_activated() ) {
 				if ( ! $this->activate_free_version() ) {
-					$this->messages[] = esc_html__( 'Rank Math free version is required to run Rank Math Pro, but it could not be activated automatically. Please install and activate the free version first.', 'rank-math-pro' );
+					$this->messages[] = esc_html__( 'Rank Math free version is required to run Rank Math PRO, but it could not be activated automatically. Please install and activate the free version first.', 'rank-math-pro' );
 				}
 			}
 		}
@@ -355,7 +353,7 @@ final class RankMathPro {
 			new \RankMathPro\Analytics\Analytics();
 		}
 
-		if ( Conditional::is_woocommerce_active() && Helper::is_module_active( 'woocommerce' ) ) {
+		if ( Helper::is_woocommerce_active() && Helper::is_module_active( 'woocommerce' ) ) {
 			new \RankMathPro\WooCommerce();
 		}
 
@@ -367,8 +365,16 @@ final class RankMathPro {
 			new \RankMathPro\Redirections\Redirections();
 		}
 
+		if ( Helper::is_module_active( 'seo-analysis' ) ) {
+			new \RankMathPro\SEO_Analysis\SEO_Analysis_Pro();
+		}
+
 		if ( function_exists( 'acf' ) && Helper::is_module_active( 'acf' ) ) {
 			new \RankMathPro\ACF\ACF();
+		}
+
+		if ( Helper::is_module_active( 'content-ai' ) ) {
+			new \RankMathPro\Content_AI();
 		}
 
 		new \RankMathPro\Plugin_Update\Plugin_Update();

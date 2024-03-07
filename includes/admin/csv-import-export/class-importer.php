@@ -10,7 +10,7 @@
 
 namespace RankMathPro\Admin\CSV_Import_Export;
 
-use MyThemeShop\Helpers\Arr;
+use RankMath\Helpers\Arr;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -59,6 +59,20 @@ class Importer {
 	 * @var array
 	 */
 	private $errors = [];
+
+	/**
+	 * SplFileObject instance.
+	 *
+	 * @var \SplFileObject
+	 */
+	private $spl;
+
+	/**
+	 * Column headers.
+	 *
+	 * @var array
+	 */
+	private $column_headers = [];
 
 	/**
 	 * Constructor.

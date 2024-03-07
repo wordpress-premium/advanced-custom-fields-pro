@@ -1,22 +1,22 @@
 <?php return array(
     'root' => array(
+        'name' => 'rankmath/seo-by-rank-math-pro',
         'pretty_version' => 'dev-develop',
         'version' => 'dev-develop',
+        'reference' => '660ea268084617c08ed017974df0dad7496e623f',
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => '860df7ce4db5ddf8e2e09928bdbada96d0259fc8',
-        'name' => 'mythemeshop/rank-math-pro',
         'dev' => true,
     ),
     'versions' => array(
-        'mythemeshop/rank-math-pro' => array(
+        'rankmath/seo-by-rank-math-pro' => array(
             'pretty_version' => 'dev-develop',
             'version' => 'dev-develop',
+            'reference' => '660ea268084617c08ed017974df0dad7496e623f',
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => '860df7ce4db5ddf8e2e09928bdbada96d0259fc8',
             'dev_requirement' => false,
         ),
     ),

@@ -12,7 +12,7 @@ namespace RankMathPro\Redirections\CSV_Import_Export_Redirections;
 
 use RankMath\Helper;
 use RankMath\Traits\Hooker;
-use MyThemeShop\Helpers\Param;
+use RankMath\Helpers\Param;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -56,16 +56,25 @@ class CSV_Import_Export_Redirections {
 
 		$content = '<ul class="description"><li>';
 		// Translators: placeholder is a comma-separated list of columns.
-		$content .= sprintf( esc_html__( 'Use the following columns in the CSV file (the order does not matter): %s', 'rank-math-pro' ), '<code>id, source, matching, destination, type, category, status</code>' );
+		$content .= sprintf( esc_html__( 'Use the following columns in the CSV file (the order does not matter): %s', 'rank-math-pro' ), '<code>id, source, matching, destination, type, category, status, ignore</code>' );
+		$content .= '</li><li>';
+		// Translators: placeholders are column names.
+		$content .= sprintf( esc_html__( 'Only the %1$s and the %2$s columns are required, the others are optional.', 'rank-math-pro' ), '<code>source</code>', '<code>destination</code>' );
+		$content .= '</li><li>';
+		// Translators: placeholder 1 is the column name, placeholder 2 is the possible column value ("case").
+		$content .= sprintf( esc_html__( 'The %1$s column may contain the value %2$s, or nothing.', 'rank-math-pro' ), '<code>ignore</code>', '<code>case</code>' );
 		$content .= '</li><li>';
 		// Translators: placeholder is the column name.
 		$content .= sprintf( esc_html__( 'If the numeric ID is specified in the %s column, then the redirection will be edited. If it is not set or empty, then a new redirection will be created.', 'rank-math-pro' ), '<code>id</code>' );
 		$content .= '</li><li>';
-		// Translators: placeholders are the column names.
-		$content .= sprintf( esc_html__( 'You can specify multiple source URLs by using JSON format in the %1$s column. The value must be an array of objects with %2$s properties. The %3$s column will be ignored in this case.', 'rank-math-pro' ), '<code>source</code>', '<code>pattern, comparison</code>', '<code>matching</code>' );
+		// Translators: placeholder is the filter name.
+		$content .= sprintf( esc_html__( 'If an imported redirection differs from an existing redirection (or another imported redirection) only by the source value, then those redirections will be merged into a single redirection with multiple sources. You can change this behavior with the %s filter hook.', 'rank-math-pro' ), '<code>rank_math/admin/csv_import_redirection_update</code>' );
 		$content .= '</li><li>';
 		// Translators: 1 is the command name, 2 is the column name.
 		$content .= sprintf( esc_html__( 'Use %1$s (case-sensitive) as the value for the %2$s column to delete a redirection.', 'rank-math-pro' ), '<code>DELETE</code>', '<code>destination</code>' );
+		$content .= '</li><li>';
+		// Translators: placeholder is a link to the KB article.
+		$content .= sprintf( esc_html__( 'For more information, please see %s.', 'rank-math-pro' ), '<a href="https://rankmath.com/kb/how-to-manage-redirects-via-csv/" target="_blank">' . __( 'our Knowledge Base article', 'rank-math-pro' ) . '</a>' );
 		$content .= '</li></ul>';
 
 		$screen->add_help_tab(
@@ -456,11 +465,12 @@ class CSV_Import_Export_Redirections {
 	 * @return string
 	 */
 	public static function get_import_complete_message() {
-		$status  = (array) get_option( 'rank_math_csv_import_redirections_status', [] );
-		$message = sprintf(
+		$status        = (array) get_option( 'rank_math_csv_import_redirections_status', [] );
+		$imported_rows = is_countable( $status['imported_rows'] ) ? (array) $status['imported_rows'] : [];
+		$message       = sprintf(
 			// Translators: placeholder is the number of rows imported.
 			__( 'CSV import completed. Successfully imported %d rows.', 'rank-math-pro' ),
-			count( $status['imported_rows'] )
+			count( $imported_rows )
 		);
 
 		if ( ! empty( $status['errors'] ) ) {
@@ -468,7 +478,7 @@ class CSV_Import_Export_Redirections {
 			$message .= sprintf(
 				// Translators: placeholder is the number of rows imported.
 				__( 'Imported %d rows.', 'rank-math-pro' ) . ' ',
-				count( $status['imported_rows'] )
+				count( $imported_rows )
 			);
 
 			if ( ! empty( $status['errors'] ) ) {
@@ -481,6 +491,9 @@ class CSV_Import_Export_Redirections {
 			}
 		}
 
+		if ( isset( $status['actions']['merged'] ) ) {
+			$status['actions']['created'] += $status['actions']['merged'];
+		}
 		foreach ( $status['actions'] as $action => $times_taken ) {
 			$message .= '<br><br>';
 			$message .= '<code>' . self::get_localized_action( $action ) . ': ' . $times_taken . '</code>';
@@ -500,6 +513,7 @@ class CSV_Import_Export_Redirections {
 			'created' => __( 'Created', 'rank-math-pro' ),
 			'updated' => __( 'Updated', 'rank-math-pro' ),
 			'deleted' => __( 'Deleted', 'rank-math-pro' ),
+			'merged'  => __( 'Merged', 'rank-math-pro' ),
 		];
 
 		if ( isset( $actions[ $action ] ) ) {

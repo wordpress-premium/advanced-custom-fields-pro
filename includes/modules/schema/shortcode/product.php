@@ -11,6 +11,10 @@ defined( 'ABSPATH' ) || exit;
 
 $shortcode->get_title();
 $shortcode->get_image();
+
+$offers         = $shortcode->get_field_value( 'offers' );
+$positive_notes = $shortcode->get_field_value( 'review.positiveNotes' );
+$negative_notes = $shortcode->get_field_value( 'review.negativeNotes' );
 ?>
 <div class="rank-math-review-data">
 
@@ -41,32 +45,44 @@ $shortcode->get_image();
 	?>
 
 	<?php
-	$shortcode->get_field(
-		esc_html__( 'Product Currency', 'rank-math-pro' ),
-		'offers.priceCurrency'
-	);
+	if (
+		! empty( $offers['price'] ) ||
+		(
+			empty( $positive_notes ) &&
+			empty( $negative_notes )
+		)
+	) {
 	?>
 
-	<?php
-	$shortcode->get_field(
-		esc_html__( 'Product Price', 'rank-math-pro' ),
-		'offers.price'
-	);
-	?>
+		<?php
+		$shortcode->get_field(
+			esc_html__( 'Product Currency', 'rank-math-pro' ),
+			'offers.priceCurrency'
+		);
+		?>
 
-	<?php
-	$shortcode->get_field(
-		esc_html__( 'Price Valid Until', 'rank-math-pro' ),
-		'offers.priceValidUntil'
-	);
-	?>
+		<?php
+		$shortcode->get_field(
+			esc_html__( 'Product Price', 'rank-math-pro' ),
+			'offers.price'
+		);
+		?>
 
-	<?php
-	$shortcode->get_field(
-		esc_html__( 'Product In-Stock', 'rank-math-pro' ),
-		'offers.availability'
-	);
-	?>
+		<?php
+		$shortcode->get_field(
+			esc_html__( 'Price Valid Until', 'rank-math-pro' ),
+			'offers.priceValidUntil'
+		);
+		?>
+
+		<?php
+		$shortcode->get_field(
+			esc_html__( 'Product In-Stock', 'rank-math-pro' ),
+			'offers.availability'
+		);
+		?>
+
+	<?php } ?>
 
 	<?php $shortcode->show_ratings(); ?>
 

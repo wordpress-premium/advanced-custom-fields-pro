@@ -5,7 +5,7 @@
  * @since      1.0.0
  * @package    RankMath
  * @subpackage RankMathPro
- * @author     MyThemeShop <admin@mythemeshop.com>
+ * @author     RankMath <support@rankmath.com>
  */
 
 namespace RankMathPro\Schema;
@@ -37,22 +37,25 @@ class Post_Type {
 	 */
 	public function register() {
 		$labels = [
-			'name'           => _x( 'Schemas', 'Post Type General Name', 'rank-math-pro' ),
-			'singular_name'  => _x( 'Schema', 'Post Type Singular Name', 'rank-math-pro' ),
-			'menu_name'      => __( 'Schemas', 'rank-math-pro' ),
-			'name_admin_bar' => __( 'Schema', 'rank-math-pro' ),
-			'all_items'      => __( 'All Schemas', 'rank-math-pro' ),
-			'add_new_item'   => __( 'Add New Schema', 'rank-math-pro' ),
-			'new_item'       => __( 'New Schema', 'rank-math-pro' ),
-			'edit_item'      => __( 'Edit Schema', 'rank-math-pro' ),
-			'update_item'    => __( 'Update Schema', 'rank-math-pro' ),
-			'view_item'      => __( 'View Schema', 'rank-math-pro' ),
-			'view_items'     => __( 'View Schemas', 'rank-math-pro' ),
-			'search_items'   => __( 'Search schemas', 'rank-math-pro' ),
+			'name'               => _x( 'Schemas', 'Post Type General Name', 'rank-math-pro' ),
+			'singular_name'      => _x( 'Schema', 'Post Type Singular Name', 'rank-math-pro' ),
+			'menu_name'          => __( 'Schemas', 'rank-math-pro' ),
+			'name_admin_bar'     => __( 'Schema', 'rank-math-pro' ),
+			'all_items'          => __( 'All Schemas', 'rank-math-pro' ),
+			'add_new'            => __( 'Add New Schema', 'rank-math-pro' ),
+			'add_new_item'       => __( 'Add New Schema', 'rank-math-pro' ),
+			'new_item'           => __( 'New Schema', 'rank-math-pro' ),
+			'edit_item'          => __( 'Edit Schema', 'rank-math-pro' ),
+			'update_item'        => __( 'Update Schema', 'rank-math-pro' ),
+			'view_item'          => __( 'View Schema', 'rank-math-pro' ),
+			'view_items'         => __( 'View Schemas', 'rank-math-pro' ),
+			'search_items'       => __( 'Search schemas', 'rank-math-pro' ),
+			'not_found'          => __( 'No schema found.', 'rank-math-pro' ),
+			'not_found_in_trash' => __( 'No schema found in Trash.', 'rank-math-pro' ),
 		];
 
 		$capability = 'rank_math_onpage_snippet';
-		$args = [
+		$args       = [
 			'label'               => __( 'Schema', 'rank-math-pro' ),
 			'description'         => __( 'Rank Math Schema Templates', 'rank-math-pro' ),
 			'labels'              => $labels,
@@ -70,7 +73,7 @@ class Post_Type {
 			'publicly_queryable'  => false,
 			'rewrite'             => false,
 			'capability_type'     => 'page',
-			'capabilities'       => [
+			'capabilities'        => [
 				'edit_post'          => $capability,
 				'read_post'          => $capability,
 				'delete_post'        => $capability,

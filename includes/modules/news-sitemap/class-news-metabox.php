@@ -5,7 +5,7 @@
  * @since      1.0.0
  * @package    RankMath
  * @subpackage RankMathPro
- * @author     MyThemeShop <admin@mythemeshop.com>
+ * @author     RankMath <support@rankmath.com>
  */
 
 namespace RankMathPro\Sitemap;
@@ -14,8 +14,6 @@ use RankMath\Helper;
 use RankMath\Traits\Hooker;
 use RankMath\Admin\Admin_Helper;
 use RankMath\Sitemap\Cache_Watcher;
-use MyThemeShop\Helpers\Param;
-use MyThemeShop\Helpers\WordPress;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -108,7 +106,7 @@ class News_Metabox {
 			return false;
 		}
 
-		$post_type = $post_type ? $post_type : WordPress::get_post_type();
+		$post_type = $post_type ? $post_type : Helper::get_post_type();
 		return in_array(
 			$post_type,
 			(array) Helper::get_settings( 'sitemap.news_sitemap_post_type' ),

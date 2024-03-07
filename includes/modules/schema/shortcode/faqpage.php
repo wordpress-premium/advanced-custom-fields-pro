@@ -6,30 +6,34 @@
  * @subpackage RankMath\Schema
  */
 
+use RankMath\Schema\Block_FAQ;
+
 defined( 'ABSPATH' ) || exit;
 
 if ( empty( $schema['mainEntity'] ) ) {
 	return;
 }
 
-?>
-<div id="rank-math-faq" class="rank-math-block">
-	<div class="rank-math-list">
-		<?php foreach ( $schema['mainEntity'] as $key => $entity ) { ?>
-			<div class="rank-math-list-item" id="<?php echo esc_attr( 'faq-' . ( $key + 1 ) ); ?>">
-				<?php if ( ! empty( $entity['name'] ) ) { ?>
-					<h3 class="rank-math-question"><?php echo esc_html( $entity['name'] ); ?></h3>
-				<?php } ?>
+$attributes = [
+	'questions'         => [],
+	'listStyle'         => '',
+	'titleWrapper'      => 'h3',
+	'sizeSlug'          => 'thumbnail',
+	'listCssClasses'    => '',
+	'titleCssClasses'   => '',
+	'contentCssClasses' => '',
+	'textAlign'         => 'left',
+];
 
-				<?php if ( ! empty( $entity['acceptedAnswer']['text'] ) ) { ?>
-					<div class="rank-math-answer">
-						<?php if ( ! empty( $entity['image'] ) ) { ?>
-							<img src="<?php echo esc_url( $entity['image'] ); ?>" class="alignright" width="150" height="150" />
-						<?php } ?>
-						<p><?php echo wp_kses_post( $entity['acceptedAnswer']['text'] ); ?></p>
-					</div>
-				<?php } ?>
-			</div>
-		<?php } ?>
-	</div>
-</div>
+foreach ( $schema['mainEntity'] as $index => $main_entity ) {
+	$attributes['questions'][] = [
+		'id'       => 'faq-' . ( $index + 1 ),
+		'title'    => $main_entity['name'],
+		'content'  => $main_entity['acceptedAnswer']['text'],
+		'visible'  => 1,
+		'imageID'  => 0,
+		'imageUrl' => isset( $main_entity['image'] ) ? $main_entity['image'] : '',
+	];
+}
+
+echo Block_FAQ::markup( $attributes ); // phpcs:ignore

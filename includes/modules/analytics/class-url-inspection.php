@@ -123,10 +123,13 @@ class Url_Inspection {
 		);
 		$settings = get_option( 'rank-math-options-instant-indexing', [] );
 
-		Helper::add_json( 'instantIndexingSupport', [
-			'isPluginActive'     => is_plugin_active( 'fast-indexing-api/instant-indexing.php' ),
-			'isGoogleConfigured' => ! empty( $settings['json_key'] ),
-			'submitUrl'          => $submit_url,
-		] );
+		Helper::add_json(
+			'instantIndexingSupport',
+			[
+				'isPluginActive'     => is_plugin_active( 'fast-indexing-api/instant-indexing.php' ),
+				'isGoogleConfigured' => ! empty( $settings['json_key'] ),
+				'submitUrl'          => $submit_url,
+			]
+		);
 	}
 }

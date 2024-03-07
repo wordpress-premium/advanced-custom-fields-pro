@@ -7,7 +7,7 @@
  */
 
 use RankMathPro\Analytics\Email_Reports;
-use MyThemeShop\Helpers\Str;
+use RankMath\Helpers\Str;
 
 defined( 'ABSPATH' ) || exit;
 

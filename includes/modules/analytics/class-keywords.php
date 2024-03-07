@@ -11,10 +11,11 @@
 namespace RankMathPro\Analytics;
 
 use WP_REST_Request;
+use RankMath\Traits\Cache;
 use RankMath\Traits\Hooker;
 use RankMath\Analytics\Stats;
 use RankMath\Helper;
-use MyThemeShop\Helpers\Param;
+use RankMath\Helpers\Param;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -23,7 +24,7 @@ defined( 'ABSPATH' ) || exit;
  */
 class Keywords {
 
-	use Hooker;
+	use Hooker, Cache;
 
 	/**
 	 * Main instance
@@ -54,7 +55,7 @@ class Keywords {
 	}
 
 	/**
-	 * Get accessible post type lists for auto add focus keywords.
+	 * Get accessible post type lists to auto add the focus keywords.
 	 */
 	public function get_post_type_list() {
 		if ( 'rank-math-analytics' !== Param::get( 'page' ) ) {
@@ -72,7 +73,7 @@ class Keywords {
 	}
 
 	/**
-	 * Get keyword position graph data.
+	 * Get keywords position data to show it in the graph.
 	 *
 	 * @param  array $rows Rows.
 	 * @return array
@@ -85,7 +86,7 @@ class Keywords {
 	}
 
 	/**
-	 * Get winning and losing data.
+	 * Get winning and losing keywords data.
 	 *
 	 * @param  array $data Data.
 	 * @return array
@@ -104,27 +105,27 @@ class Keywords {
 	}
 
 	/**
-	 * Extract addable track keywords.
+	 * Extract keywords that can be added by removing the empty and the duplicate keywords.
 	 *
 	 * @param string $keywords Comma Separated Keyword List.
 	 *
-	 * @return array Track keywords which can be added.
+	 * @return array Keywords that can be added.
 	 */
 	public function extract_addable_track_keyword( $keywords ) {
 		global $wpdb;
 
 		// Split keywords.
-		$keywords_to_add   = \array_map( 'trim', \explode( ',', $keywords ) );
-		$keywords_to_check = \array_map( 'mb_strtolower', \explode( ',', $keywords ) );
+		$keywords_to_add   = array_filter( array_map( 'trim', explode( ',', $keywords ) ) );
+		$keywords_to_check = array_filter( array_map( 'mb_strtolower', explode( ',', $keywords ) ) );
 
-		// Check if keywords are already exists.
-		$keywords_joined = "'" . join( "', '", \array_map( 'esc_sql', $keywords_to_add ) ) . "'";
+		// Check if keywords already exists.
+		$keywords_joined = "'" . join( "', '", array_map( 'esc_sql', $keywords_to_add ) ) . "'";
 		$query           = "SELECT keyword FROM {$wpdb->prefix}rank_math_analytics_keyword_manager as km WHERE km.keyword IN ( $keywords_joined )";
 		$data            = $wpdb->get_results( $query ); // phpcs:ignore
 
-		// Only filter out non-existing keywords.
+		// Filter out non-existing keywords.
 		foreach ( $data as $row ) {
-			$key = \array_search( mb_strtolower( $row->keyword ), $keywords_to_check, true );
+			$key = array_search( mb_strtolower( $row->keyword ), $keywords_to_check, true );
 			if ( false !== $key ) {
 				unset( $keywords_to_add[ $key ] );
 			}
@@ -134,7 +135,7 @@ class Keywords {
 	}
 
 	/**
-	 * Add track keyword.
+	 * Add keyword to Rank Tracker.
 	 *
 	 * @param array $keywords Keyword List.
 	 */
@@ -154,7 +155,7 @@ class Keywords {
 	}
 
 	/**
-	 * Remove tack keyword.
+	 * Remove a keyword from Rank Tracker.
 	 *
 	 * @param string $keyword Keyword to remove.
 	 */
@@ -166,14 +167,14 @@ class Keywords {
 	}
 
 	/**
-	 * Delete all the manually tracked keywords.
+	 * Delete all tracked keywords.
 	 */
 	public function delete_all_tracked_keywords() {
 		DB::keywords()->delete();
 		delete_transient( Stats::get()->get_cache_key( 'tracked_keywords_summary', Stats::get()->days . 'days' ) );
 	}
 	/**
-	 * Get track keywords count.
+	 * Get tracked keywords count.
 	 *
 	 * @return int Total keywords count
 	 */
@@ -204,13 +205,20 @@ class Keywords {
 	}
 
 	/**
-	 * Get keywords summary.
+	 * Get tracked keywords summary.
 	 *
 	 * @return array Keywords usage info.
 	 */
 	public function get_tracked_keywords_summary() {
-		$summary          = $this->get_tracked_keywords_quota();
-		$summary['total'] = $this->get_tracked_keywords_count();
+		$cache_key   = 'tracked_keywords_summary';
+		$cache_group = 'tracked_keywords_summary';
+		$summary     = $this->get_cache( $cache_key, $cache_group );
+
+		if ( empty( $summary ) ) {
+			$summary          = $this->get_tracked_keywords_quota();
+			$summary['total'] = $this->get_tracked_keywords_count();
+			$this->set_cache( $cache_key, $summary, $cache_group, DAY_IN_SECONDS );
+		}
 
 		return $summary;
 	}
@@ -255,12 +263,23 @@ class Keywords {
 	 */
 	public function get_tracked_keywords_rows( WP_REST_Request $request ) {
 		$per_page = 25;
-		$page     = ! empty( $request->get_param( 'page' ) ) ? $request->get_param( 'page' ) : 1;
-		$orderby  = ! empty( $request->get_param( 'orderby' ) ) ? $request->get_param( 'orderby' ) : 'default';
-		$order    = ! empty( $request->get_param( 'order' ) ) ? strtoupper( $request->get_param( 'order' ) ) : 'DESC';
-		$keyword  = ! empty( $request->get_param( 'search' ) ) ? filter_var( urldecode( $request->get_param( 'search' ) ), FILTER_UNSAFE_RAW, FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_BACKTICK ) : '';
-		$offset   = ( $page - 1 ) * $per_page;
-		$args     = wp_parse_args(
+
+		$cache_args             = $request->get_params();
+		$cache_args['per_page'] = $per_page;
+
+		$cache_group = 'rank_math_rest_tracked_keywords_rows';
+		$cache_key   = $this->generate_hash( $cache_args );
+		$result      = $this->get_cache( $cache_key, $cache_group );
+		if ( ! empty( $result ) ) {
+			return $result;
+		}
+
+		$page    = ! empty( $request->get_param( 'page' ) ) ? $request->get_param( 'page' ) : 1;
+		$orderby = ! empty( $request->get_param( 'orderby' ) ) ? $request->get_param( 'orderby' ) : 'default';
+		$order   = ! empty( $request->get_param( 'order' ) ) ? strtoupper( $request->get_param( 'order' ) ) : 'DESC';
+		$keyword = ! empty( $request->get_param( 'search' ) ) ? filter_var( urldecode( $request->get_param( 'search' ) ), FILTER_UNSAFE_RAW, FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_BACKTICK ) : '';
+		$offset  = ( $page - 1 ) * $per_page;
+		$args    = wp_parse_args(
 			[
 
 				'dimension' => 'query',
@@ -268,10 +287,23 @@ class Keywords {
 				'keyword'   => $keyword,
 			]
 		);
-		$data     = $this->get_tracked_keywords_data( $args );
-		$data     = Stats::get()->set_dimension_as_key( $data );
-		$history  = $this->get_graph_data_for_keywords( \array_keys( $data ) );
-		$data     = Stats::get()->set_query_position( $data, $history );
+		switch ( $orderby ) {
+			case 'impressions':
+			case 'clicks':
+			case 'ctr':
+			case 'position':
+				$args['orderBy'] = $orderby;
+				$args['order']   = $order;
+				break;
+			case 'query':
+				$args['orderBy'] = 'keyword';
+				$args['order']   = $order;
+				break;
+		}
+		$data    = $this->get_tracked_keywords_data( $args );
+		$data    = Stats::get()->set_dimension_as_key( $data );
+		$history = $this->get_graph_data_for_keywords( \array_keys( $data ) );
+		$data    = Stats::get()->set_query_position( $data, $history );
 
 		if ( 'default' === $orderby ) {
 			uasort(
@@ -285,7 +317,7 @@ class Keywords {
 					}
 
 					if ( 0 === intval( $b['position']['total'] ) ) {
-						return false;
+						return 0;
 					}
 
 					return $a['position']['total'] > $b['position']['total'];
@@ -293,30 +325,6 @@ class Keywords {
 			);
 		}
 
-		if ( 'query' === $orderby ) {
-
-			if ( 'DESC' === $order ) {
-				uasort(
-					$data,
-					function( $a, $b ) use ( $orderby ) {
-						return strtolower( $a[ $orderby ] ) < strtolower( $b[ $orderby ] );
-					}
-				);
-			}
-
-			if ( 'ASC' === $order ) {
-				uasort(
-					$data,
-					function( $a, $b ) use ( $orderby ) {
-						return strtolower( $a[ $orderby ] ) > strtolower( $b[ $orderby ] );
-					}
-				);
-			}
-		}
-
-		if ( 'query' !== $orderby && 'default' !== $orderby ) {
-			$data = $this->track_keywords_array_sort( $data, $order, $orderby );
-		}
 		$result['rowsData'] = $data;
 		// get total rows by search.
 		$args = wp_parse_args(
@@ -333,59 +341,12 @@ class Keywords {
 		} else {
 			$search_data     = $this->get_tracked_keywords_data( $args );
 			$result['total'] = count( $search_data );
+
+			$this->set_cache( $cache_key, $result, $cache_group, DAY_IN_SECONDS );
 		}
 		return $result;
 	}
 
-	/**
-	 * Sort array for track keyword by order and orderby
-	 *
-	 * @param  array    $arr array.
-	 *
-	 * @param  Variable $arr_order is order direction.
-	 *
-	 * @param  Variable $arr_orderby is key for sort.
-	 *
-	 * @return $arr sorted array
-	 */
-	public function track_keywords_array_sort( $arr, $arr_order, $arr_orderby ) {
-
-		if ( 'DESC' === $arr_order ) {
-			uasort(
-				$arr,
-				function( $a, $b ) use ( $arr_orderby ) {
-
-					if ( false === array_key_exists( $arr_orderby, $a ) ) {
-						$a[ $arr_orderby ] = [ 'total' => '0' ];
-					}
-					if ( false === array_key_exists( $arr_orderby, $b ) ) {
-						$b[ $arr_orderby ] = [ 'total' => '0' ];
-					}
-
-					return $a[ $arr_orderby ]['total'] < $b[ $arr_orderby ]['total'];
-				}
-			);
-		}
-
-		if ( 'ASC' === $arr_order ) {
-			uasort(
-				$arr,
-				function( $a, $b ) use ( $arr_orderby ) {
-
-					if ( false === array_key_exists( $arr_orderby, $a ) ) {
-						$a[ $arr_orderby ] = [ 'total' => '0' ];
-					}
-					if ( false === array_key_exists( $arr_orderby, $b ) ) {
-						$b[ $arr_orderby ] = [ 'total' => '0' ];
-					}
-
-					return $a[ $arr_orderby ]['total'] > $b[ $arr_orderby ]['total'];
-				}
-			);
-		}
-		return $arr;
-
-	}
 	/**
 	 * Get keyword rows from keyword manager table.
 	 *
@@ -394,7 +355,7 @@ class Keywords {
 	 */
 	public function get_tracked_keywords_data( $args = [] ) {
 		global $wpdb;
-
+		Helper::enable_big_selects_for_queries();
 		$args = wp_parse_args(
 			$args,
 			[
@@ -425,8 +386,17 @@ class Keywords {
 			$where_like_keyword = '';
 		}
 
-		$query =  "SELECT MAX(id) as id FROM {$wpdb->prefix}rank_math_analytics_gsc WHERE 1 = 1 {$dates_query} AND {$dimension} IN ( SELECT keyword from {$wpdb->prefix}rank_math_analytics_keyword_manager {$where_like_keyword} GROUP BY keyword ) GROUP BY {$dimension}";
+		$query = $wpdb->prepare(
+			"SELECT id
+			FROM {$wpdb->prefix}rank_math_analytics_gsc AS new
+			INNER JOIN (
+				SELECT query, MAX(created)as created FROM {$wpdb->prefix}rank_math_analytics_gsc WHERE 1 = 1 {$dates_query} AND {$dimension} IN ( SELECT keyword from {$wpdb->prefix}rank_math_analytics_keyword_manager {$where_like_keyword} GROUP BY keyword ) GROUP BY {$dimension}
+			)mc
+			ON new.query = mc.query
+			AND new.created = mc.created"
+		);
 		$ids = $wpdb->get_results( $query );
+
 		// phpcs:enable
 		// Step2. Get id list from above result.
 		$ids       = wp_list_pluck( $ids, 'id' );
@@ -435,7 +405,16 @@ class Keywords {
 		// Step3. Get most recent data row id for each keyword (for comparison).
 		// phpcs:disable
 		$dates_query = sprintf( " AND created BETWEEN '%s' AND '%s' ", Stats::get()->compare_start_date, Stats::get()->compare_end_date );
-		$query = "SELECT MAX(id) as id FROM {$wpdb->prefix}rank_math_analytics_gsc WHERE 1 = 1 {$dates_query} AND {$dimension} IN ( SELECT keyword from {$wpdb->prefix}rank_math_analytics_keyword_manager {$where_like_keyword} GROUP BY keyword ) GROUP BY {$dimension}";
+
+		$query = $wpdb->prepare(
+			"SELECT id
+			FROM {$wpdb->prefix}rank_math_analytics_gsc AS old
+			INNER JOIN (
+				SELECT query, MAX(created)as created FROM {$wpdb->prefix}rank_math_analytics_gsc WHERE 1 = 1 {$dates_query} AND {$dimension} IN ( SELECT keyword from {$wpdb->prefix}rank_math_analytics_keyword_manager {$where_like_keyword} GROUP BY keyword ) GROUP BY {$dimension}
+			)mc
+			ON old.query = mc.query
+			AND old.created = mc.created"
+		);
 		$old_ids = $wpdb->get_results( $query );
 
 		// Step4. Get id list from above result.
@@ -449,17 +428,20 @@ class Keywords {
 		}
 
 		$positions = $wpdb->get_results(
-			"SELECT DISTINCT(km.keyword) as {$dimension}, COALESCE(t.position, 0) as position, COALESCE(t.diffPosition, 0) as diffPosition, COALESCE(t.diffPosition, 100) as diffPosition1
+			"SELECT DISTINCT(km.keyword) as {$dimension}, COALESCE(t.position, 0) as position, COALESCE(t.diffPosition, 0) as diffPosition, COALESCE(t.diffPosition, 100) as diffPosition1, COALESCE(t.impressions, 0) as impressions, COALESCE(t.diffImpressions, 0) as diffImpressions, COALESCE(t.clicks, 0) as clicks, COALESCE(t.diffClicks, 0) as diffClicks, COALESCE(t.ctr, 0) as ctr, COALESCE(t.diffCtr, 0) as diffCtr
 			FROM {$wpdb->prefix}rank_math_analytics_keyword_manager km
 			LEFT JOIN (
 				SELECT
-					t1.{$dimension} as {$dimension}, ROUND( t1.position, 0 ) as position,
-					COALESCE( ROUND( t1.position - COALESCE( t2.position, 100 ), 0 ), 0 ) as diffPosition
+					t1.{$dimension} as {$dimension}, ROUND( t1.position, 0 ) as position, ROUND( t1.impressions, 0 ) as impressions, ROUND( t1.clicks, 0 ) as clicks, ROUND( t1.ctr, 0 ) as ctr,
+					COALESCE( ROUND( t1.position - COALESCE( t2.position, 100 ), 0 ), 0 ) as diffPosition,
+					COALESCE( ROUND( t1.impressions - COALESCE( t2.impressions, 100 ), 0 ), 0 ) as diffImpressions,
+					COALESCE( ROUND( t1.clicks - COALESCE( t2.clicks, 100 ), 0 ), 0 ) as diffClicks,
+					COALESCE( ROUND( t1.ctr - COALESCE( t2.ctr, 100 ), 0 ), 0 ) as diffCtr
 				FROM
-					(SELECT a.{$dimension}, a.position FROM {$wpdb->prefix}rank_math_analytics_gsc AS a
+					(SELECT a.{$dimension}, a.position, a.impressions,a.clicks,a.ctr FROM {$wpdb->prefix}rank_math_analytics_gsc AS a
 					 WHERE 1 = 1{$ids_where}) AS t1
 				LEFT JOIN
-					(SELECT a.{$dimension}, a.position FROM {$wpdb->prefix}rank_math_analytics_gsc AS a
+					(SELECT a.{$dimension}, a.position, a.impressions,a.clicks,a.ctr FROM {$wpdb->prefix}rank_math_analytics_gsc AS a
 					 WHERE 1 = 1{$old_ids_where}) AS t2
 				ON t1.{$dimension} = t2.{$dimension}) AS t on t.{$dimension} = km.keyword
 				{$where_like_keyword1}
@@ -468,7 +450,6 @@ class Keywords {
 			{$limit}",
 			ARRAY_A
 		);
-
 		// phpcs:enable
 
 		// Step6. Get keywords list from above results.
@@ -685,10 +666,11 @@ class Keywords {
 	 * Get keywords graph data.
 	 *
 	 * @param array $keywords Keywords to get data for.
+	 * @param string $sub_query Database sub-query.
 	 *
 	 * @return array
 	 */
-	public function get_graph_data_for_keywords( $keywords ) {
+	public function get_graph_data_for_keywords( $keywords, $sub_query = ''  ) {
 		global $wpdb;
 
 		$intervals     = Stats::get()->get_intervals();
@@ -697,22 +679,25 @@ class Keywords {
 		$keywords      = '(\'' . join( '\', \'', $keywords ) . '\')';
 
 		$query = $wpdb->prepare(
-			"SELECT a.query, a.position, t.date, t.range_group
+			"SELECT a.query, a.position, t.max_created AS date, t.range_group
 			FROM {$wpdb->prefix}rank_math_analytics_gsc AS a
-			INNER JOIN
-				(SELECT query, DATE_FORMAT(created, '%%Y-%%m-%%d') as date, MAX(id) as id, {$sql_daterange}
+			INNER JOIN (
+				SELECT
+					query,
+					{$sql_daterange},
+					MAX(created) AS max_created
 				FROM {$wpdb->prefix}rank_math_analytics_gsc
 				WHERE created BETWEEN %s AND %s
-					AND query IN {$keywords}
+				AND query IN {$keywords}
+				{$sub_query}
 				GROUP BY query, range_group
-				ORDER BY created ASC) AS t ON a.id = t.id
-			",
+			) t
+			ON a.query = t.query AND a.created = t.max_created
+			ORDER BY a.query ASC",
 			Stats::get()->start_date,
 			Stats::get()->end_date
 		);
-		$data  = $wpdb->get_results( $query );
-		// phpcs:enable
-
+		$data = $wpdb->get_results( $query );
 		$data = Stats::get()->filter_graph_rows( $data );
 
 		return array_map( [ Stats::get(), 'normalize_graph_rows' ], $data );
@@ -752,7 +737,7 @@ class Keywords {
 	}
 
 	/**
-	 * Save post.
+	 * Add focus keywords to Rank Tracker.
 	 *
 	 * @param  int $post_id Post ID.
 	 * @return mixed

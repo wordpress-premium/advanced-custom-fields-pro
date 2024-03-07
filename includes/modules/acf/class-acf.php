@@ -111,13 +111,8 @@ class ACF {
 			return $images;
 		}
 
-		foreach ( $fields as $field ) {
-			if ( ! in_array( $field['type'], [ 'image', 'gallery', 'group', 'repeater', 'flexible_content' ], true ) ) {
-				continue;
-			}
-
-			$this->add_images_to_sitemap( $images, $field['value'], $field['type'] );
-		}
+		$values = wp_list_pluck( $fields, 'value' );
+		$this->get_all_images( $images, $values );
 
 		return $images;
 	}
@@ -145,7 +140,7 @@ class ACF {
 	 * @param array  $field      Current field data.
 	 */
 	private function get_sub_fields_content( &$content, $sub_fields, $field ) {
-		foreach (  $sub_fields as $layout ) {
+		foreach ( $sub_fields as $layout ) {
 			if ( ! in_array( $layout['type'], [ 'wysiwyg', 'textarea' ], true ) ) {
 				continue;
 			}
@@ -164,36 +159,51 @@ class ACF {
 	/**
 	 * Add Images to XML Sitemap.
 	 *
-	 * @param array   $images     Array of image items.
-	 * @param array   $field_data Current Image array.
-	 * @param boolean $field_type Is field type gallery.
+	 * @param array  $images     Array of image items.
+	 * @param array  $field_data Current Image array.
+	 * @param string $field_type Is field type gallery.
 	 */
 	private function add_images_to_sitemap( &$images, $field_data, $field_type ) {
 		if ( empty( $field_data ) ) {
 			return;
 		}
 
-		if ( in_array( $field_type, [ 'repeater', 'flexible_content' ], true ) ) {
+		if ( in_array( $field_type, [ 'group', 'repeater', 'flexible_content' ], true ) ) {
 			$this->add_images_from_repeater_field( $images, $field_data );
 			return;
 		}
 
-		if ( in_array( $field_type, [ 'gallery', 'group' ], true ) ) {
+		if ( in_array( $field_type, [ 'gallery' ], true ) ) {
 			foreach ( $field_data as $image ) {
-				if ( ! is_array( $image ) || empty( $image['type'] ) || 'image' !== $image['type'] ) {
-					continue;
-				}
-
-				$this->add_images_to_sitemap( $images, $image, $image['type'] );
+				$this->add_images_to_sitemap( $images, $image, 'image' );
 			}
 			return;
 		}
 
-		if ( 'image' === $field_type && ! empty( $field_data['url'] ) ) {
+		if ( 'image' !== $field_type || empty( $field_data ) ) {
+			return;
+		}
+
+		if ( is_array( $field_data ) && ! empty( $field_data['url'] ) ) {
 			$images[] = [
 				'src'   => $field_data['url'],
 				'title' => $field_data['title'],
 				'alt'   => $field_data['alt'],
+			];
+		} elseif ( is_int( $field_data ) ) {
+			$image_url = wp_get_attachment_image_url( $field_data, 'full' );
+			if ( $image_url ) {
+				$images[] = [
+					'src'   => $image_url,
+					'title' => '',
+					'alt'   => '',
+				];
+			}
+		} elseif ( Helper::is_image_url( $field_data ) ) {
+			$images[] = [
+				'src'   => $field_data,
+				'title' => '',
+				'alt'   => '',
 			];
 		}
 	}
@@ -210,17 +220,68 @@ class ACF {
 		}
 
 		foreach ( $field_data as $data ) {
-			foreach ( $data as $image ) {
-				if (
-					! is_array( $image ) ||
-					! isset( $image['type'] ) ||
-					! in_array( $image['type'], [ 'image', 'gallery', 'group', 'repeater' ], true )
-				) {
-					continue;
+			if ( is_array( $data ) ) {
+				foreach ( $data as $image ) {
+					if ( is_array( $image ) ) {
+						$this->add_images_to_sitemap( $images, $image[0], 'image' );
+					} else {
+						$this->add_images_to_sitemap( $images, $image, 'image' );
+					}
 				}
-
-				$this->add_images_to_sitemap( $images, $image, $image['type'] );
+			} else {
+				$this->add_images_to_sitemap( $images, $data, 'image' );
 			}
 		}
 	}
+
+	/**
+	 * Get all images
+	 *
+	 * @param array $images     All images.
+	 * @param array $data       All acf field values.
+	 *
+	 * @return array
+	 */
+	public function get_all_images( &$images, $data ) {
+
+		if ( is_array( $data ) ) {
+			foreach ( array_values( $data ) as $single_data ) {
+				if ( is_array( $single_data ) && isset( $single_data['type'] ) && 'image' === $single_data['type'] ) {
+					$images[]    = [
+						'src'   => $single_data['url'],
+						'title' => $single_data['title'],
+						'alt'   => $single_data['alt'],
+					];
+					$single_data = '';
+				}
+				$this->get_all_images( $images, $single_data );
+			}
+		}
+
+		if ( empty( $data ) || is_array( $data ) ) {
+			return $images;
+		}
+
+		if ( is_int( $data ) ) {
+			$image_url = wp_get_attachment_image_url( $data, 'full' );
+			if ( $image_url ) {
+				$images[] = [
+					'src'   => $image_url,
+					'title' => '',
+					'alt'   => '',
+				];
+			}
+		}
+
+		if ( Helper::is_image_url( $data ) ) {
+			$images[] = [
+				'src'   => $data,
+				'title' => '',
+				'alt'   => '',
+			];
+		}
+
+		return $images;
+	}
+
 }

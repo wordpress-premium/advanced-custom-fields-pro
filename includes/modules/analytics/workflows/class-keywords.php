@@ -11,7 +11,7 @@
 namespace RankMathPro\Analytics\Workflow;
 
 use Exception;
-use MyThemeShop\Helpers\DB;
+use RankMath\Helpers\DB;
 use RankMath\Analytics\Workflow\Base;
 
 defined( 'ABSPATH' ) || exit;

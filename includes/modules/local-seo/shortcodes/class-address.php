@@ -65,7 +65,7 @@ class Address {
 				'key'   => 'coc_id',
 				'label' => esc_html__( 'Chamber of Commerce ID', 'rank-math-pro' ),
 			],
-			'priceRange'       => [
+			'pricerange'       => [
 				'key'   => 'priceRange',
 				'label' => esc_html__( 'Price indication', 'rank-math-pro' ),
 			],

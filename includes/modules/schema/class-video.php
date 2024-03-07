@@ -12,7 +12,6 @@ namespace RankMathPro\Schema;
 
 use RankMath\Helper;
 use RankMath\Traits\Hooker;
-use MyThemeShop\Helpers\Conditional;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -29,7 +28,7 @@ class Video {
 	public function __construct() {
 		Video_Schema_Generator::get();
 
-		if ( Conditional::is_rest() ) {
+		if ( Helper::is_rest() ) {
 			$this->filter( 'rank_math/tools/generate_video_schema', 'generate_video_schema' );
 		}
 

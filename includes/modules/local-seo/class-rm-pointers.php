@@ -14,7 +14,6 @@
 namespace RankMathPro\Local_Seo;
 
 use RankMath\Traits\Hooker;
-use MyThemeShop\Helpers\Param;
 
 defined( 'ABSPATH' ) || exit;
 

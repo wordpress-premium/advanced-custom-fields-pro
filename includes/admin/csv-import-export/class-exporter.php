@@ -77,6 +77,20 @@ class Exporter extends CSV {
 	private $redirection = [];
 
 	/**
+	 * Columns.
+	 *
+	 * @var array
+	 */
+	private $columns = [];
+
+	/**
+	 * Whether we need link counts.
+	 *
+	 * @var bool
+	 */
+	private $needs_link_count = false;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param mixed $object_types     Object types to export.

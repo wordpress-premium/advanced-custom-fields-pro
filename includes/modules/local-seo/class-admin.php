@@ -10,6 +10,7 @@
 
 namespace RankMathPro\Local_Seo;
 
+use RankMath\KB;
 use RankMath\Helper;
 use RankMath\Traits\Hooker;
 use RankMath\Admin\Admin_Helper;
@@ -58,7 +59,7 @@ class Admin {
 		$tabs['kml-file'] = [
 			'icon'      => 'rm-icon rm-icon-local-seo',
 			'title'     => esc_html__( 'Local Sitemap', 'rank-math-pro' ),
-			'desc'      => wp_kses_post( __( 'KML is a file format used to display geographic data in an Earth browser such as Google Earth. More information: <a href="https://rankmath.com/kb/kml-sitemap/?utm_source=Plugin&utm_campaign=WP" target="_blank">Locations KML</a>', 'rank-math-pro' ) ),
+			'desc'      => wp_kses_post( sprintf( __( 'KML is a file format used to display geographic data in an Earth browser such as Google Earth. More information: <a href="%s" target="_blank">Locations KML</a>', 'rank-math-pro' ), KB::get( 'kml-sitemap', 'Options Panel Sitemap Local Tab' ) ) ),
 			'file'      => dirname( __FILE__ ) . '/views/sitemap-settings.php',
 			/* translators: KML File Url */
 			'after_row' => '<div class="notice notice-alt notice-info info inline rank-math-notice"><p>' . sprintf( esc_html__( 'Your Locations KML file can be found here: %s', 'rank-math-pro' ), '<a href="' . $sitemap_url . '" target="_blank">' . $sitemap_url . '</a>' ) . '</p></div>',

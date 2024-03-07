@@ -13,7 +13,7 @@ namespace RankMathPro\Local_Seo;
 use RankMath\Helper;
 use RankMath\Post;
 use RankMath\Schema\DB;
-use MyThemeShop\Helpers\Param;
+use RankMath\Helpers\Param;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -215,7 +215,7 @@ class Store_Locator {
 							<form method="post">
 								<div class="rank-math-form-field">
 									<label for="origin"><?php echo esc_html__( 'Your location:', 'rank-math-pro' ); ?></label>
-									<input type="text" name="origin" id="rank-math-origin" value="<?php echo Param::post( 'rank-math-search-address' ); ?>" />
+									<input type="text" name="origin" id="rank-math-origin" value="<?php echo esc_attr( Param::post( 'rank-math-search-address' ) ); ?>" />
 									<input type="submit" name="get-direction" value="<?php echo esc_html__( 'Show route', 'rank-math-pro' ); ?>" />
 									<input type="hidden" name="rank-math-lat" id="rank-math-lat" value="<?php echo esc_attr( $lat ); ?>" />
 									<input type="hidden" name="rank-math-lng" id="rank-math-lng" value="<?php echo esc_attr( $lng ); ?>" />

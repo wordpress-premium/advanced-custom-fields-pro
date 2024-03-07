@@ -11,11 +11,11 @@
 namespace RankMathPro\Analytics;
 
 use RankMath\Helper;
+use RankMath\Helpers\DB as DB_Helper;
 use RankMath\Traits\Hooker;
 use RankMath\Analytics\Stats;
 use RankMath\Admin\Admin_Helper;
 use RankMathPro\Admin\Admin_Helper as ProAdminHelper;
-use MyThemeShop\Helpers\DB as DB_Helper;
 
 defined( 'ABSPATH' ) || exit;
 

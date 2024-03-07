@@ -5,11 +5,12 @@
  * @since      1.0.0
  * @package    RankMath
  * @subpackage RankMathPro
- * @author     MyThemeShop <admin@mythemeshop.com>
+ * @author     RankMath <support@rankmath.com>
  */
 
 namespace RankMathPro\Sitemap;
 
+use RankMath\KB;
 use RankMath\Helper;
 use RankMath\Traits\Hooker;
 use RankMath\Sitemap\Router;
@@ -38,11 +39,12 @@ class Video_Sitemap {
 			return;
 		}
 
+		$sitemap_slug = Router::get_sitemap_slug( 'video' );
 		$this->filter( 'rank_math/sitemap/providers', 'add_provider' );
-		$this->filter( 'rank_math/sitemap/video_urlset', 'xml_urlset' );
-		$this->filter( 'rank_math/sitemap/xsl_video', 'sitemap_xsl' );
-		$this->filter( 'rank_math/sitemap/video_stylesheet_url', 'stylesheet_url' );
-		$this->filter( 'rank_math/sitemap/video_sitemap_url', 'sitemap_url', 10, 2 );
+		$this->filter( 'rank_math/sitemap/' . $sitemap_slug . '_urlset', 'xml_urlset' );
+		$this->filter( 'rank_math/sitemap/xsl_' . $sitemap_slug, 'sitemap_xsl' );
+		$this->filter( 'rank_math/sitemap/' . $sitemap_slug . '_stylesheet_url', 'stylesheet_url' );
+		$this->filter( 'rank_math/sitemap/' . $sitemap_slug . '_sitemap_url', 'sitemap_url', 10, 2 );
 
 		$this->action( 'transition_post_status', 'status_transition', 10, 3 );
 	}
@@ -55,11 +57,12 @@ class Video_Sitemap {
 	 * @return array
 	 */
 	public function add_settings( $tabs ) {
-		$sitemap_url           = Router::get_base_url( 'video-sitemap.xml' );
+		$sitemap_slug          = Router::get_sitemap_slug( 'video' );
+		$sitemap_url           = Router::get_base_url( "$sitemap_slug-sitemap.xml" );
 		$tabs['video-sitemap'] = [
 			'icon'      => 'rm-icon rm-icon-video',
 			'title'     => esc_html__( 'Video Sitemap', 'rank-math-pro' ),
-			'desc'      => wp_kses_post( __( 'Video Sitemaps give search engines information about video content on your site. More information: <a href="https://rankmath.com/kb/video-sitemap/?utm_source=Plugin&utm_campaign=WP" target="_blank">Video Sitemaps</a>', 'rank-math-pro' ) ),
+			'desc'      => wp_kses_post( sprintf( __( 'Video Sitemaps give search engines information about video content on your site. More information: <a href="%s" target="_blank">Video Sitemaps</a>', 'rank-math-pro' ), KB::get( 'video-sitemap', 'Options Panel Sitemap Video' ) ) ),
 			'file'      => dirname( __FILE__ ) . '/settings-video.php',
 			/* translators: Video Sitemap Url */
 			'after_row' => '<div class="notice notice-alt notice-info info inline rank-math-notice"><p>' . sprintf( esc_html__( 'Your Video Sitemap index can be found here: %s', 'rank-math-pro' ), '<a href="' . $sitemap_url . '" target="_blank">' . $sitemap_url . '</a>' ) . '</p></div>',
@@ -145,7 +148,14 @@ class Video_Sitemap {
 						continue;
 					}
 
-					$output .= $renderer->newline( "<video:{$prop}>" . esc_url( $video[ $prop ] ) . "</video:{$prop}>", 3 );
+					/**
+					 * Filter the video content and thumbnail location:
+					 * - rank_math/sitemap/video/thumbnail_loc
+					 * - rank_math/sitemap/video/content_loc
+					 */
+					$value = $this->do_filter( "sitemap/video/{$prop}", $video[ $prop ] );
+
+					$output .= $renderer->newline( "<video:{$prop}>" . esc_url( $value ) . "</video:{$prop}>", 3 );
 				}
 
 				if ( ! empty( $video['tags'] ) ) {

@@ -14,8 +14,7 @@ use RankMath\Helper;
 use RankMath\Schema\DB;
 use RankMath\Traits\Hooker;
 use RankMath\Traits\Shortcode;
-use MyThemeShop\Helpers\Param;
-use MyThemeShop\Helpers\Str;
+use RankMath\Helpers\Str;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -25,6 +24,48 @@ defined( 'ABSPATH' ) || exit;
 class Location_Shortcode {
 
 	use Hooker, Shortcode;
+
+	/**
+	 * Shortcode attributes.
+	 *
+	 * @var array
+	 */
+	public $atts = [];
+
+	/**
+	 * Address Instance.
+	 *
+	 * @var Address
+	 */
+	public $address;
+
+	/**
+	 * Opening Hours Instance.
+	 *
+	 * @var Opening_Hours
+	 */
+	public $opening_hours;
+
+	/**
+	 * Map Instance.
+	 *
+	 * @var Map
+	 */
+	public $map;
+
+	/**
+	 * Store Locator Instance.
+	 *
+	 * @var Store_Locator
+	 */
+	public $store_locator;
+
+	/**
+	 * API Key.
+	 *
+	 * @var string
+	 */
+	public $api_key;
 
 	/**
 	 * The Constructor.
@@ -84,6 +125,12 @@ class Location_Shortcode {
 		foreach ( $this->get_attributes() as $key => $attribute ) {
 			$defaults[ $key ] = $attribute['default'];
 		}
+
+		if ( isset( $atts['show_priceRange'] ) ) {
+			$atts['show_pricerange'] = $atts['show_priceRange'];
+			unset( $atts['show_priceRange'] );
+		}
+
 		$this->atts = shortcode_atts(
 			$defaults,
 			$atts,
@@ -430,6 +477,10 @@ class Location_Shortcode {
 				'default' => false,
 			],
 			'show_coc_id'            => [
+				'type'    => 'boolean',
+				'default' => false,
+			],
+			'show_pricerange'        => [
 				'type'    => 'boolean',
 				'default' => false,
 			],

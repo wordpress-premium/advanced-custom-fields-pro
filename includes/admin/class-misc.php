@@ -70,11 +70,7 @@ class Misc {
 	 * Check and print the license type as a badge in the header of Rank Math's setting pages.
 	 */
 	public static function header_pro_badge() {
-		if ( ProAdminHelper::is_business_plan() ) {
-			echo '<span class="rank-math-pro-badge business">Business</span>';
-			return;
-		}
-
-		echo '<span class="rank-math-pro-badge">PRO</span>';
+		$plan = ProAdminHelper::get_plan();
+		echo '<span class="rank-math-pro-badge ' . esc_attr( $plan ) . '">' . esc_html( $plan ) . '</span>';
 	}
 }

@@ -10,8 +10,8 @@
 namespace RankMathPro;
 
 use RankMath\Helper;
+use RankMath\Helpers\Arr;
 use RankMath\Traits\Hooker;
-use MyThemeShop\Helpers\Arr;
 
 defined( 'ABSPATH' ) || exit;
 

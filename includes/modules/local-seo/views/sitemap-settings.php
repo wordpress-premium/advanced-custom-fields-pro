@@ -5,7 +5,7 @@
  * @since      2.2.0
  * @package    RankMath
  * @subpackage RankMathPro
- * @author     MyThemeShop <admin@mythemeshop.com>
+ * @author     RankMath <support@rankmath.com>
  */
 
 defined( 'ABSPATH' ) || exit;

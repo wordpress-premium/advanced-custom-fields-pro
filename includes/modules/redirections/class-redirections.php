@@ -13,8 +13,9 @@ namespace RankMathPro\Redirections;
 use RankMath\Helper;
 use RankMath\Traits\Hooker;
 use RankMath\Redirections\DB;
-use MyThemeShop\Helpers\Param;
+use RankMath\Helpers\Param;
 use RankMath\Admin\Admin_Helper;
+use RankMath\Redirections\Redirection;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -43,6 +44,9 @@ class Redirections {
 			$this->action( 'pre_delete_term', 'delete_auto_term_redirects', 20 );
 			$this->action( 'before_delete_post', 'delete_auto_post_redirects', 20, 1 );
 		}
+
+		// Support query parameters.
+		$this->filter( 'rank_math/redirection/redirection_match', 'match_query_parameters', 10, 3 );
 
 		new Categories();
 		new Schedule();
@@ -357,5 +361,20 @@ class Redirections {
 		Helper::add_json( 'add_redirection_category_nonce', wp_create_nonce( 'add-rank_math_redirection_category' ) );
 		wp_enqueue_style( 'rank-math-pro-redirections', $url . 'css/redirections.css', [], RANK_MATH_PRO_VERSION );
 		wp_enqueue_script( 'rank-math-pro-redirections', $url . 'js/redirections.js', [], RANK_MATH_PRO_VERSION, true );
+	}
+
+	/**
+	 * Add support for query parameters in redirections.
+	 *
+	 * @param bool  $match       Whether the redirection matches the current URL.
+	 * @param array $redirection The redirection data.
+	 */
+	public function match_query_parameters( $match, $redirection ) {
+		if ( empty( $redirection ) || $match ) {
+			return $match;
+		}
+
+		$full_uri = Redirection::get_full_uri();
+		return DB::compare_sources( $redirection['sources'], $full_uri );
 	}
 }

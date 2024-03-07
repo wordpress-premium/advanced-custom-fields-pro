@@ -12,7 +12,7 @@ namespace RankMathPro\Redirections;
 
 use RankMath\Helper;
 use RankMath\Traits\Hooker;
-use MyThemeShop\Helpers\Param;
+use RankMath\Helpers\Param;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -22,6 +22,27 @@ defined( 'ABSPATH' ) || exit;
 class Categories {
 
 	use Hooker;
+
+	/**
+	 * Save categories with a delay so that we know the new redirection ID.
+	 *
+	 * @var array
+	 */
+	private $save_categories = [];
+
+	/**
+	 * Import categories from the Redirection plugin.
+	 *
+	 * @var array
+	 */
+	private $import_categories = [];
+
+	/**
+	 * Whether categories have been imported from the Redirection plugin.
+	 *
+	 * @var boolean
+	 */
+	private $categories_imported = false;
 
 	/**
 	 * Register hooks.

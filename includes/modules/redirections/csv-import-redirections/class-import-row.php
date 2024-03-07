@@ -12,7 +12,7 @@ namespace RankMathPro\Redirections\CSV_Import_Export_Redirections;
 
 use RankMath\Redirections\DB;
 use RankMath\Redirections\Redirection;
-use MyThemeShop\Helpers\Arr;
+use RankMath\Helpers\Arr;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -55,6 +55,27 @@ class Import_Row {
 	 * @var string
 	 */
 	public $error = '';
+
+	/**
+	 * Stores row data.
+	 *
+	 * @var array
+	 */
+	private $data = [];
+
+	/**
+	 * Stores import settings.
+	 *
+	 * @var array
+	 */
+	private $settings = [];
+
+	/**
+	 * Stores columns.
+	 *
+	 * @var array
+	 */
+	private $columns = [];
 
 	/**
 	 * Constructor.
@@ -113,7 +134,8 @@ class Import_Row {
 		if ( ! empty( $this->columns ) ) {
 			return $this->columns;
 		}
-		$this->columns = CSV_Import_Export_Redirections::get_columns();
+		$this->columns   = CSV_Import_Export_Redirections::get_columns();
+		$this->columns[] = 'ignore';
 
 		return $this->columns;
 	}
@@ -124,21 +146,30 @@ class Import_Row {
 	 * @param array $data Redirection data.
 	 * @return mixed
 	 */
-	public function import_redirection( $data ) {
-		if ( ! $this->id ) {
-			return $this->create_redirection( $data );
+	public function import_redirection( $data = [] ) {
+
+		$exist = DB::get_redirection( $data );
+
+		/**
+		 * Filter to modify the redirection data before updating a redirection.
+		 * Pass a false value to skip the update and create a new redirection instead.
+		 *
+		 * @param array|false $data Redirection data.
+		 */
+		$exist = apply_filters( 'rank_math/admin/csv_import_redirection_update', $exist, $data, $this );
+		if ( $exist ) {
+			return $this->update_redirection( $exist, $data );
 		}
 
-		return $this->update_redirection( $data );
+		return $this->create_redirection();
 	}
 
 	/**
 	 * Insert redirection.
 	 *
-	 * @param array $data Redirection data.
 	 * @return mixed
 	 */
-	public function create_redirection( $data ) {
+	public function create_redirection() {
 		$sources = $this->get_sources();
 		if ( ! $sources || ( in_array( $this->type, [ '301', '302', '307' ], true ) && ! $this->destination ) ) {
 			return;
@@ -171,15 +202,10 @@ class Import_Row {
 	/**
 	 * Edit an existing redirection.
 	 *
-	 * @param array $data Redirection data.
+	 * @param array $data Redirection exist.
 	 * @return mixed
 	 */
-	public function update_redirection( $data ) {
-		if ( DB::get_redirection_by_id( $data['id'] ) === false ) {
-			// Translators: placeholder is numeric redirection id.
-			$this->error = sprintf( __( 'Could not update redirection #%d (not found)', 'rank-math-pro' ), $this->id );
-			return false;
-		}
+	public function update_redirection( $data, $input = [] ) {
 
 		if ( 'DELETE' === $this->destination ) {
 			$this->success = true;
@@ -188,14 +214,21 @@ class Import_Row {
 		}
 
 		$sources = $this->get_sources();
+		if ( ! is_array( $data['sources'] ) ) {
+			return;
+		}
+		$sources = array_unique( array_merge( $sources, $data['sources'] ), SORT_REGULAR );
+
+		$url_to = ! empty( $input['destination'] ) ? $input['destination'] : $data['url_to'];
+		$header_code = ! empty( $input['type'] ) ? $input['type'] : $data['header_code'];
 
 		$redirection = Redirection::from(
 			[
-				'id'          => $this->id,
-				'url_to'      => $this->destination,
+				'id'          => $data['id'],
 				'sources'     => $sources,
-				'header_code' => $this->type,
-				'status'      => $this->status,
+				'url_to'      => $url_to,
+				'header_code' => $header_code,
+				'status'      => $data['status'],
 			]
 		);
 
@@ -204,10 +237,10 @@ class Import_Row {
 		}
 
 		$category = $this->category ? Arr::from_string( $this->category ) : [];
-		wp_set_object_terms( $redirection->id, $category, 'rank_math_redirection_category' );
+		wp_set_object_terms( $redirection->id, $category, 'rank_math_redirection_category', true );
 
 		$this->success = true;
-		$this->action  = 'updated';
+		$this->action  = ( empty( $input['id'] ) ) ? 'merged' : 'updated';
 		return $redirection->id;
 	}
 
@@ -251,8 +284,9 @@ class Import_Row {
 
 		$sources = [
 			[
-				'pattern'    => $this->source,
+				'pattern'    => wp_specialchars_decode( $this->source ),
 				'comparison' => $this->matching,
+				'ignore'     => $this->ignore,
 			],
 		];
 

@@ -11,7 +11,7 @@
 namespace RankMathPro\Analytics\Workflow;
 
 use Exception;
-use MyThemeShop\Helpers\DB;
+use RankMath\Helpers\DB;
 use RankMath\Analytics\Workflow\Base;
 use function as_unschedule_all_actions;
 
@@ -88,7 +88,6 @@ class Adsense extends Base {
 			return;
 		}
 
-		// Fetch now.
-		$this->create_jobs( $days, 'adsense' );
+		$this->schedule_single_action( $days, 'adsense' );
 	}
 }

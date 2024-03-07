@@ -10,14 +10,13 @@
 
 namespace RankMathPro;
 
-use RankMath\Helper;
 use RankMath\Traits\Hooker;
+use RankMath\Helper;
+use RankMath\Helpers\Url;
+use RankMath\Helpers\Str;
+use RankMath\Helpers\Arr;
 use RankMath\Admin\Admin_Helper;
 use RankMathPro\Admin\Admin_Helper as PROAdminHelper;
-use MyThemeShop\Helpers\Url;
-use MyThemeShop\Helpers\Str;
-use MyThemeShop\Helpers\Arr;
-use MyThemeShop\Helpers\Conditional;
 
 
 defined( 'ABSPATH' ) || exit;
@@ -36,12 +35,22 @@ class Common {
 	 */
 	public function __construct() {
 		$this->action( 'rank_math/admin_bar/items', 'add_admin_bar_items' );
+		$this->filter( 'rank_math/focus_keyword/maxtags', 'limit_maxtags', 5 );
 		$this->filter( 'rank_math/metabox/values', 'add_json_data' );
 		$this->filter( 'wp_helpers_is_affiliate_link', 'is_affiliate_link', 10, 2 );
 		$this->filter( 'rank_math/link/add_attributes', 'can_add_attributes' );
 
 		$this->filter( 'rank_math/researches/tests', 'add_product_tests', 10, 2 );
 		$this->action( 'rank_math/admin/editor_scripts', 'enqueue' );
+	}
+
+	/**
+	 * Increase the focus keyword max tags.
+	 *
+	 * @param int $limit The max tags limit.
+	 */
+	public function limit_maxtags( $limit ) {
+		return 100;
 	}
 
 	/**
@@ -71,7 +80,6 @@ class Common {
 	 * @param array $values Localized data.
 	 */
 	public function add_json_data( $values ) {
-		$values['maxTags'] = 100;
 
 		if ( ! Helper::is_site_connected() ) {
 			$values['trendsIcon']         = $this->get_icon_svg();
@@ -79,7 +87,7 @@ class Common {
 			$values['trendsUpgradeLabel'] = esc_html__( 'Activate now', 'rank-math-pro' );
 		}
 
-		if ( Conditional::is_woocommerce_active() && 'product' === PROAdminHelper::get_current_post_type() ) {
+		if ( Helper::is_woocommerce_active() && 'product' === PROAdminHelper::get_current_post_type() ) {
 			$values['assessor']['isReviewEnabled'] = 'yes' === get_option( 'woocommerce_enable_reviews', 'yes' );
 		}
 
@@ -136,8 +144,8 @@ class Common {
 		}
 
 		$post_type      = PROAdminHelper::get_current_post_type();
-		$is_woocommerce = Conditional::is_woocommerce_active() && 'product' === $post_type;
-		$is_edd         = Conditional::is_edd_active() && 'download' === $post_type;
+		$is_woocommerce = Helper::is_woocommerce_active() && 'product' === $post_type;
+		$is_edd         = Helper::is_edd_active() && 'download' === $post_type;
 
 		if ( ! $is_woocommerce && ! $is_edd ) {
 			return $tests;
@@ -174,8 +182,8 @@ class Common {
 		}
 
 		$post_type      = PROAdminHelper::get_current_post_type();
-		$is_woocommerce = Conditional::is_woocommerce_active() && 'product' === $post_type;
-		$is_edd         = Conditional::is_edd_active() && 'download' === $post_type;
+		$is_woocommerce = Helper::is_woocommerce_active() && 'product' === $post_type;
+		$is_edd         = Helper::is_edd_active() && 'download' === $post_type;
 
 		if ( ! $is_woocommerce && ! $is_edd ) {
 			return;

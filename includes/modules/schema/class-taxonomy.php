@@ -11,13 +11,11 @@
 namespace RankMathPro\Schema;
 
 use RankMath\Helper;
+use RankMath\Helpers\Param;
 use RankMath\Admin\Admin_Helper;
 use RankMath\Schema\DB;
 use RankMath\Rest\Sanitize;
 use RankMath\Traits\Hooker;
-use MyThemeShop\Helpers\Arr;
-use MyThemeShop\Helpers\Str;
-use MyThemeShop\Helpers\Param;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -67,8 +65,9 @@ class Taxonomy extends Admin {
 	 * Enqueue Styles and Scripts required for metabox.
 	 */
 	public function enqueue() {
+		global $pagenow;
 		$cmb = cmb2_get_metabox( 'rank_math_metabox' );
-		if ( false === $cmb ) {
+		if ( false === $cmb || 'edit-tags.php' === $pagenow ) {
 			return;
 		}
 

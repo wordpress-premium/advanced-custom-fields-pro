@@ -11,10 +11,10 @@
 namespace RankMathPro\Admin\CSV_Import_Export;
 
 use RankMath\Helper;
+use RankMath\Helpers\Arr;
 use RankMath\Redirections\DB;
 use RankMath\Redirections\Cache;
 use RankMath\Redirections\Redirection;
-use MyThemeShop\Helpers\Arr;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -24,6 +24,48 @@ defined( 'ABSPATH' ) || exit;
  * @codeCoverageIgnore
  */
 class Import_Row {
+
+	/**
+	 * Row data.
+	 *
+	 * @var array
+	 */
+	private $data = [];
+
+	/**
+	 * Import settings.
+	 *
+	 * @var array
+	 */
+	private $settings = [];
+
+	/**
+	 * Columns.
+	 *
+	 * @var array
+	 */
+	private $columns = [];
+
+	/**
+	 * Redirection.
+	 *
+	 * @var array
+	 */
+	private $redirection = [];
+
+	/**
+	 * Object URI.
+	 *
+	 * @var string
+	 */
+	private $object_uri = '';
+
+	/**
+	 * Facebook and Twitter thumbnail.
+	 *
+	 * @var array
+	 */
+	private $thumbnail = [];
 
 	/**
 	 * Constructor.
@@ -202,6 +244,7 @@ class Import_Row {
 	 */
 	public function clear_social_facebook_thumbnail() {
 		$this->delete_meta( 'facebook_image' );
+		$this->delete_meta( 'facebook_image_id' );
 	}
 
 	/**
@@ -229,6 +272,7 @@ class Import_Row {
 	 */
 	public function clear_social_twitter_thumbnail() {
 		$this->delete_meta( 'twitter_image' );
+		$this->delete_meta( 'twitter_image_id' );
 	}
 
 	/**
@@ -393,7 +437,7 @@ class Import_Row {
 			return;
 		}
 
-		$this->update_meta( 'primary_category', $value );
+		$this->update_meta( 'primary_category', $term_id );
 	}
 
 	/**
@@ -421,7 +465,12 @@ class Import_Row {
 	 * @return void
 	 */
 	public function import_social_facebook_thumbnail( $value ) {
-		$this->update_meta( 'facebook_image', $value );
+		$details = $this->thumbnail_attachment_details( $value );
+		if ( empty( $details ) ) {
+			return;
+		}
+		$this->update_meta( 'facebook_image', $details['url'] );
+		$this->update_meta( 'facebook_image_id', $details['id'] );
 	}
 
 	/**
@@ -451,7 +500,12 @@ class Import_Row {
 	 * @return void
 	 */
 	public function import_social_twitter_thumbnail( $value ) {
-		$this->update_meta( 'twitter_image', $value );
+		$details = $this->thumbnail_attachment_details( $value );
+		if ( empty( $details ) ) {
+			return;
+		}
+		$this->update_meta( 'twitter_image', $details['url'] );
+		$this->update_meta( 'twitter_image_id', $details['id'] );
 		$this->update_meta( 'twitter_use_facebook', 'off' );
 	}
 
@@ -505,7 +559,6 @@ class Import_Row {
 				'header_code' => $this->redirect_type,
 			]
 		);
-		$redirection->set_nocache( true );
 		$redirection->save();
 	}
 
@@ -737,6 +790,68 @@ class Import_Row {
 	public function delete_meta( $key ) {
 		$delete_meta = "delete_{$this->object_type}_meta";
 		$delete_meta( $this->id, 'rank_math_' . $key );
+	}
+
+	/**
+	 * Gets the file details while downloading and saving the image file if it doesn't exist on current server.
+	 *
+	 * @param string $url The URL string to the file.
+	 *
+	 * @returns array The attachment id and URL.
+	 */
+	private function thumbnail_attachment_details( $url ) {
+		if ( isset( $this->thumbnail[ $url ] ) ) {
+			return $this->thumbnail[ $url ];
+		}
+
+		$dir = wp_get_upload_dir();
+		if ( Helper::starts_with( $dir['baseurl'], $url ) ) {
+			$this->thumbnail[ $url ] = [
+				'id'  => attachment_url_to_postid( $url ),
+				'url' => $url,
+			];
+			return $this->thumbnail[ $url ];
+		}
+
+		// Attempt and download the remote file!
+		$tmp_file_name = download_url( $url );
+		if ( is_wp_error( $tmp_file_name ) ) {
+			return [];
+		}
+
+		$path        = wp_parse_url( $url, PHP_URL_PATH );
+		$file_name   = basename( $path );
+		$uploads     = wp_upload_dir();
+		$unique_name = wp_unique_filename( $uploads['path'], $file_name );
+		// Move the downloaded file to the uploads dir.
+		$uploads_file_path = $uploads['path'] . '/' . $unique_name;
+		// Use copy and unlink because rename breaks streams.
+		// phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+		@copy( $tmp_file_name, $uploads_file_path );
+		unlink( $tmp_file_name );
+
+		$wp_filetype = wp_check_filetype( $file_name, null );
+		$attachment  = [
+			'guid'           => $uploads['url'] . '/' . $unique_name,
+			'post_mime_type' => $wp_filetype['type'],
+			'post_title'     => sanitize_file_name( $unique_name ),
+			'post_content'   => '',
+			'post_status'    => 'inherit',
+		];
+
+		$attachment_id = wp_insert_attachment( $attachment );
+
+		// Make sure that this file is included, as wp_generate_attachment_metadata() depends on it.
+		require_once ABSPATH . 'wp-admin/includes/image.php';
+		// Generate the metadata for the attachment, and update the database record.
+		$attach_data = wp_generate_attachment_metadata( $attachment_id, $uploads_file_path );
+		update_post_meta( $attachment_id, '_wp_attached_file', $attach_data['file'] );
+		wp_update_attachment_metadata( $attachment_id, $attach_data );
+		$this->thumbnail[ $url ] = [
+			'id'  => $attachment_id,
+			'url' => $attachment['guid'],
+		];
+		return $this->thumbnail[ $url ];
 	}
 
 }

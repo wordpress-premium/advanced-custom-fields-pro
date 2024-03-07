@@ -11,10 +11,10 @@
 namespace RankMathPro\Admin;
 
 use RankMath\Helper;
+use RankMath\Helpers\Str;
+use RankMath\Helpers\Arr;
 use RankMath\Admin\Admin_Helper;
 use RankMath\Traits\Hooker;
-use MyThemeShop\Helpers\Str;
-use MyThemeShop\Helpers\Arr;
 
 defined( 'ABSPATH' ) || exit;
 

@@ -15,13 +15,13 @@ namespace RankMathPro\Analytics;
 use WP_Error;
 use WP_REST_Server;
 use RankMath\Helper;
+use RankMath\Helpers\DB as DB_Helper;
 use WP_REST_Request;
 use WP_REST_Controller;
 use RankMath\Admin\Admin_Helper;
 use RankMathPro\Google\PageSpeed;
 use RankMath\SEO_Analysis\SEO_Analyzer;
 use RankMathPro\Analytics\DB;
-use MyThemeShop\Helpers\DB as DB_Helper;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -314,14 +314,19 @@ class Rest extends WP_REST_Controller {
 			);
 		}
 
+		$keywords = html_entity_decode( $keywords );
+
 		// Check remain keywords count can be added.
 		$total_keywords = Keywords::get()->get_tracked_keywords_count();
 		$new_keywords   = Keywords::get()->extract_addable_track_keyword( $keywords );
 		$keywords_count = count( $new_keywords );
-		$summary        = Keywords::get()->get_tracked_keywords_quota();
-		$remain         = $summary['available'] - $total_keywords - $keywords_count;
+		if ( $keywords_count <= 0 ) {
+			return false;
+		}
 
-		if ( $remain < 0 ) {
+		$summary = Keywords::get()->get_tracked_keywords_quota();
+		$remain  = $summary['available'] - $total_keywords;
+		if ( $remain <= 0 ) {
 			return false;
 		}
 
@@ -462,8 +467,10 @@ class Rest extends WP_REST_Controller {
 		if ( $force || ( ! $is_admin_bar && $this->should_update_pagespeed( $id ) ) ) {
 			// Page Score.
 			$analyzer = new SEO_Analyzer();
-			$score    = $analyzer->get_page_score( $url );
-			$update   = [];
+			$analyzer->set_url();
+
+			$score  = $analyzer->get_page_score( $url );
+			$update = [];
 			if ( $score > 0 ) {
 				$update['page_score'] = $score;
 			}

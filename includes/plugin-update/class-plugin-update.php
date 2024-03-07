@@ -10,10 +10,11 @@
 
 namespace RankMathPro\Plugin_Update;
 
+use RankMath\KB;
 use RankMath\Helper;
-use RankMath\Traits\Hooker;
-use MyThemeShop\Helpers\Param;
+use RankMath\Helpers\Param;
 use RankMath\Admin\Admin_Helper;
+use RankMath\Traits\Hooker;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -152,8 +153,10 @@ class Plugin_Update {
 			<div class="notice notice-success rank-math-notice">
 				<p>
 					<?php
+					esc_html_e( 'Rank Math PRO is installed but it is not connected to your account, so you are missing out on important SEO features.', 'rank-math-pro' );
+					echo '<br>';
 					// translators: 1: opening HTML anchor tag, 2: closing HTML anchor tags.
-					echo wp_kses_post( sprintf( __( 'Rank Math Pro is installed but not activated yet. %1$sActivate now%2$s. It only takes 20 seconds!', 'rank-math-pro' ), '<a href="' . esc_url( Admin_Helper::get_activate_url() ) . '">', '</a>' ) );
+					echo wp_kses_post( sprintf( __( '%1$sConnect now%2$s. It only takes 20 seconds!', 'rank-math-pro' ), '<a href="' . esc_url( Admin_Helper::get_activate_url() ) . '">', '</a>' ) );
 					?>
 				</p>
 			</div>
@@ -234,7 +237,10 @@ class Plugin_Update {
 		}
 
 		// If we're in the process of updating RM Free then don't disable RM Pro update.
-		if ( Param::get( 'action' ) === 'update-selected' && strpos( Param::get( 'plugins', '' ), 'seo-by-rank-math/rank-math.php' ) !== false ) {
+		if (
+			( Param::get( 'action' ) === 'update-selected' && strpos( Param::get( 'plugins', '' ), 'seo-by-rank-math/rank-math.php' ) !== false ) ||
+			$this->do_filter( 'updates/remove_restrictions', false )
+		) {
 			return $transient;
 		}
 
@@ -469,7 +475,7 @@ class Plugin_Update {
 		}
 
 		$transient = get_site_transient( 'update_plugins' );
-		$response = isset( $transient->response['seo-by-rank-math-pro/rank-math-pro.php'] ) ? $transient->response['seo-by-rank-math-pro/rank-math-pro.php'] : new \stdClass();
+		$response  = isset( $transient->response['seo-by-rank-math-pro/rank-math-pro.php'] ) ? $transient->response['seo-by-rank-math-pro/rank-math-pro.php'] : new \stdClass();
 		if ( empty( $response->package ) && isset( $response->unavailability_reason ) ) {
 				$message = $this->get_update_message( $response->unavailability_reason );
 			?>
@@ -494,14 +500,28 @@ class Plugin_Update {
 	 */
 	private function has_beta_update( $plugin_info ) {
 		$beta_optin_enabled = Helper::get_settings( 'general.beta_optin' );
-		$plugin    = plugin_basename( RANK_MATH_PRO_FILE );
-		$transient = get_site_transient( 'update_plugins' );
+		$plugin             = plugin_basename( RANK_MATH_PRO_FILE );
+		$transient          = get_site_transient( 'update_plugins' );
 
 		return (
 			$beta_optin_enabled
 			&& ! empty( $transient->response[ $plugin ]->beta_version )
 			&& ! empty( $plugin_info->sections['beta_changelog'] )
 			&& version_compare( $transient->response[ $plugin ]->beta_version, ! empty( $transient->response[ $plugin ]->stable_version ) ? $transient->response[ $plugin ]->stable_version : $transient->response[ $plugin ]->new_version, '>=' )
+		);
+	}
+
+	/**
+	 * Check if version check endpoint's response contains new beta verison.
+	 *
+	 * @param array $data Latest versions.
+	 * @return boolean
+	 */
+	private function new_beta_version_available( $data ) {
+		return (
+			Helper::get_settings( 'general.beta_optin' )
+			&& version_compare( $data['beta_version'], $data['new_version'], '>' )
+			&& version_compare( $data['beta_version'], RANK_MATH_PRO_VERSION, '>' )
 		);
 	}
 
@@ -534,14 +554,14 @@ class Plugin_Update {
 		$description .= '★★★★★</p>';
 		$description .= '<p><strong>' . __( 'SEO is the most consistent source of traffic for any website', 'rank-math-pro' ) . '.</strong> ';
 		// Translators: placeholders are the anchor tag opening and closing.
-		$description .= sprintf( __( 'We created %1$sRank Math, a WordPress SEO plugin%2$s, to help every website owner get access to the SEO tools they need to improve their SEO and attract more traffic to their website.', 'rank-math-pro' ), '<a href="https://rankmath.com/wordpress/plugin/seo-suite/?utm_source=LP&amp;utm_campaign=WP" rel="nofollow ugc"><strong>', '</strong></a>' ) . '</p>';
+		$description .= sprintf( __( 'We created %1$sRank Math, a WordPress SEO plugin%2$s, to help every website owner get access to the SEO tools they need to improve their SEO and attract more traffic to their website.', 'rank-math-pro' ), '<a href="' . KB::get( 'logo', 'PRO Update Popup Description Tab' ) . '" rel="nofollow ugc"><strong>', '</strong></a>' ) . '</p>';
 
 		$plugin_info = [
 			'external' => true,
 			'name'     => 'Rank Math SEO PRO',
 			'slug'     => $this->slug,
-			'author'   => '<a href="https://rankmath.com/">Rank Math</a>',
-			'homepage' => 'https://rankmath.com/',
+			'author'   => '<a href="' . KB::get( 'seo-suite', 'PRO Update Popup Author Link' ) . '">Rank Math</a>',
+			'homepage' => KB::get( 'seo-suite', 'PRO Update Popup Homepage Link' ),
 			'banners'  => [
 				'low'  => 'https://ps.w.org/seo-by-rank-math/assets/banner-772x250.png',
 				'high' => 'https://ps.w.org/seo-by-rank-math/assets/banner-1544x500.png',
@@ -566,7 +586,7 @@ class Plugin_Update {
 		$update = [
 			'slug'        => $this->slug,
 			'plugin'      => $plugin,
-			'url'         => 'https://rankmath.com/',
+			'url'         => KB::get( 'seo-suite', 'PRO Update Popup Update Home Link' ),
 			'icons'       => [
 				'svg' => 'https://ps.w.org/seo-by-rank-math/assets/icon.svg?rev=2348086',
 				'1x'  => 'https://ps.w.org/seo-by-rank-math/assets/icon-128x128.png',
@@ -587,8 +607,45 @@ class Plugin_Update {
 	 *                     Otherwise returns false.
 	 */
 	public function fetch_latest_version( $force_check = false ) {
+
+		$stored_versions = get_site_transient( 'rank_math_pro_versions' );
+		if ( empty( $stored_versions ) || $force_check ) {
+			// Check the latest versions.
+			$versions_response = wp_remote_get(
+				$this->api_url . '/versionCheck/',
+				[
+					'timeout' => defined( 'DOING_CRON' ) && DOING_CRON ? 30 : 10,
+					'body'    => [
+						'product_slug' => $this->slug,
+					],
+				]
+			);
+
+			if ( is_wp_error( $versions_response ) ) {
+				return false;
+			}
+
+			$versions_response_body = wp_remote_retrieve_body( $versions_response );
+			$versions_result        = json_decode( $versions_response_body, true );
+			if ( ! is_array( $versions_result ) || ! isset( $versions_result['new_version'] ) ) {
+				return false;
+			}
+
+			$stored_versions = $versions_result;
+
+			set_site_transient( 'rank_math_pro_versions', $versions_result, 3600 * 3 );
+			update_site_option( 'rank_math_pro_google_updates', $versions_result['g_updates'] );
+		}
+
 		$stored = get_site_transient( 'rank_math_pro_updates' );
 		if ( ! $force_check && ! empty( $stored ) ) {
+			return $stored;
+		}
+
+		if (
+			version_compare( $stored_versions['new_version'], RANK_MATH_PRO_VERSION, '<=' )
+			&& ! $this->new_beta_version_available( $stored_versions )
+		) {
 			return $stored;
 		}
 
@@ -599,13 +656,18 @@ class Plugin_Update {
 		$params = [
 			'site_url'     => is_multisite() ? network_site_url() : home_url(),
 			'product_slug' => $this->slug,
+			'new_api'      => 2,
+			'v'            => RANK_MATH_PRO_VERSION,
 		];
 
 		$this->maybe_add_auth_params( $params );
 
-		// Send the request.
+		if ( ! isset( $params['username'] ) || Admin_Helper::is_plan_expired() ) {
+			return false;
+		}
+
 		$response = wp_remote_post(
-			$this->api_url . '/updateCheck/',
+			add_query_arg( 'v', RANK_MATH_PRO_VERSION, $this->api_url . '/updateCheck2/' ),
 			[
 				'timeout' => defined( 'DOING_CRON' ) && DOING_CRON ? 30 : 10,
 				'body'    => $params,
@@ -624,8 +686,8 @@ class Plugin_Update {
 			return false;
 		}
 
-		set_site_transient( 'rank_math_pro_updates', $result, 3600 );
-		update_site_option( 'rank_math_pro_google_updates', $result['g_updates'] );
+		set_site_transient( 'rank_math_pro_updates', $result, 3600 * 12 );
+
 		return $result;
 	}
 
@@ -684,7 +746,7 @@ class Plugin_Update {
 			return false;
 		}
 
-		set_site_transient( 'rank_math_pro_info_' . $locale, $result, 3600 );
+		set_site_transient( 'rank_math_pro_info_' . $locale, $result, 3600 * 3 );
 		return $result;
 	}
 
@@ -736,7 +798,7 @@ class Plugin_Update {
 				/* translators: 1: Plugin name, 2: Pricing Link's opening HTML anchor tag, 3: Pricing Link's closing HTML anchor tag. */
 				__( 'It seems that you don\'t have an active subscription for %1$s. Please see %2$sdetails and pricing%3$s.', 'rank-math-pro' ),
 				'Rank Math SEO PRO',
-				'<a href="https://rankmath.com/pricing/">',
+				'<a href="' . KB::get( 'pro', 'PRO Update Popup Upgrade Notice' ) . '">',
 				'</a>'
 			),
 			'not_connected'  => sprintf(
@@ -889,7 +951,7 @@ class Plugin_Update {
 			'name'        => __( 'Rank Math PRO', 'rank-math-pro' ),
 			'old_version' => RANK_MATH_PRO_VERSION,
 			'new_version' => $transient->response['seo-by-rank-math-pro/rank-math-pro.php']->new_version,
-			'changelog'   => __( 'https://rankmath.com/changelog/', 'rank-math-pro' ),
+			'changelog'   => KB::get( 'changelog', 'PRO Update Popup Chagelog Link' ),
 		];
 
 		return $products;

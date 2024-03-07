@@ -25,11 +25,18 @@ defined( 'ABSPATH' ) || exit;
 class Exporter extends CSV {
 
 	/**
-	 * Redirection cache.
+	 * Settings array.
 	 *
 	 * @var array
 	 */
-	private $redirection = [];
+	private $settings = [];
+
+	/**
+	 * Columns to export.
+	 *
+	 * @var array
+	 */
+	private $columns = [];
 
 	/**
 	 * Constructor.
@@ -38,11 +45,12 @@ class Exporter extends CSV {
 	 * @return void
 	 */
 	public function __construct( $options ) {
-		$defaults       = [
+		$defaults        = [
 			'include_deactivated' => true,
 		];
-		$this->settings = wp_parse_args( $options, $defaults );
-		$this->columns  = CSV_Import_Export_Redirections::get_columns();
+		$this->settings  = wp_parse_args( $options, $defaults );
+		$this->columns   = CSV_Import_Export_Redirections::get_columns();
+		$this->columns[] = 'ignore';
 	}
 
 	/**
@@ -101,6 +109,10 @@ class Exporter extends CSV {
 			case 'status':
 				$val = $object->status;
 				break;
+
+			case 'ignore':
+				$val = $object->ignore;
+				break;
 		}
 		return $this->escape_csv( apply_filters( "rank_math/admin/csv_export_redirections_column_{$column}", $val, $object ) ); //phpcs:ignore
 	}
@@ -141,20 +153,30 @@ class Exporter extends CSV {
 		$cols           = $this->columns;
 
 		// Fetch 50 at a time rather than loading the entire table into memory.
-		while ( $next_batch = array_splice( $ids, 0, 50 ) ) {
+		while ( $next_batch = array_splice( $ids, 0, 50 ) ) { // phpcs:ignore
 			$where          = 'WHERE ' . $primary_column . ' IN (' . join( ',', $next_batch ) . ')';
-			$objects        = $wpdb->get_results( "SELECT * FROM {$table} $where" );
+			$objects        = $wpdb->get_results( "SELECT * FROM {$table} $where" ); // phpcs:ignore
 			$current_object = 0;
 			// Begin Loop.
 			foreach ( $objects as $object ) {
 				$current_object++;
-				$columns = [];
-				foreach ( $cols as $column ) {
-					$this->process_sources( $object );
-					$columns[] = $this->get_column_value( $column, $object ); // phpcs:ignore
-				}
 
-				$items[] = $columns;
+				$this->process_categories( $object );
+				$sources = maybe_unserialize( $object->sources, true );
+
+				foreach ( $sources as $source ) {
+					$single_source                     = $object;
+					$single_source->source_processed   = $source['pattern'];
+					$single_source->matching_processed = $source['comparison'];
+					$single_source->ignore             = $source['ignore'];
+
+					$columns = [];
+					foreach ( $cols as $column ) {
+						$columns[] = $this->get_column_value( $column, $single_source ); // phpcs:ignore
+					}
+
+					$items[] = $columns;
+				}
 			}
 		}
 
@@ -167,18 +189,9 @@ class Exporter extends CSV {
 	 * @param object $object Redirection row.
 	 * @return void
 	 */
-	public function process_sources( &$object ) {
-		$sources                      = maybe_unserialize( $object->sources );
-		$object->source_processed     = json_encode( $sources );
-		$object->matching_processed   = '';
+	public function process_categories( &$object ) {
 		$object->categories_processed = '';
-
-		if ( count( $sources ) === 1 ) {
-			$object->source_processed   = $sources[0]['pattern'];
-			$object->matching_processed = $sources[0]['comparison'];
-		}
-
-		$terms = wp_get_object_terms( $object->id, 'rank_math_redirection_category' );
+		$terms                        = wp_get_object_terms( $object->id, 'rank_math_redirection_category' );
 		if ( is_a( $terms, 'WP_Error' ) || ! is_array( $terms ) || empty( $terms ) ) {
 			return;
 		}

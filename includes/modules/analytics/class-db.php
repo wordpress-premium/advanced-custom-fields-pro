@@ -11,13 +11,13 @@
 namespace RankMathPro\Analytics;
 
 use RankMath\Helper;
+use RankMath\Helpers\Str;
 use RankMath\Admin\Admin_Helper;
 use RankMath\Google\Analytics as Analytics_Free;
 use RankMath\Analytics\Stats;
 use RankMathPro\Google\Adsense;
-
-use MyThemeShop\Helpers\Str;
-use MyThemeShop\Database\Database;
+use RankMathPro\Analytics\Keywords;
+use RankMath\Admin\Database\Database;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -31,7 +31,7 @@ class DB {
 	 *
 	 * @param string $table_name Table name.
 	 *
-	 * @return \MyThemeShop\Database\Query_Builder
+	 * @return \RankMath\Admin\Database\Query_Builder
 	 */
 	public static function table( $table_name ) {
 		return Database::table( $table_name );
@@ -40,7 +40,7 @@ class DB {
 	/**
 	 * Get console data table.
 	 *
-	 * @return \MyThemeShop\Database\Query_Builder
+	 * @return \RankMath\Admin\Database\Query_Builder
 	 */
 	public static function analytics() {
 		return Database::table( 'rank_math_analytics_gsc' );
@@ -49,7 +49,7 @@ class DB {
 	/**
 	 * Get analytics data table.
 	 *
-	 * @return \MyThemeShop\Database\Query_Builder
+	 * @return \RankMath\Admin\Database\Query_Builder
 	 */
 	public static function traffic() {
 		return Database::table( 'rank_math_analytics_ga' );
@@ -58,7 +58,7 @@ class DB {
 	/**
 	 * Get adsense data table.
 	 *
-	 * @return \MyThemeShop\Database\Query_Builder
+	 * @return \RankMath\Admin\Database\Query_Builder
 	 */
 	public static function adsense() {
 		return Database::table( 'rank_math_analytics_adsense' );
@@ -67,7 +67,7 @@ class DB {
 	/**
 	 * Get objects table.
 	 *
-	 * @return \MyThemeShop\Database\Query_Builder
+	 * @return \RankMath\Admin\Database\Query_Builder
 	 */
 	public static function objects() {
 		return Database::table( 'rank_math_analytics_objects' );
@@ -76,7 +76,7 @@ class DB {
 	/**
 	 * Get inspections table.
 	 *
-	 * @return \MyThemeShop\Database\Query_Builder
+	 * @return \RankMath\Admin\Database\Query_Builder
 	 */
 	public static function inspections() {
 		return Database::table( 'rank_math_analytics_inspections' );
@@ -85,7 +85,7 @@ class DB {
 	/**
 	 * Get links table.
 	 *
-	 * @return \MyThemeShop\Database\Query_Builder
+	 * @return \RankMath\Admin\Database\Query_Builder
 	 */
 	public static function links() {
 		return Database::table( 'rank_math_internal_meta' );
@@ -94,7 +94,7 @@ class DB {
 	/**
 	 * Get keywords table.
 	 *
-	 * @return \MyThemeShop\Database\Query_Builder
+	 * @return \RankMath\Admin\Database\Query_Builder
 	 */
 	public static function keywords() {
 		return Database::table( 'rank_math_analytics_keyword_manager' );
@@ -284,86 +284,6 @@ class DB {
 	}
 
 	/**
-	 * Add console records.
-	 *
-	 * @param string $date Date of creation.
-	 * @param array  $rows Data rows to insert.
-	 */
-	public static function add_query_page_bulk( $date, $rows ) {
-		$chunks = array_chunk( $rows, 50 );
-
-		foreach ( $chunks as $chunk ) {
-			self::bulk_insert_query_page_data( $date . ' 00:00:00', $chunk );
-		}
-	}
-
-	/**
-	 * Bulk inserts records into a table using WPDB.  All rows must contain the same keys.
-	 *
-	 * @param  string $date        Date.
-	 * @param  array  $rows        Rows to insert.
-	 */
-	public static function bulk_insert_query_page_data( $date, $rows ) {
-		global $wpdb;
-
-		$data         = [];
-		$placeholders = [];
-		$columns      = [
-			'created',
-			'query',
-			'page',
-			'clicks',
-			'impressions',
-			'position',
-			'ctr',
-		];
-		$columns      = '`' . implode( '`, `', $columns ) . '`';
-		$placeholder  = [
-			'%s',
-			'%s',
-			'%s',
-			'%d',
-			'%d',
-			'%d',
-			'%d',
-		];
-
-		// Start building SQL, initialise data and placeholder arrays.
-		$sql = "INSERT INTO `{$wpdb->prefix}rank_math_analytics_gsc` ( $columns ) VALUES\n";
-
-		// Build placeholders for each row, and add values to data array.
-		foreach ( $rows as $row ) {
-			if (
-				$row['position'] > self::get_position_filter() ||
-				Str::contains( '?', $row['page'] )
-			) {
-				continue;
-			}
-
-			$data[] = $date;
-			$data[] = $row['query'];
-			$data[] = Stats::get_relative_url( self::remove_hash( $row['page'] ) );
-			$data[] = $row['clicks'];
-			$data[] = $row['impressions'];
-			$data[] = $row['position'];
-			$data[] = $row['ctr'];
-
-			$placeholders[] = '(' . implode( ', ', $placeholder ) . ')';
-		}
-
-		// Don't run insert with empty dataset, return 0 since no rows affected.
-		if ( empty( $data ) ) {
-			return 0;
-		}
-
-		// Stitch all rows together.
-		$sql .= implode( ",\n", $placeholders );
-
-		// Run the query.  Returns number of affected rows.
-		return $wpdb->query( $wpdb->prepare( $sql, $data ) ); // phpcs:ignore
-	}
-
-	/**
 	 * Add analytic records.
 	 *
 	 * @param string $date Date of creation.
@@ -407,25 +327,36 @@ class DB {
 
 		// Build placeholders for each row, and add values to data array.
 		foreach ( $rows as $row ) {
+			$page      = '';
+			$pageviews = '';
+			$visitors  = '';
+
 			if ( ! isset( $row['dimensionValues'] ) ) {
 				if ( empty( $row['dimensions'][1] ) || Str::contains( '?', $row['dimensions'][1] ) ) {
 					continue;
 				}
-				$data[] = $date;
-				$data[] = Stats::get_relative_url( self::remove_hash( $row['dimensions'][1] ) );
-				$data[] = $row['metrics'][0]['values'][0];
-				$data[] = $row['metrics'][0]['values'][1];
+				$page      = $row['dimensions'][2] . $row['dimensions'][1];
+				$pageviews = $row['metrics'][0]['values'][0];
+				$visitors  = $row['metrics'][0]['values'][1];
 			} else {
-				if ( empty( $row['dimensionValues'][0]['value'] ) || Str::contains( '?', $row['dimensionValues'][0]['value'] ) ) {
+				if ( empty( $row['dimensionValues'][1]['value'] ) || Str::contains( '?', $row['dimensionValues'][1]['value'] ) ) {
 					continue;
 				}
-				$data[] = $date;
-				$data[] = $row['dimensionValues'][0]['value'];
-				$data[] = $row['metricValues'][0]['value'];
-				$data[] = $row['metricValues'][1]['value'];
+				$page      = $row['dimensionValues'][0]['value'] . $row['dimensionValues'][1]['value'];
+				$pageviews = $row['metricValues'][0]['value'];
+				$visitors  = $row['metricValues'][1]['value'];
 			}
 
-			$placeholders[] = '(' . implode( ', ', $placeholder ) . ')';
+			if ( $page && $pageviews && $visitors ) {
+				$page = ( is_ssl() ? 'https' : 'http' ) . '://' . $page;
+
+				$data[] = $date;
+				$data[] = str_replace( Helper::get_home_url(), '', self::remove_hash( urldecode( $page ) ) );
+				$data[] = $pageviews;
+				$data[] = $visitors;
+
+				$placeholders[] = '(' . implode( ', ', $placeholder ) . ')';
+			}
 		}
 
 		if ( empty( $placeholders ) ) {
@@ -457,20 +388,16 @@ class DB {
 	/**
 	 * Add adsense records.
 	 *
-	 * @param string $date Date of creation.
-	 * @param array  $rows Data rows to insert.
+	 * @param array $rows Data rows to insert.
 	 */
-	public static function add_adsense( $date, $rows ) {
-		if ( ! \MyThemeShop\Helpers\DB::check_table_exists( 'rank_math_analytics_adsense' ) ) {
+	public static function add_adsense( $rows ) {
+		if ( ! \RankMath\Helpers\DB::check_table_exists( 'rank_math_analytics_adsense' ) ) {
 			return;
 		}
 
-		global $wpdb;
 		foreach ( $rows as $row ) {
+			$date     = $row['cells'][0]['value'];
 			$earnings = floatval( $row['cells'][1]['value'] );
-			if ( empty( $earnings ) ) {
-				continue;
-			}
 
 			self::adsense()
 				->insert(
@@ -508,20 +435,22 @@ class DB {
 			return false;
 		}
 
-		global $wpdb;
-
-		$all_keywords = [];
-		$db_keywords  = $wpdb->get_results( "SELECT keyword FROM `{$wpdb->prefix}rank_math_analytics_keyword_manager`" );
-
-		foreach ( $db_keywords as $item ) {
-			$all_keywords[] = $item->keyword;
-		}
-
-		$new_keys = array_diff( $rows, $all_keywords );
-
-		if ( empty( $new_keys ) ) {
+		// Check remain keywords count can be added.
+		$total_keywords = Keywords::get()->get_tracked_keywords_count();
+		$new_keywords   = Keywords::get()->extract_addable_track_keyword( implode( ',', $rows ) );
+		$keywords_count = count( $new_keywords );
+		if ( $keywords_count <= 0 ) {
 			return false;
 		}
+
+		$summary = Keywords::get()->get_tracked_keywords_quota();
+		$remain  = $summary['available'] - $total_keywords;
+		if ( $remain <= 0 ) {
+			return false;
+		}
+
+		// Add remaining limit keywords.
+		$new_keywords = array_slice( $new_keywords, 0, $remain );
 
 		$data         = [];
 		$placeholders = [];
@@ -538,11 +467,12 @@ class DB {
 		];
 
 		// Start building SQL, initialise data and placeholder arrays.
+		global $wpdb;
 		$sql = "INSERT INTO `{$wpdb->prefix}rank_math_analytics_keyword_manager` ( $columns ) VALUES\n";
 
 		// Build placeholders for each row, and add values to data array.
-		foreach ( $new_keys as $key ) {
-			$data[]         = $key;
+		foreach ( $new_keywords as $new_keyword ) {
+			$data[]         = $new_keyword;
 			$data[]         = 'uncategorized';
 			$data[]         = 1;
 			$placeholders[] = '(' . implode( ', ', $placeholder ) . ')';
@@ -570,7 +500,12 @@ class DB {
 	 */
 	public static function get_presence_stats() {
 		$results = self::inspections()
-			->select( [ 'coverage_state', 'COUNT(*)' => 'count' ] )
+			->select(
+				[
+					'coverage_state',
+					'COUNT(*)' => 'count',
+				]
+			)
 			->groupBy( 'coverage_state' )
 			->orderBy( 'count', 'DESC' )
 			->get();

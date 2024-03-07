@@ -28,11 +28,14 @@ class Elementor {
 	 */
 	public function __construct() {
 		$this->action( 'elementor/editor/before_enqueue_scripts', 'editor_scripts' );
-		$this->action( 'elementor/widgets/widgets_registered', 'add_breadcrumb_widget' );
+		$this->action( 'elementor/widgets/register', 'add_breadcrumb_widget' );
 		$this->action( 'elementor/element/accordion/section_title/before_section_end', 'add_faq_setting', 99 );
 		$this->filter( 'rank_math/json_ld', 'add_faq_schema', 99 );
 	}
 
+	/**
+	 * Enqueue the editor scripts.
+	 */
 	public function editor_scripts() {
 
 		wp_dequeue_script( 'rank-math-pro-metabox' );
@@ -60,7 +63,7 @@ class Elementor {
 	 * @param Widgets_Manager $widget The widgets manager.
 	 */
 	public function add_breadcrumb_widget( $widget ) {
-		$widget->register_widget_type( new Widget_Breadcrumbs() );
+		$widget->register( new Widget_Breadcrumbs() );
 	}
 
 	/**
@@ -93,7 +96,8 @@ class Elementor {
 		}
 
 		global $post;
-		if ( ! \Elementor\Plugin::$instance->db->is_built_with_elementor( $post->ID ) ) {
+		$elementor_document = \Elementor\Plugin::$instance->documents->get( $post->ID );
+		if ( ! $elementor_document || ! $elementor_document->is_built_with_elementor() ) {
 			return $data;
 		}
 

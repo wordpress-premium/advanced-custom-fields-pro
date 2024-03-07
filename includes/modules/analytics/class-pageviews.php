@@ -11,7 +11,8 @@
 namespace RankMathPro\Analytics;
 
 use RankMath\Analytics\Stats;
-use MyThemeShop\Helpers\DB as DB_Helper;
+use RankMath\Helpers\DB as DB_Helper;
+use RankMath\Helper;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -92,6 +93,7 @@ class Pageviews {
 	public static function get_pageviews_with_object( $args = [] ) {
 		global $wpdb;
 
+		Helper::enable_big_selects_for_queries();
 		$args = wp_parse_args(
 			$args,
 			[

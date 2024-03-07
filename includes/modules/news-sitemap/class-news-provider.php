@@ -5,7 +5,7 @@
  * @since      1.0.0
  * @package    RankMath
  * @subpackage RankMathPro
- * @author     MyThemeShop <admin@mythemeshop.com>
+ * @author     RankMath <support@rankmath.com>
  */
 
 namespace RankMathPro\Sitemap;
@@ -29,13 +29,27 @@ class News_Provider extends Post_Type {
 	public $should_show_empty = true;
 
 	/**
+	 * Holds the Sitemap slug.
+	 *
+	 * @var string
+	 */
+	protected $sitemap_slug = null;
+
+	/**
+	 * The constructor.
+	 */
+	public function __construct() {
+		$this->sitemap_slug = Router::get_sitemap_slug( 'news' );
+	}
+
+	/**
 	 * Check if provider supports given item type.
 	 *
 	 * @param  string $type Type string to check for.
 	 * @return boolean
 	 */
 	public function handles_type( $type ) {
-		return 'news' === $type;
+		return $this->sitemap_slug === $type;
 	}
 
 	/**
@@ -45,17 +59,25 @@ class News_Provider extends Post_Type {
 	 * @return array
 	 */
 	public function get_index_links( $max_entries ) { // phpcs:ignore
-		global $wpdb;
-
 		$index      = [];
 		$post_types = Helper::get_settings( 'sitemap.news_sitemap_post_type' );
 
 		$posts = $this->get_posts( $post_types, 1, 0 );
-		if ( ! empty( $posts ) ) {
-			$index[] = [
-				'loc'     => Router::get_base_url( 'news-sitemap.xml' ),
+		if ( empty( $posts ) ) {
+			return $index;
+		}
+
+		$item = $this->do_filter(
+			'sitemap/index/entry',
+			[
+				'loc'     => Router::get_base_url( $this->sitemap_slug . '-sitemap.xml' ),
 				'lastmod' => get_lastpostdate( 'gmt' ),
-			];
+			],
+			'news',
+		);
+
+		if ( $item ) {
+			$index[] = $item;
 		}
 
 		return $index;
@@ -135,26 +157,59 @@ class News_Provider extends Post_Type {
 		}
 
 		/**
-		 * Get posts for the last two days only
-		 *
-		 * @copyright Copyright (C) 2008-2019, Yoast BV & Alex Moss.
-		 * The following code is a derivative work of the code from the Yoast(https://github.com/Yoast/wordpress-seo/), which is licensed under GPL v3.
+		 * Get posts for the last two days only.
 		 */
 		$sql = "
-			SELECT *
-			FROM {$wpdb->posts}
-			WHERE post_status='publish'
-				AND ( TIMESTAMPDIFF( MINUTE, post_date_gmt, UTC_TIMESTAMP() ) <= ( 48 * 60 ) )
-				AND post_type IN ( '" . join( "', '", esc_sql( $post_types ) ) . "' )
-				AND post_password = ''
-			ORDER BY post_date_gmt DESC
-			LIMIT 0, %d
-		";
+            SELECT *
+            FROM {$wpdb->posts}
+            WHERE post_status='publish'
+                AND ( TIMESTAMPDIFF( MINUTE, post_date_gmt, UTC_TIMESTAMP() ) <= ( 48 * 60 ) )
+                AND post_type IN ( '" . join( "', '", esc_sql( $post_types ) ) . "' )
+        ";
+
+		$terms_query = '';
+		foreach ( $post_types as $post_type ) {
+
+			$terms = current( Helper::get_settings( "sitemap.news_sitemap_exclude_{$post_type}_terms", [] ) );
+
+			if ( empty( $terms ) ) {
+				continue;
+			}
+
+			array_map(
+				function ( $key ) use ( $terms, &$terms_query, $wpdb ) {
+					$placeholders = implode( ', ', array_fill( 0, count( $terms[ $key ] ), '%d' ) );
+					$terms_sql    = "
+                    {$wpdb->posts}.ID NOT IN (
+                        SELECT object_id
+                        FROM {$wpdb->term_relationships}
+                        WHERE term_taxonomy_id IN ($placeholders)
+                    )
+                    AND";
+
+					$terms_query .= $wpdb->prepare( $terms_sql, $terms[ $key ] ); // phpcs:ignore
+
+				},
+				array_keys( $terms )
+			);
+		}
+
+		// Remove the last AND, no way to tell the last items.
+		if ( $terms_query ) {
+			$terms_query = preg_replace( '/(AND)$/i', '', $terms_query );
+
+			$terms_query = "( {$terms_query} )";
+			$sql        .= 'AND ' . $terms_query;
+		}
+
+		$sql .= "
+            AND post_password = ''
+            ORDER BY post_date_gmt DESC
+            LIMIT 0, %d
+        ";
 
 		$count = max( 1, min( 1000, $count ) );
-		$posts = $wpdb->get_results( $wpdb->prepare( $sql, $count ) ); // phpcs:ignore
-
-		return $this->filter_posts_by_terms( $posts );
+		return $wpdb->get_results( $wpdb->prepare( $sql, $count ) ); // phpcs:ignore
 	}
 
 	/**

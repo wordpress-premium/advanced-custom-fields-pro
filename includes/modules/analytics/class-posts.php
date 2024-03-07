@@ -13,6 +13,8 @@ namespace RankMathPro\Analytics;
 use stdClass;
 use WP_Error;
 use WP_REST_Request;
+use RankMath\Helper;
+use RankMath\Traits\Cache;
 use RankMath\Traits\Hooker;
 use RankMath\Analytics\Stats;
 
@@ -23,7 +25,7 @@ defined( 'ABSPATH' ) || exit;
  */
 class Posts {
 
-	use Hooker;
+	use Hooker, Cache;
 
 	/**
 	 * Main instance
@@ -47,11 +49,7 @@ class Posts {
 	 * Constructor.
 	 */
 	public function setup() {
-		$this->filter( 'rank_math/analytics/single/report', 'add_badges', 10, 1 );
-		$this->filter( 'rank_math/analytics/single/report', 'add_backlinks', 10, 1 );
-		$this->filter( 'rank_math/analytics/single/report', 'add_ranking_keywords', 10, 1 );
-		$this->filter( 'rank_math/analytics/single/report', 'get_graph_data_for_post', 10, 1 );
-		$this->filter( 'rank_math/analytics/post_data', 'sort_new_data', 10, 2 );
+		$this->filter( 'rank_math/analytics/post_data', 'add_and_sort_data', 10, 2 );
 		$this->filter( 'rank_math/analytics/get_objects_by_score_args', 'get_objects_by_score_args', 10, 2 );
 		$this->filter( 'rank_math/analytics/get_posts_rows_by_objects', 'get_posts_rows_by_objects', 10, 2 );
 	}
@@ -74,6 +72,7 @@ class Posts {
 
 		return $args;
 	}
+
 	/**
 	 * Change user perference.
 	 *
@@ -81,19 +80,73 @@ class Posts {
 	 * @param  WP_REST_Request $request post object.
 	 * @return array $data sorted array.
 	 */
-	public function sort_new_data( $data, WP_REST_Request $request ) {
-		$id      = $request->get_param( 'id' );
+	public function add_and_sort_data( $data, WP_REST_Request $request ) {
+		$id = $request->get_param( 'id' );
+
+		// In case schemas data isn't set to this post, try to get default schema info.
+		if ( empty( $data['schemas_in_use'] ) ) {
+			$data['schemas_in_use'] = Helper::get_default_schema_type( $id, true, true );
+		}
+
+		if ( ! \RankMath\Google\Analytics::is_analytics_connected() ) {
+			return $data;
+		}
+
+		// Get keywords info for this post.
+		$keywords = DB::analytics()
+			->selectCount( 'DISTINCT(query)', 'keywords' )
+			->whereLike( 'page', $data['page'], '%', '' )
+			->whereBetween( 'created', [ Stats::get()->start_date, Stats::get()->end_date ] )
+			->getVar();
+
+		$old_keywords = DB::analytics()
+			->selectCount( 'DISTINCT(query)', 'keywords' )
+			->whereLike( 'page', $data['page'], '%', '' )
+			->whereBetween( 'created', [ Stats::get()->compare_start_date, Stats::get()->compare_end_date ] )
+			->getVar();
+
+		$data['keywords'] = [
+			'total'      => (int) $keywords,
+			'previous'   => (int) $old_keywords,
+			'difference' => $keywords - $old_keywords,
+		];
+
+		$data['backlinks'] = [
+			'total'      => 0,
+			'previous'   => 0,
+			'difference' => 0,
+		];
+
+		$data = $this->add_badges( $data );
+		$data = $this->get_graph_data_for_post( $data );
+		$data = $this->add_ranking_keywords( $data );
+
+		// Get analytics data for this post.
+		$metrices = Stats::get()->get_analytics_data(
+			[
+				'pages'     => [ $data['page'] ],
+				'pageview'  => true,
+				'sub_where' => " AND page = '{$data['page']}'",
+			]
+		);
+
+		if ( ! empty( $metrices ) ) {
+			$metrices = current( $metrices );
+		}
+
+		$data = array_merge(
+			(array) $data,
+			(array) $metrices
+		);
+
 		$orderby = $request->get_param( 'orderby' );
-		$order   = strtoupper( $request->get_param( 'order' ) );
+		$order   = empty( $request->get_param( 'order' ) ) ? 'DESC' : strtoupper( $request->get_param( 'order' ) );
 
 		if ( 'query' !== $orderby ) {
-
 			$data['rankingKeywords'] = $this->ranking_keyword_array_sort( $data['rankingKeywords'], $order, $orderby );
-
 		}
 
 		if ( 'query' === $orderby ) {
-
 			if ( 'DESC' === $order ) {
 				uasort(
 					$data['rankingKeywords'],
@@ -126,6 +179,9 @@ class Posts {
 	 * @param  Variable $arr_orderby is key for sort.
 	 */
 	public function ranking_keyword_array_sort( $arr, $arr_order, $arr_orderby ) {
+		if ( empty( $arr ) || empty( $arr_orderby ) ) {
+			return $arr;
+		}
 
 		if ( 'DESC' === $arr_order ) {
 			uasort(
@@ -155,8 +211,6 @@ class Posts {
 	 * @return array Posts rows.
 	 */
 	public function get_posts_rows_by_objects( $result, WP_REST_Request $request ) {
-		$per_page  = 25;
-		$offset    = ( $request->get_param( 'page' ) - 1 ) * $per_page;
 		$orderby   = $request->get_param( 'orderby' );
 		$order     = strtoupper( $request->get_param( 'order' ) );
 		$objects   = Stats::get()->get_objects_by_score( $request );
@@ -204,15 +258,7 @@ class Posts {
 		if ( in_array( $orderby, [ 'position', 'clicks', 'pageviews', 'impressions' ], true ) ) {
 			$new_rows = $this->analytics_array_sort( $new_rows, $order, $orderby );
 		}
-		$count = count( $new_rows );
 
-		if ( $offset + 25 <= $count ) {
-			$new_rows = array_slice( $new_rows, $offset, 25 );
-
-		} else {
-			$rest     = $count - $offset;
-			$new_rows = array_slice( $new_rows, $offset, $rest );
-		}
 		if ( empty( $new_rows ) ) {
 			$new_rows['response'] = 'No Data';
 		}
@@ -274,39 +320,24 @@ class Posts {
 	/**
 	 * Get ranking keywords data and append it to existing post data.
 	 *
-	 * @param  object $post Post object.
-	 * @return object
+	 * @param  array $post Post array.
+	 * @return array
 	 */
 	public function add_ranking_keywords( $post ) {
-		$page    = $post->page;
-		$data    = Stats::get()->get_analytics_data(
+		$page 	   = $post['page'];
+		$sub_query = "AND page = '{$page}'";
+		$data      = Stats::get()->get_analytics_data(
 			[
 				'dimension' => 'query',
 				'offset'    => 0,
 				'perpage'   => 20,
 				'orderBy'   => 'impressions',
-				'sub_where' => "AND page = '{$page}'",
+				'sub_where' => $sub_query,
 			]
 		);
-		$history = Keywords::get()->get_graph_data_for_keywords( \array_keys( $data ) );
+		$history = Keywords::get()->get_graph_data_for_keywords( \array_keys( $data ), $sub_query );
 
-		$post->rankingKeywords = Stats::get()->set_query_position( $data, $history ); // phpcs:ignore
-
-		return $post;
-	}
-
-	/**
-	 * Append backlinks data into existing post data.
-	 *
-	 * @param  object $post  Post object.
-	 * @return object
-	 */
-	public function add_backlinks( $post ) {
-		$post->backlinks = [
-			'total'      => 0,
-			'previous'   => 0,
-			'difference' => 0,
-		];
+		$post['rankingKeywords'] = Stats::get()->set_query_position( $data, $history ); // phpcs:ignore
 
 		return $post;
 	}
@@ -314,15 +345,15 @@ class Posts {
 	/**
 	 * Append badges data into existing post data.
 	 *
-	 * @param  object $post  Post object.
-	 * @return object
+	 * @param  array $post  Post array.
+	 * @return array
 	 */
 	public function add_badges( $post ) {
-		$post->badges = [
-			'clicks'      => $this->get_position_for_badges( 'clicks', $post->page ),
-			'traffic'     => $this->get_position_for_badges( 'traffic', $post->page ),
-			'keywords'    => $this->get_position_for_badges( 'query', $post->page ),
-			'impressions' => $this->get_position_for_badges( 'impressions', $post->page ),
+		$post['badges'] = [
+			'clicks'      => $this->get_position_for_badges( 'clicks', $post['page'] ),
+			'traffic'     => $this->get_position_for_badges( 'traffic', $post['page'] ),
+			'keywords'    => $this->get_position_for_badges( 'query', $post['page'] ),
+			'impressions' => $this->get_position_for_badges( 'impressions', $post['page'] ),
 		];
 
 		return $post;
@@ -336,7 +367,7 @@ class Posts {
 	 * @return integer
 	 */
 	public function get_position_for_badges( $column, $page ) {
-		$start = strtotime( '-30 days ', Stats::get()->end );
+		$start = date( 'Y-m-d H:i:s', strtotime( '-30 days ', Stats::get()->end ) );
 		if ( 'traffic' === $column ) {
 			$rows = DB::traffic()
 				->select( 'page' )
@@ -375,15 +406,15 @@ class Posts {
 	/**
 	 * Append analytics graph data into existing post data.
 	 *
-	 * @param  object $post Post object.
-	 * @return object
+	 * @param  array $post Post array.
+	 * @return array
 	 */
 	public function get_graph_data_for_post( $post ) {
 		global $wpdb;
 
 		// Step1. Get splitted date intervals for graph within selected date range.
 		$data          = new stdClass();
-		$page          = $post->page;
+		$page          = $post['page'];
 		$intervals     = Stats::get()->get_intervals();
 		$sql_daterange = Stats::get()->get_sql_date_intervals( $intervals );
 
@@ -476,8 +507,7 @@ class Posts {
 		$data = Stats::get()->get_graph_data_flat( $data );
 
 		// Step9. Append graph data into existing post data.
-		$post->graph = array_values( $data );
-
+		$post['graph'] = array_values( $data );
 		return $post;
 	}
 
@@ -489,8 +519,19 @@ class Posts {
 	 * @return array Posts rows.
 	 */
 	public function get_posts_rows( WP_REST_Request $request ) {
+		$per_page = 25;
+
+		$cache_args             = $request->get_params();
+		$cache_args['per_page'] = $per_page;
+
+		$cache_group = 'rank_math_rest_posts_rows';
+		$cache_key   = $this->generate_hash( $cache_args );
+		$data        = $this->get_cache( $cache_key, $cache_group );
+		if ( ! empty( $data ) ) {
+			return $data;
+		}
+
 		// Pagination.
-		$per_page  = 25;
 		$offset    = ( $request->get_param( 'page' ) - 1 ) * $per_page;
 		$orderby   = $request->get_param( 'orderby' );
 		$post_type = sanitize_key( $request->get_param( 'postType' ) );
@@ -501,14 +542,14 @@ class Posts {
 		$post_type_clause = $post_type ? " AND o.object_subtype = '{$post_type}'" : '';
 		if ( 'pageviews' === $orderby ) {
 			// Get posts order by pageviews.
-			$data      = Pageviews::get_pageviews_with_object(
+			$t_data    = Pageviews::get_pageviews_with_object(
 				[
 					'order'     => $order,
 					'limit'     => "LIMIT {$offset}, {$per_page}",
 					'sub_where' => $post_type_clause,
 				]
 			);
-			$pageviews = Stats::get()->set_page_as_key( $data['rows'] );
+			$pageviews = Stats::get()->set_page_as_key( $t_data['rows'] );
 			$pages     = \array_keys( $pageviews );
 			$pages     = array_map( 'esc_sql', $pages );
 			$console   = Stats::get()->get_analytics_data(
@@ -519,6 +560,8 @@ class Posts {
 					'sub_where' => " AND page IN ('" . join( "', '", $pages ) . "')",
 				]
 			);
+
+			$data['rowsFound'] = $this->rows_found();
 
 			foreach ( $pageviews as $page => &$pageview ) {
 				$pageview['pageviews'] = [
@@ -539,16 +582,16 @@ class Posts {
 
 		} else {
 			// Get posts order by impressions.
-			$data = DB::objects()
+			$t_data = DB::objects()
 				->select( [ 'page', 'title', 'object_id' ] )
 				->where( 'is_indexable', 1 );
 			if ( 'title' === $orderby ) {
-				$data->orderBy( $orderby, $order )
+				$t_data->orderBy( $orderby, $order )
 					->limit( $per_page, $offset );
 			}
-			$data = $data->get( ARRAY_A );
+			$t_data = $t_data->get( ARRAY_A );
 
-			$pages  = Stats::get()->set_page_as_key( $data );
+			$pages  = Stats::get()->set_page_as_key( $t_data );
 			$params = \array_keys( $pages );
 			$params = array_map( 'esc_sql', $params );
 
@@ -589,14 +632,9 @@ class Posts {
 					}
 				}
 
-				$rows_found = DB::objects()
-					->selectCount( 'page' )
-					->where( 'is_indexable', 1 )
-					->getVar();
-
 				$history           = $this->get_graph_data_for_pages( $params );
 				$data['rows']      = Stats::get()->set_page_position_graph( $pages, $history );
-				$data['rowsFound'] = $rows_found;
+				$data['rowsFound'] = $this->rows_found();
 			}
 
 			// Get fetched page info again.
@@ -628,6 +666,8 @@ class Posts {
 		}
 		if ( empty( $data ) ) {
 			$data['response'] = 'No Data';
+		} else {
+			$this->set_cache( $cache_key, $data, $cache_group, DAY_IN_SECONDS );
 		}
 		return $data;
 	}
@@ -737,5 +777,17 @@ class Posts {
 		$data = Stats::get()->filter_graph_rows( $data );
 
 		return array_map( [ Stats::get(), 'normalize_graph_rows' ], $data );
+	}
+
+	/**
+	 * Count indexable pages.
+	 *
+	 * @return mixed
+	 */
+	private function rows_found() {
+		return DB::objects()
+			->selectCount( 'page' )
+			->where( 'is_indexable', 1 )
+			->getVar();
 	}
 }

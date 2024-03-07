@@ -11,11 +11,11 @@
 namespace RankMathPro\Admin;
 
 use RankMath\Helper;
+use RankMath\Helpers\Param;
+use RankMath\Helpers\Arr;
 use RankMath\Traits\Hooker;
 use RankMath\Admin\Admin_Helper;
 use RankMathPro\Admin\Admin_Helper as ProAdminHelper;
-use MyThemeShop\Helpers\Param;
-use MyThemeShop\Helpers\Arr;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -99,8 +99,26 @@ class Quick_Edit {
 		}
 
 		$robots = array_filter( (array) get_metadata( $object_type, $object_id, 'rank_math_robots', true ) );
+
 		if ( empty( $robots ) ) {
 			$robots = Helper::get_robots_defaults();
+		}
+
+		// Maybe product with hidden visibility!
+		if ( Helper::is_woocommerce_active() && 'product' === get_post_type( $object_id ) && Helper::get_settings( 'general.noindex_hidden_products' ) ) {
+			$product = \wc_get_product( $object_id );
+
+			if ( $product && $product->get_catalog_visibility() === 'hidden' ) {
+				// Preserve other robots values.
+				$robots = array_filter(
+					$robots,
+					function ( $robot ) {
+						return 'index' !== $robot;
+					}
+				);
+
+				$robots = array_merge( $robots, [ 'noindex' ] );
+			}
 		}
 
 		$title = get_metadata( $object_type, $object_id, 'rank_math_title', true );
@@ -175,6 +193,23 @@ class Quick_Edit {
 	 */
 	public function quick_edit( $column, $bulk_edit = false ) {
 		if ( ! $this->can_bulk_edit() ) {
+			return;
+		}
+
+		global $post_type;
+		$ptype = $post_type;
+		if ( is_a( $ptype, 'WP_Post_Type' ) ) {
+			$ptype = $ptype->name;
+		}
+
+		global $pagenow;
+		if ( 'edit-tags.php' === $pagenow ) {
+			global $taxonomy;
+			$ptype = $taxonomy;
+		}
+
+		$columns = get_column_headers( 'edit-' . $ptype );
+		if ( ! isset( $columns['rank_math_seo_details'] ) && ! isset( $columns['rank_math_tax_seo_details'] ) ) {
 			return;
 		}
 
@@ -337,8 +372,8 @@ class Quick_Edit {
 									<input type="text" name="rank_math_canonical_url" id="rank_math_canonical_url" value="">
 								</div>
 							</label>
-						</fieldset>
-					</div>
+						</div>
+					</fieldset>
 				</div>
 				<?php
 				break;
@@ -438,7 +473,7 @@ class Quick_Edit {
 	 * @return mixed
 	 */
 	public function save_post( $post_id ) {
-		if ( ! wp_verify_nonce( Param::post( 'rank_math_quick_edit_nonce' ), 'rank-math-quick-edit' ) ) {
+		if ( wp_is_post_revision( $post_id ) || ! wp_verify_nonce( Param::post( 'rank_math_quick_edit_nonce' ), 'rank-math-quick-edit' ) ) {
 			return;
 		}
 
@@ -463,15 +498,26 @@ class Quick_Edit {
 		];
 
 		foreach ( $save_fields as $field ) {
-			$field_name    = 'rank_math_' . $field;
-			$field_value   = Param::post( $field_name );
+			$field_name = 'rank_math_' . $field;
+			$flag       = [];
+			if ( 'robots' === $field ) {
+				$flag = FILTER_REQUIRE_ARRAY;
+			}
+
+			$field_value = Param::post( $field_name, false, FILTER_DEFAULT, $flag );
+			if ( false === $field_value ) {
+				continue;
+			}
+
 			$default_value = '';
 			if ( $post_type ) {
 				$default_value = Helper::get_settings( 'titles.pt_' . $post_type . '_' . $field );
 			}
 
 			if ( 'robots' === $field ) {
-				$field_value = (array) Param::post( $field_name, false, FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+				$field_value = array_filter( $field_value );
+				$field_value = array_unique( $field_value );
+				$field_value = array_intersect( $field_value, [ 'index', 'noindex', 'nofollow', 'noarchive', 'noimageindex', 'nosnippet' ] );
 			} elseif ( 'canonical_url' === $field ) {
 				$field_value = esc_url_raw( $field_value );
 			} elseif ( 'focus_keyword' === $field ) {
@@ -536,10 +582,21 @@ class Quick_Edit {
 		];
 
 		foreach ( $save_fields as $field ) {
-			$field_name  = 'rank_math_' . $field;
-			$field_value = Param::post( $field_name );
+			$field_name = 'rank_math_' . $field;
+			$flag       = [];
 			if ( 'robots' === $field ) {
-				$field_value = (array) Param::post( $field_name, false, FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+				$flag = FILTER_REQUIRE_ARRAY;
+			}
+
+			$field_value = Param::post( $field_name, false, FILTER_DEFAULT, $flag );
+			if ( false === $field_value ) {
+				continue;
+			}
+
+			if ( 'robots' === $field ) {
+				$field_value = array_filter( $field_value );
+				$field_value = array_unique( $field_value );
+				$field_value = array_intersect( $field_value, [ 'index', 'noindex', 'nofollow', 'noarchive', 'noimageindex', 'nosnippet' ] );
 			} elseif ( 'canonical_url' === $field ) {
 				$field_value = esc_url_raw( $field_value );
 			} elseif ( 'focus_keyword' === $field ) {
