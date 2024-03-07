@@ -2,9 +2,9 @@
 Contributors: elliotcondon
 Tags: acf, fields, custom fields, meta, repeater
 Requires at least: 5.8
-Tested up to: 6.4
+Tested up to: 6.4.3
 Requires PHP: 7.0
-Stable tag: 6.2.4
+Stable tag: 6.2.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -91,6 +91,45 @@ From your WordPress dashboard
 
 
 == Changelog ==
+
+= 6.2.7 =
+*Release Date 27th February 2024*
+
+* Security Fix - `the_field` now escapes potentially unsafe HTML as notified since ACF 6.2.5. For full information, please read [the release blog post](https://www.advancedcustomfields.com/blog/acf-6-2-7-security-release/)
+* Security Fix - Field and Layout names are now enforced to alphanumeric characters, resolving a potential XSS issue
+* Security Fix - The default render template for select2 fields no longer allows HTML to be rendered resolving a potential XSS issue
+* Security Enhancement - A `acf/shortcode/prevent_access` filter is now available to limit what data the ACF shortcode is allowed to access
+* Security Enhancement - i18n translated strings are now escaped on output
+* Enhancement - ACF now universally uses WordPress file system functions rather than native PHP functions
+
+= 6.2.6.1 =
+*Release Date 7th February 2024*
+
+* Fix - Fatal JS error no longer occurs when editing fields in the classic editor when Yoast or other plugins which load block editor components are installed
+* Fix - Using `$escape_html` on get functions for array returning field types no longer produces an Array to string conversion error
+
+= 6.2.6 =
+*Release Date 6th February 2024*
+
+* Enhancement - The `get_field()` and other `get_` functions now support an `escape_html` parameter which return an HTML safe field value
+* Enhancement - The URL field will be now escaped with `esc_url` rather than `wp_kses_post` when returning an HTML safe value
+* Fix - ACF fields will now correctly save into the WordPress created revision resolving issues with previews of drafts on WordPress 6.4 or newer
+* Fix - Multisite subsites will now correctly be activated by the main site where the ACF PRO license allows, hiding the updates page on those subsites
+* Fix - Field types in which the `required` property would have no effect (such as the tab, or accordion) will no longer show the option
+* Fix - Duplicating a field group now maintains the current page of field groups being displayed
+* Fix - Fields in ACF Blocks in edit mode in hybrid themes will now use ACF’s styling, rather than some attributes being overridden by the theme
+* Fix - Text in some admin notices will no longer overlap the dismiss button
+* Fix - The word `link` is now prohibited from being used as a CPT name to avoid a WordPress core conflict
+* Fix - Flexible content layouts can no longer be duplicated over their maximum count limit
+* Fix - All ACF notifications shown outside of ACF’s admin screens are now prefixed with the plugin name
+* Fix - ACF no longer checks if a polyfill is needed for <PHP7 and the polyfill has been removed
+
+= 6.2.5 =
+*Release Date 16th January 2024*
+
+* Security Fix - The ACF shortcode will now run all output through `wp_kses`, escaping unsafe HTML. This may be a breaking change to your site but is required for security, a message will be shown in WordPress admin if you are affected. Please see the [blog post for this release for more information.](https://www.advancedcustomfields.com/blog/acf-6-2-5-security-release/) Thanks to Francesco Carlucci via Wordfence for the responsible disclosure
+* Security - ACF now warns via an admin message, when upcoming changes to `the_field` and `the_sub_field` may require theme changes to your site to avoid stripping unsafe HTML. Please see the [blog post for this release for more information](https://www.advancedcustomfields.com/blog/acf-6-2-5-security-release/)
+* Security - Users may opt in to automatically escaping unsafe HTML via a new filter `acf/the_field/escape_html_optin` when using `the_field` and `the_sub_field` before this becomes default in an upcoming ACF release.
 
 = 6.2.4 =
 *Release Date 28th November 2023*
@@ -510,3 +549,5 @@ From your WordPress dashboard
 [View the full changelog](https://www.advancedcustomfields.com/changelog/)
 
 == Upgrade Notice ==
+= 6.2.5 =
+From ACF 6.2.5, the shortcode will now escape unsafe HTML automatically. This may be a breaking change. Please view [our release blog](https://www.advancedcustomfields.com/blog/acf-6-2-5-security-release/) for more information.

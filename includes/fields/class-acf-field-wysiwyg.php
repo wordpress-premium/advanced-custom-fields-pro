@@ -5,18 +5,16 @@ if ( ! class_exists( 'acf_field_wysiwyg' ) ) :
 	class acf_field_wysiwyg extends acf_field {
 
 
-		/*
-		*  __construct
-		*
-		*  This function will setup the field type data
-		*
-		*  @type    function
-		*  @date    5/03/2014
-		*  @since   5.0.0
-		*
-		*  @param   n/a
-		*  @return  n/a
-		*/
+		/**
+		 * This function will setup the field type data
+		 *
+		 * @type    function
+		 * @date    5/03/2014
+		 * @since   5.0.0
+		 *
+		 * @param   n/a
+		 * @return  n/a
+		 */
 
 		function initialize() {
 
@@ -34,6 +32,9 @@ if ( ! class_exists( 'acf_field_wysiwyg' ) ) :
 				'default_value' => '',
 				'delay'         => 0,
 			);
+			$this->supports      = array(
+				'escaping_html' => true,
+			);
 
 			// add acf_the_content filters
 			$this->add_filters();
@@ -43,18 +44,16 @@ if ( ! class_exists( 'acf_field_wysiwyg' ) ) :
 		}
 
 
-		/*
-		*  add_filters
-		*
-		*  This function will add filters to 'acf_the_content'
-		*
-		*  @type    function
-		*  @date    20/09/2016
-		*  @since   5.4.0
-		*
-		*  @param   n/a
-		*  @return  n/a
-		*/
+		/**
+		 * This function will add filters to 'acf_the_content'
+		 *
+		 * @type    function
+		 * @date    20/09/2016
+		 * @since   5.4.0
+		 *
+		 * @param   n/a
+		 * @return  n/a
+		 */
 
 		function add_filters() {
 
@@ -80,18 +79,16 @@ if ( ! class_exists( 'acf_field_wysiwyg' ) ) :
 		}
 
 
-		/*
-		*  get_toolbars
-		*
-		*  This function will return an array of toolbars for the WYSIWYG field
-		*
-		*  @type    function
-		*  @date    18/04/2014
-		*  @since   5.0.0
-		*
-		*  @param   n/a
-		*  @return  (array)
-		*/
+		/**
+		 * This function will return an array of toolbars for the WYSIWYG field
+		 *
+		 * @type    function
+		 * @date    18/04/2014
+		 * @since   5.0.0
+		 *
+		 * @param   n/a
+		 * @return  (array)
+		 */
 
 		function get_toolbars() {
 
@@ -127,18 +124,16 @@ if ( ! class_exists( 'acf_field_wysiwyg' ) ) :
 		}
 
 
-		/*
-		*  acf_enqueue_uploader
-		*
-		*  Registers toolbars data for the WYSIWYG field.
-		*
-		*  @type    function
-		*  @date    16/12/2015
-		*  @since   5.3.2
-		*
-		*  @param   void
-		*  @return  void
-		*/
+		/**
+		 * Registers toolbars data for the WYSIWYG field.
+		 *
+		 * @type    function
+		 * @date    16/12/2015
+		 * @since   5.3.2
+		 *
+		 * @param   void
+		 * @return  void
+		 */
 
 		function acf_enqueue_uploader() {
 
@@ -267,34 +262,32 @@ if ( ! class_exists( 'acf_field_wysiwyg' ) ) :
 				<?php endif; ?>
 					<?php if ( user_can_richedit() && $show_tabs ) : ?>
 					<div class="wp-editor-tabs">
-						<button id="<?php echo esc_attr( $id ); ?>-tmce" class="wp-switch-editor switch-tmce" data-wp-editor-id="<?php echo esc_attr( $id ); ?>" type="button"><?php echo __( 'Visual', 'acf' ); ?></button>
-						<button id="<?php echo esc_attr( $id ); ?>-html" class="wp-switch-editor switch-html" data-wp-editor-id="<?php echo esc_attr( $id ); ?>" type="button"><?php echo _x( 'Text', 'Name for the Text editor tab (formerly HTML)', 'acf' ); ?></button>
+						<button id="<?php echo esc_attr( $id ); ?>-tmce" class="wp-switch-editor switch-tmce" data-wp-editor-id="<?php echo esc_attr( $id ); ?>" type="button"><?php esc_html_e( 'Visual', 'acf' ); ?></button>
+						<button id="<?php echo esc_attr( $id ); ?>-html" class="wp-switch-editor switch-html" data-wp-editor-id="<?php echo esc_attr( $id ); ?>" type="button"><?php echo esc_html_x( 'Text', 'Name for the Text editor tab (formerly HTML)', 'acf' ); ?></button>
 					</div>
 				<?php endif; ?>
 			</div>
 			<div id="wp-<?php echo esc_attr( $id ); ?>-editor-container" class="wp-editor-container">
 					<?php if ( $field['delay'] ) : ?>
-					<div class="acf-editor-toolbar"><?php _e( 'Click to initialize TinyMCE', 'acf' ); ?></div>
+					<div class="acf-editor-toolbar"><?php esc_html_e( 'Click to initialize TinyMCE', 'acf' ); ?></div>
 				<?php endif; ?>
-					<?php printf( $textarea, $field['value'] ); ?>
+					<?php printf( $textarea, $field['value'] ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped by format_for_editor(). ?>
 			</div>
 		</div>
 			<?php
 		}
 
 
-		/*
-		*  render_field_settings()
-		*
-		*  Create extra options for your field. This is rendered when editing a field.
-		*  The value of $field['name'] can be used (like bellow) to save extra data to the $field
-		*
-		*  @type    action
-		*  @since   3.6
-		*  @date    23/01/13
-		*
-		*  @param   $field  - an array holding all the field's data
-		*/
+		/**
+		 * Create extra options for your field. This is rendered when editing a field.
+		 * The value of $field['name'] can be used (like bellow) to save extra data to the $field
+		 *
+		 * @type    action
+		 * @since   3.6
+		 * @date    23/01/13
+		 *
+		 * @param   $field  - an array holding all the field's data
+		 */
 		function render_field_settings( $field ) {
 			acf_render_field_setting(
 				$field,
@@ -387,27 +380,33 @@ if ( ! class_exists( 'acf_field_wysiwyg' ) ) :
 				)
 			);
 		}
-
 		/**
 		 * This filter is applied to the $value after it is loaded from the db, and before it is returned to the template
 		 *
 		 * @type    filter
 		 * @since   3.6
-		 * @date    23/01/13
 		 *
-		 * @param mixed $value   The value which was loaded from the database
-		 * @param mixed $post_id The $post_id from which the value was loaded
-		 * @param array $field   The field array holding all the field options
-		 *
-		 * @return mixed $value The modified value
+		 * @param  mixed   $value       The value which was loaded from the database.
+		 * @param  mixed   $post_id     The $post_id from which the value was loaded.
+		 * @param  array   $field       The field array holding all the field options.
+		 * @param  boolean $escape_html Should the field return a HTML safe formatted value.
+		 * @return mixed   $value       The modified value
 		 */
-		function format_value( $value, $post_id, $field ) {
+		public function format_value( $value, $post_id, $field, $escape_html ) {
 			// Bail early if no value or not a string.
 			if ( empty( $value ) || ! is_string( $value ) ) {
 				return $value;
 			}
 
+			if ( $escape_html ) {
+				add_filter( 'acf_the_content', 'acf_esc_html', 1 );
+			}
+
 			$value = apply_filters( 'acf_the_content', $value );
+
+			if ( $escape_html ) {
+				remove_filter( 'acf_the_content', 'acf_esc_html', 1 );
+			}
 
 			// Follow the_content function in /wp-includes/post-template.php
 			return str_replace( ']]>', ']]&gt;', $value );

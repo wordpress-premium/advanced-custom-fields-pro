@@ -28,7 +28,7 @@ if ( ! class_exists( 'ACF_Assets' ) ) :
 		 * List of enqueue flags.
 		 *
 		 * @since 5.9.0
-		 * @var bool
+		 * @var boolean
 		 */
 		private $enqueue = array();
 
@@ -51,7 +51,7 @@ if ( ! class_exists( 'ACF_Assets' ) ) :
 		 * @date    10/4/20
 		 * @since   5.9.0
 		 *
-		 * @param   string $name The method name.
+		 * @param   string $name      The method name.
 		 * @param   array  $arguments The array of arguments.
 		 * @return  mixed
 		 */
@@ -115,6 +115,7 @@ if ( ! class_exists( 'ACF_Assets' ) ) :
 			wp_register_script( 'acf-input', acf_get_url( 'assets/build/js/acf-input' . $suffix . '.js' ), array( 'jquery', 'jquery-ui-sortable', 'jquery-ui-resizable', 'acf' ), $version );
 			wp_register_script( 'acf-field-group', acf_get_url( 'assets/build/js/acf-field-group' . $suffix . '.js' ), array( 'acf-input' ), $version );
 			wp_register_script( 'acf-internal-post-type', acf_get_url( 'assets/build/js/acf-internal-post-type' . $suffix . '.js' ), array( 'acf-input' ), $version );
+			wp_register_script( 'acf-escaped-html-notice', acf_get_url( 'assets/build/js/acf-escaped-html-notice' . $suffix . '.js' ), array( 'jquery' ), $version, true );
 
 			// Register styles.
 			wp_register_style( 'acf-global', acf_get_url( 'assets/build/css/acf-global.css' ), array( 'dashicons' ), $version );
@@ -189,10 +190,10 @@ if ( ! class_exists( 'ACF_Assets' ) ) :
 		 * @date    28/4/20
 		 * @since   5.9.0
 		 *
-		 * @param   string $action The action name.
-		 * @param   string $method The method name.
-		 * @param   int    $priority See add_action().
-		 * @param   int    $accepted_args See add_action().
+		 * @param   string  $action        The action name.
+		 * @param   string  $method        The method name.
+		 * @param   integer $priority      See add_action().
+		 * @param   integer $accepted_args See add_action().
 		 * @return  void
 		 */
 		public function add_action( $action, $method, $priority = 10, $accepted_args = 1 ) {
@@ -260,7 +261,7 @@ if ( ! class_exists( 'ACF_Assets' ) ) :
 		 * @since   5.9.0
 		 *
 		 * @param   array $args {
-		 *      @type bool $uploader Whether or not to enqueue uploader scripts.
+		 * @type bool $uploader Whether or not to enqueue uploader scripts.
 		 * }
 		 * @return  void
 		 */
