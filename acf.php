@@ -23,56 +23,27 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-add_filter( 'pre_http_request', 'custom_acf_request_intercept', 10, 3 );
-function custom_acf_request_intercept( $preempt, $parsed_args, $url ) {
-    // Intercept ACF activation request
-    if ( strpos( $url, 'https://connect.advancedcustomfields.com/v2/plugins/activate?p=pro' ) !== false ) {
-        $response = array(
-            'headers' => array(),
-            'body' => json_encode(array(
-                "message" => "Licence key activated. Updates are now enabled",
-                "license" => "E7B0U5F7CC8189E6ACL19DD6F6E1B662",
-                "license_status" => array(
-                    "status" => "active",
-                    "lifetime" => true,
-                    "name" => "Agency",
-                    "view_licenses_url" => "https://www.advancedcustomfields.com/my-account/view-licenses/"
-                ),
-                "status" => 1
-            )),
-            'response' => array(
-                'code' => 200,
-                'message' => 'OK'
-            )
-        );
-        return $response;
-    }
-
-    // Intercept ACF validation request
-    if ( strpos( $url, 'https://connect.advancedcustomfields.com/v2/plugins/validate?p=pro' ) !== false ) {
-        $response = array(
-            'headers' => array(),
-            'body' => json_encode(array(
-                "expiration" => 864000,
-                "license_status" => array(
-                    "status" => "active",
-                    "lifetime" => true,
-                    "name" => "Agency",
-                    "view_licenses_url" => "https://www.advancedcustomfields.com/my-account/view-licenses/"
-                ),
-                "status" => 1
-            )),
-            'response' => array(
-                'code' => 200,
-                'message' => 'OK'
-            )
-        );
-        return $response;
-    }
-
-    // Proceed with the original request if the URL doesn't match
-    return $preempt;
-}
+//nulled raz0r
+$lic_data = base64_encode(
+    maybe_serialize(
+        array(
+            'key' => '********',
+            'url' => home_url(),
+        )
+    )
+);
+update_option('acf_pro_license', $lic_data);
+update_option('acf_pro_license_status', array('status' => 'active', 'next_check' => time() * 9));
+add_action('init', function () {
+    add_filter('pre_http_request', function ($pre, $url, $request_args) {
+        if (is_string($url) && strpos($url, 'https://connect.advancedcustomfields.com/') !== false) {
+            return array('response' => array('code' => 200, 'message' => 'OK'));
+        }
+        return $pre;
+    }, 10, 3);
+});
+delete_site_transient( 'update_plugins' );
+delete_transient( 'acf_plugin_updates' );
 
 if ( ! class_exists( 'ACF' ) ) {
 
