@@ -10,8 +10,6 @@
 
 **Advanced Custom Fields (ACF) helps you easily customize WordPress with powerful, professional, and intuitive fields. Proudly powering over 2 million websites, Advanced Custom Fields is the plugin WordPress developers love.**
 
----
-
 ## Description
 Advanced Custom Fields (ACF) turns WordPress sites into a fully-fledged content management system by giving you all the tools to do more with your data.
 Use the ACF plugin to take full control of your WordPress edit screens, custom field data, and more.
