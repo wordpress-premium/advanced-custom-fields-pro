@@ -8041,6 +8041,7 @@
       ajaxResults: function (json) {
         return json;
       },
+      escapeMarkup: false,
       templateSelection: false,
       templateResult: false,
       dropdownCssClass: '',
@@ -8301,17 +8302,12 @@
         allowClear: this.get('allowNull'),
         placeholder: this.get('placeholder'),
         multiple: this.get('multiple'),
+        escapeMarkup: this.get('escapeMarkup'),
         templateSelection: this.get('templateSelection'),
         templateResult: this.get('templateResult'),
         dropdownCssClass: this.get('dropdownCssClass'),
         suppressFilters: this.get('suppressFilters'),
-        data: [],
-        escapeMarkup: function (markup) {
-          if (typeof markup !== 'string') {
-            return markup;
-          }
-          return acf.escHtml(markup);
-        }
+        data: []
       };
 
       // Clear empty templateSelections, templateResults, or dropdownCssClass.
@@ -8330,7 +8326,7 @@
         if (!options.templateSelection) {
           options.templateSelection = function (selection) {
             var $selection = $('<span class="acf-selection"></span>');
-            $selection.html(acf.strEscape(selection.text));
+            $selection.html(options.escapeMarkup(selection.text));
             $selection.data('element', selection.element);
             return $selection;
           };
@@ -8338,6 +8334,19 @@
       } else {
         delete options.templateSelection;
         delete options.templateResult;
+      }
+
+      // Use a default, filterable escapeMarkup if not provided.
+      if (!options.escapeMarkup) {
+        options.escapeMarkup = function (markup) {
+          if (typeof markup !== 'string') {
+            return markup;
+          }
+          if (this.suppressFilters) {
+            return acf.strEscape(markup);
+          }
+          return acf.applyFilters('select2_escape_markup', acf.strEscape(markup), markup, $select, this.data, field || false, this);
+        };
       }
 
       // multiple
