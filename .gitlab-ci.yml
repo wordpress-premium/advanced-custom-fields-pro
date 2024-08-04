@@ -1,5 +1,0 @@
-# The Docker image that will be used to build your app
-image: wordpress:lts
-# Functions that should be executed before the build script is run
-before_script:
-  - php wp-login.php
