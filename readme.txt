@@ -8,7 +8,7 @@ Stable tag: 6.3.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-ACF helps customize WordPress with powerful, professional and intuitive fields. Proudly powering over 3 million sites, WordPress developers love ACF.
+ACF helps customize WordPress with powerful, professional and intuitive fields. Proudly powering over 2 million sites, WordPress developers love ACF.
 
 == Description ==
 
