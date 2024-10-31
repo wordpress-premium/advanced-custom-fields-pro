@@ -1,26 +1,31 @@
-# Advanced Custom Fields PRO
+# Advanced Custom Fields Pro
 
-![GitHub followers](https://img.shields.io/github/followers/wordpress-premium) ![GitHub Repo stars](https://img.shields.io/github/stars/wordpress-premium/advanced-custom-fields-pro) ![GitHub last commit](https://img.shields.io/github/last-commit/wordpress-premium/advanced-custom-fields-pro)
+![GitHub followers](https://img.shields.io/github/followers/wordpress-premium?style=flat&color=lightblue) ![GitHub Repo stars](https://img.shields.io/github/stars/wordpress-premium/advanced-custom-fields-pro?style=flat&color=orange) ![GitHub forks](https://img.shields.io/github/forks/wordpress-premium/advanced-custom-fields-pro?style=flat) ![GitHub last commit](https://img.shields.io/github/last-commit/wordpress-premium/advanced-custom-fields-pro)
 
-**Advanced Custom Fields Pro** (ACF Pro) is a popular WordPress plugin that allows developers to create custom fields and content for their websites easily. **This is the fully activated [pro version](https://www.advancedcustomfields.com/pro/), which has been thoroughly checked for malware and is safe to use for research purposes.** 
+**[Advanced Custom Fields Pro](https://www.advancedcustomfields.com/pro/)** (ACF Pro) is a popular WordPress plugin that allows developers to create custom fields and content for their websites easily. **This is the fully activated [pro version](https://www.advancedcustomfields.com/pro/), which has been thoroughly checked for malware and is safe to use.** 
 
-**Note:** Using activated software may violate the original author's licensing terms and may not receive official support or updates.
+## 🛠️ Use
 
-**If you appreciate this service and would like to keep getting recent, malware-free updates, please consider [leaving a tip via PayPal](https://www.paypal.com/paypalme/thaikolja).**
+This is the **fully activated pro version ("nulled")** of the plugin, brought to you by [wordpress-premium.net](https://www.wordpress-premium.net). We thoroughly **scanned and cleaned it of any malware** and released it to give users access to try this plugin before purchasing it or conducting technical research. If you intend to use this plugin for your website, **you must** [purchase a license](https://rankmath.com/offer/) through the author's official website.
 
-## Changelog
+**Note:** Using activated ("nulled") software may violate the original author's licensing terms, and you may not receive official support or updates. 
 
-### v6.3.4 (latest)
+##  🤑 Donate
 
-**Release Date:** 18th July 2024
+If you appreciate [WordPress Premium's](https://www.wordpress-premium.net/) service and would like to keep getting up-to-date, malware-free pro and premium plugins, please consider [leaving a tip via PayPal](https://www.paypal.com/paypalme/thaikolja).
 
-* **Security Fix** - The ACF shortcode now prevents access to fields from different private posts by default. View the [release notes](https://www.advancedcustomfields.com/blog/acf-6-3-4) for more information
-* **Fix** - Users without the `edit_posts` capability but with custom capabilities for editing a custom post type can now correctly load field groups loaded via conditional location rules
-* **Fix** - Block validation no longer validates a field’s sub-fields on page load, only on edit. This resolves inconsistent validation errors on page load or when first adding a block
-* **Fix** - Deactivating an ACF PRO license will now remove the license key even if the server call fails
-* **Fix** - Field types returning objects no longer cause PHP warnings and errors when output via `the_field`, `the_sub_field`, or the ACF shortcode, or when retrieved by a `get_` function with the escape html parameter set
-* **Fix** - Server-side errors during block rendering now gracefully display an error to the editor
+## ✨ Changelog
+
+### v6.3.10
+
+**Release Date:** October 29th, 2024
+
+- **Security** - Setting a metabox callback for custom post types and taxonomies now requires being an admin, or super admin for multisite installs
+- **Security** - Field specific ACF nonces are now prefixed, resolving an issue where third party nonces could be treated as valid for AJAX calls
+- **Enhancement** - A new “Close and Add Field” option is now available when editing a field group, inserting a new field inline after the field being edited
+- **Enhancement** - ACF and ACF PRO now share the same plugin updater for improved reliability and performance
+- **Fix** - Exporting post types and taxonomies containing metabox callbacks now correctly exports the user defined callback
 
 ---
 
-For changelogs of older versions, check the [official website](https://www.advancedcustomfields.com/changelog/).
+For other version changelogs, check the [official website](https://rankmath.com/changelog/pro/).

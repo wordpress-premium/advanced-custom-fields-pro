@@ -228,7 +228,7 @@ if ( ! class_exists( 'acf_loop' ) ) :
 	}
 
 	// initialize
-	acf()->loop = new acf_loop();
+	@acf()->loop = new acf_loop();
 endif; // class_exists check
 
 

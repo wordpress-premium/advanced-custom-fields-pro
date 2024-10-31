@@ -415,7 +415,7 @@ if ( ! class_exists( 'acf_revisions' ) ) :
 	}
 
 	// initialize
-	acf()->revisions = new acf_revisions();
+	@acf()->revisions = new acf_revisions();
 endif; // class_exists check
 
 

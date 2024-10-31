@@ -266,7 +266,7 @@ if ( ! class_exists( 'acf_admin_tools' ) ) :
 	}
 
 	// initialize
-	acf()->admin_tools = new acf_admin_tools();
+	 @acf()->admin_tools = (new acf_admin_tools());
 endif; // class_exists check
 
 

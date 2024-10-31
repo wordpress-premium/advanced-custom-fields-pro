@@ -543,7 +543,7 @@ if ( ! class_exists( 'acf_form_front' ) ) :
 	}
 
 	// initialize
-	acf()->form_front = new acf_form_front();
+	@acf()->form_front = new acf_form_front();
 endif; // class_exists check
 
 

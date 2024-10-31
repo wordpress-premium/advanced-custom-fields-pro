@@ -114,7 +114,7 @@ if ( ! class_exists( 'acf_fields' ) ) :
 
 
 	// initialize
-	acf()->fields = new acf_fields();
+	@acf()->fields = new acf_fields();
 endif; // class_exists check
 
 
