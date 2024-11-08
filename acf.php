@@ -19,6 +19,9 @@
  * Requires at least: 6.0
  */
 
+// Temporary supression of unimportant warning
+@ini_set('display_errors', 0);
+
 if (!defined('ABSPATH')) {
 	exit(); // Exit if accessed directly.
 }
