@@ -28,4 +28,4 @@ If you appreciate [WordPress Premium's](https://www.wordpress-premium.net/) serv
 
 ---
 
-For other version changelogs, check the [official website](https://www.advancedcustomfields.com/changelog/)).
+For other version changelogs, check the [official website](https://www.advancedcustomfields.com/changelog/).
