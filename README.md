@@ -28,4 +28,4 @@ If you appreciate [WordPress Premium's](https://www.wordpress-premium.net/) serv
 
 ---
 
-For other version changelogs, check the [official website](https://rankmath.com/changelog/pro/).
+For other version changelogs, check the [official website](https://www.advancedcustomfields.com/changelog/)).
