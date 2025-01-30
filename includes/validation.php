@@ -182,7 +182,7 @@ if ( ! class_exists( 'acf_validation' ) ) :
 	}
 
 	// initialize
-	@acf()->validation = new acf_validation();
+	acf()->validation = new acf_validation();
 endif; // class_exists check
 
 
