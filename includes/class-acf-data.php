@@ -93,13 +93,6 @@ if ( ! class_exists( 'ACF_Data' ) ) :
 		 * @return  type Description.
 		 */
 		function _key( $name = '' ) {
-			// Ensure $name is treated as a string to avoid illegal offset issues
-			// Credits: https://github.com/nikola-wd
-			if ( is_array( $name ) ) {
-				return '';
-			}
-			$name = (string) $name;
-
 			return isset( $this->aliases[ $name ] ) ? $this->aliases[ $name ] : $name;
 		}
 
