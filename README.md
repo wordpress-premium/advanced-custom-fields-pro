@@ -15,7 +15,7 @@ This is the **fully activated premium version** of the plugin, provided by [word
 Advanced Custom Fields PRO comes with a range of advanced features, including:
 
 - **Repeater Field:** Create a set of subfields that can be repeated as many times as needed.
-- **Flexible Content Field:** Define, create, and manage content with multiple layout and subfield options.
+- **Flexible Content Field:** Define, create, and manage content with multiple layouts and subfield options.
 - **Options Page:** Add custom admin pages to edit ACF fields.
 - **Gallery Field:** Build fully customizable image galleries.
 - **Clone Field:** Reuse existing fields and field groups to streamline your workflow.
@@ -32,38 +32,30 @@ Here are the last three updates from the Advanced Custom Fields PRO changelog to
 
 ## Changelog
 
-### v6.3.11
+### 6.3.12 
 
-**Release Date:** November 12, 2024  
+**Release Date:** 21st January 2025
 
-- **Enhancement:** Field Group keys are now copyable on click.  
-- **Fix:** Repeater tables with fields hidden by conditional logic now render correctly.  
-- **Fix:** ACF Blocks now behave correctly in React StrictMode.  
-- **Fix:** Edit mode is no longer available to ACF Blocks with a WordPress Block API version of 3 as field editing is not supported in the iframe.  
+* **Enhancement:** Error messages that occur when field validation fails due to an insufficient security nonce now have additional context.
+* **Fix:** Duplicated ACF blocks no longer lose their field values after the initial save when block preloading is enabled.
+* **Fix:** ACF Blocks containing complex field types now behave correctly when React StrictMode is enabled.
 
-### v6.3.10.2
+### 6.3.11
 
-**Release Date:** October 29, 2024  
-*Free Only Release*  
+**Release Date:** 12th November 2024
 
-- **Fix:** ACF Free no longer causes a fatal error when any unsupported legacy ACF addons are active.  
+* **Enhancement:** Field Group keys are now copyable on click.
+* **Fix:** Repeater tables with fields hidden by conditional logic now render correctly.
+* **Fix:** ACF Blocks now behave correctly in React StrictMode.
+* **Fix:** Edit mode is no longer available to ACF Blocks with a WordPress Block API version of 3 as field editing is not supported in the iframe.
 
-### v6.3.10.1
+### 6.3.10.2
 
-**Release Date:** October 29, 2024  
-*Free Only Release*  
+**Release Date:** 29th October 2024
 
-- **Fix:** ACF Free no longer causes a fatal error when WPML is active.  
+*(Free Only Release)*
 
-### v6.3.10
-
-**Release Date:** October 29, 2024  
-
-- **Security:** Setting a metabox callback for custom post types and taxonomies now requires being an admin, or super admin for multisite installs.  
-- **Security:** Field-specific ACF nonces are now prefixed, resolving an issue where third-party nonces could be treated as valid for AJAX calls.  
-- **Enhancement:** A new “Close and Add Field” option is now available when editing a field group, inserting a new field inline after the field being edited.  
-- **Enhancement:** ACF and ACF PRO now share the same plugin updater for improved reliability and performance.  
-- **Fix:** Exporting post types and taxonomies containing metabox callbacks now correctly exports the user-defined callback.  
+* **Fix:** ACF Free no longer causes a fatal error when any unsupported legacy ACF addons are active.
 
 ---
 
