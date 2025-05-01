@@ -1,9 +1,10 @@
-=== Advanced Custom Fields PRO ===
-Contributors: elliotcondon
+=== Advanced Custom Fields (ACF®) PRO ===
+Contributors: deliciousbrains, wpengine, elliotcondon, mattshaw, lgladdy, antpb, johnstonphilip, dalewilliams, polevaultweb
 Tags: acf, fields, custom fields, meta, repeater
 Requires at least: 6.0
-Tested up to: 6.7
+Tested up to: 6.8
 Requires PHP: 7.4
+Stable tag: 6.4.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -11,7 +12,7 @@ ACF helps customize WordPress with powerful, professional and intuitive fields. 
 
 == Description ==
 
-Advanced Custom Fields (ACF) turns WordPress sites into a fully-fledged content management system by giving you all the tools to do more with your data.
+Advanced Custom Fields (ACF®) turns WordPress sites into a fully-fledged content management system by giving you all the tools to do more with your data.
 
 Use the ACF plugin to take full control of your WordPress edit screens, custom field data, and more.
 
@@ -92,6 +93,30 @@ From your WordPress dashboard
 
 
 == Changelog ==
+
+= 6.4.0.1 =
+*Release Date 8th April 2025*
+
+* Fix - Calling `acf_get_reference()` with an invalid field name no longer causes a fatal error
+
+= 6.4.0 =
+*Release Date 7th April 2025*
+
+* New - In ACF PRO, fields can now be added to WooCommerce orders when using HPOS
+* Enhancement - The "Escaped HTML" warning notice is now disabled by default
+* Enhancement - ACF now uses Composer to autoload some classes
+* Fix - Repeater pagination now works when the Repeater is inside a Group field
+* Fix - Various translations are no longer called before the WordPress `init` action hook
+* Security - Link field no longer has a minor local XSS vulnerability
+* i18n - Various British English translation strings no longer have a quoting issue breaking links
+* i18n - Added Dutch (formal) translations (props @toineenzo)
+
+= 6.3.12 =
+*Release Date 21st January 2025*
+
+* Enhancement - Error messages that occur when field validation fails due an insufficient security nonce now have additional context
+* Fix - Duplicated ACF blocks no longer lose their field values after the initial save when block preloading is enabled
+* Fix - ACF Blocks containing complex field types now behave correctly when React StrictMode is enabled
 
 = 6.3.11 =
 *Release Date 12th November 2024*

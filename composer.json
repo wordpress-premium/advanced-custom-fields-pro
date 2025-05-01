@@ -3,5 +3,10 @@
 	"type": "wordpress-plugin",
 	"description": "Advanced Custom Fields for WordPress Developers.",
 	"license": "GPL-2.0-or-later",
-	"require": {}
+	"require": {},
+	"autoload": {
+		"psr-4": {
+			"ACF\\": "src/"
+		}
+	}
 }
