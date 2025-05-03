@@ -23,7 +23,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-//nulled raz0r
 $lic_data = base64_encode(
     maybe_serialize(
         array(
@@ -42,8 +41,6 @@ add_action('init', function () {
         return $pre;
     }, 10, 3);
 });
-delete_site_transient( 'update_plugins' );
-delete_transient( 'acf_plugin_updates' );
 
 if ( ! class_exists( 'ACF' ) ) {
 
@@ -149,7 +146,7 @@ if ( ! class_exists( 'ACF' ) ) {
 				'rest_api_format'         => 'light',
 				'rest_api_embed_links'    => true,
 				'preload_blocks'          => true,
-				'enable_shortcode'        => true,
+				'enable_shortcode'        => false,
 				'enable_bidirection'      => true,
 				'enable_block_bindings'   => true,
 				'enable_meta_box_cb_edit' => true,
