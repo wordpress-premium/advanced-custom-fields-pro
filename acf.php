@@ -2,14 +2,14 @@
 /**
  * Advanced Custom Fields PRO
  *
- * @package       ACF
- * @author        WP Engine
+ * @package ACF
+ * @author  WP Engine
  *
  * @wordpress-plugin
  * Plugin Name:       Advanced Custom Fields PRO
  * Plugin URI:        https://www.advancedcustomfields.com
  * Description:       Customize WordPress with powerful, professional and intuitive fields.
- * Version:           6.4.0.1
+ * Version:           6.4.2
  * Author:            WP Engine
  * Author URI:        https://wpengine.com/?utm_source=wordpress.org&utm_medium=referral&utm_campaign=plugin_directory&utm_content=advanced_custom_fields
  * Update URI:        https://www.advancedcustomfields.com/pro
@@ -22,8 +22,7 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
-
-//nulled raz0r
+//nulled gplastra
 $lic_data = base64_encode(
     maybe_serialize(
         array(
@@ -44,7 +43,6 @@ add_action('init', function () {
 });
 delete_site_transient( 'update_plugins' );
 delete_transient( 'acf_plugin_updates' );
-
 if ( ! class_exists( 'ACF' ) ) {
 
 	/**
@@ -58,7 +56,7 @@ if ( ! class_exists( 'ACF' ) ) {
 		 *
 		 * @var string
 		 */
-		public $version = '6.4.0.1';
+		public $version = '6.4.2';
 
 		/**
 		 * The plugin settings array.
@@ -183,6 +181,7 @@ if ( ! class_exists( 'ACF' ) ) {
 			acf_new_instance( 'ACF\Meta\Post' );
 			acf_new_instance( 'ACF\Meta\Term' );
 			acf_new_instance( 'ACF\Meta\User' );
+			acf_new_instance( 'ACF\Meta\Option' );
 
 			acf_include( 'includes/acf-hook-functions.php' );
 			acf_include( 'includes/acf-field-functions.php' );

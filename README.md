@@ -10,6 +10,12 @@ This is the **fully activated premium version** of the plugin, provided by [word
 
 **Important:** Unlicensed ("nulled") usage may violate the developer's terms and will not include official updates or support.
 
+> [!TIP]
+>
+> ## Donate
+>
+> If [WordPress Premium](https://www.wordpress-premium.net/) helps you access premium plugins safely, consider [supporting us via PayPal](https://www.paypal.com/paypalme/thaikolja) to keep the service running.
+
 ### Using Premium Features
 
 Advanced Custom Fields PRO comes with a range of advanced features, including:
@@ -22,21 +28,20 @@ Advanced Custom Fields PRO comes with a range of advanced features, including:
 
 To access these features, simply activate the plugin and navigate to the **ACF** section in your WordPress dashboard.
 
-## Donate
-
-If [WordPress Premium](https://www.wordpress-premium.net/) helps you access premium plugins safely, consider [supporting us via PayPal](https://www.paypal.com/paypalme/thaikolja) to keep the service running.
-
 ---
 
 Here are the last three updates from the Advanced Custom Fields PRO changelog to keep you in the loop.
 
 ## Changelog
 
-### 6.4.0.1
+### v6.4.2
 
-**Release Date:** April 8th, 2025
+**Released:** May 20th, 2025
 
-* **Fix:** Calling `acf_get_reference()` with an invalid field name no longer causes a fatal error
+* New - In ACF PRO, fields can now be added to WooCommerce Subscriptions when using HPOS
+* Security - Changing a field type no longer enables the "Allow Access to Value in Editor UI" setting
+* Fix - Paginated Repeater fields no longer save duplicate values when saving to a WooCommerce Order with HPOS disabled
+* Fix - Blocks registered via acf_register_block_type() with a `parent` value of `null` no longer fail to register
 
 ---
 

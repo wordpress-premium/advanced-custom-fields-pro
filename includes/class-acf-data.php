@@ -93,17 +93,7 @@ if ( ! class_exists( 'ACF_Data' ) ) :
 		 * @return  type Description.
 		 */
 		function _key( $name = '' ) {
-			// Check if $name is a valid array key type
-			if (!is_string($name) && !is_int($name)) {
-				return $name;
-			}
-
-			// Check if aliases property is an array and the key exists
-			if (is_array($this->aliases) && isset($this->aliases[$name])) {
-				return $this->aliases[$name];
-			}
-
-			return $name;
+			return isset( $this->aliases[ $name ] ) ? $this->aliases[ $name ] : $name;
 		}
 
 		/**
@@ -149,20 +139,16 @@ if ( ! class_exists( 'ACF_Data' ) ) :
 		 * @return  mixed
 		 */
 		function get( $name = false ) {
+
 			// Get all.
 			if ( $name === false ) {
 				return $this->data;
+
+				// Get specific.
+			} else {
+				$key = $this->_key( $name );
+				return isset( $this->data[ $key ] ) ? $this->data[ $key ] : null;
 			}
-
-			// Get specific.
-			$key = $this->_key( $name );
-
-			// Check if $key is a valid array key type and data exists
-			if ((is_string($key) || is_int($key)) && is_array($this->data) && isset($this->data[$key])) {
-				return $this->data[$key];
-			}
-
-			return null;
 		}
 
 		/**
