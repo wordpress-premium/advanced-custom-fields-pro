@@ -81,6 +81,16 @@ if (!class_exists("ACF")) {
 		public $instances = [];
 
 		/**
+		 * Predefined properties to avoid dynamic property deprecation warnings.
+		 */
+		public $fields;
+		public $loop;
+		public $revisions;
+		public $validation;
+		public $form_front;
+		public $admin_tools;
+
+		/**
 		 * A dummy constructor to ensure ACF is only setup once.
 		 *
 		 * @date    23/06/12
