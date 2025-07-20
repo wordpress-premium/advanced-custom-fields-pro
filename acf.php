@@ -50,6 +50,7 @@ if (!class_exists("ACF")) {
 	/**
 	 * The main ACF class
 	 */
+    #[AllowDynamicProperties]
 	class ACF
 	{
 		/**
