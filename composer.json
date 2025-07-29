@@ -2,7 +2,7 @@
   "name": "wordpress-premium/advanced-custom-fields-pro",
   "description": "Advanced Custom Fields",
   "type": "wordpress-plugin",
-  "license": "GPLv2 or later",
+  "license": "GPL-2.0-or-later",
   "autoload": {
     "psr-4": {
       "ACF\\": "src/"
