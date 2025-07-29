@@ -14,7 +14,7 @@ This is the **fully activated premium version** of the plugin, provided by [word
 >
 > ## Donate
 >
-> If [WordPress Premium](https://www.wordpress-premium.net/) helps you access premium plugins safely, consider [supporting us via PayPal](https://www.paypal.com/paypalme/thaikolja) to keep the service running.
+> If [WordPress Premium](https://www.wordpress-premium.net/) helps you access premium plugins safely, consider [supporting us via PayPal](https://www.paypal.com/paypalme/thaikolja) or by [cryptocurrency](https://www.wordpress-premium.net/wallets/) to keep the service running.
 
 ### Using Premium Features
 
@@ -28,21 +28,17 @@ Advanced Custom Fields PRO comes with a range of advanced features, including:
 
 To access these features, simply activate the plugin and navigate to the **ACF** section in your WordPress dashboard.
 
----
-
-Here are the last three updates from the Advanced Custom Fields PRO changelog to keep you in the loop.
-
 ## Changelog
 
-### v6.4.2
+### v6.4.3
 
-**Released:** May 20th, 2025
+**Released:** July 22nd, 2025
 
-* New - In ACF PRO, fields can now be added to WooCommerce Subscriptions when using HPOS
-* Security - Changing a field type no longer enables the "Allow Access to Value in Editor UI" setting
-* Fix - Paginated Repeater fields no longer save duplicate values when saving to a WooCommerce Order with HPOS disabled
-* Fix - Blocks registered via acf_register_block_type() with a `parent` value of `null` no longer fail to register
-
----
+* Security - Unsafe HTML in field group labels is now correctly escaped for conditionally loaded field groups, resolving a JS execution vulnerability in the classic editor
+* Security - HTML is now escaped from field group labels when output in the ACF admin
+* Security - Bidirectional and Conditional Logic Select2 elements no longer render HTML in field labels or post titles
+* Security - The `acf.escHtml` function now uses the third-party DOMPurify library to ensure all unsafe HTML is removed. A new `esc_html_dompurify_config` JS filter can be used to modify the default behaviour
+* Security - Post titles are now correctly escaped whenever they are output by ACF code. Thanks to Shogo Kumamaru of LAC Co., Ltd. for the responsible disclosure
+* Security - An admin notice is now displayed when version 3 of the Select2 library is used, as it has now been deprecated in favor of version 4
 
 For the full changelog, visit [Advanced Custom Fields PRO Changelog](https://www.advancedcustomfields.com/changelog/).

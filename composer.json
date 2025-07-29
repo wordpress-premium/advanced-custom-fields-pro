@@ -1,7 +1,26 @@
 {
-	"name": "wordpress-premium/advanced-custom-fields-pro",
-	"type": "wordpress-plugin",
-	"description": "Advanced Custom Fields for WordPress Developers.",
-	"license": "GPL-2.0-or-later",
-	"require": {}
+  "name": "wordpress-premium/advanced-custom-fields-pro",
+  "description": "Advanced Custom Fields",
+  "type": "wordpress-plugin",
+  "license": "GPLv2 or later",
+  "autoload": {
+    "psr-4": {
+      "ACF\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "WP Engine"
+    }
+  ],
+  "config": {
+    "optimize-autoloader": true,
+    "classmap-authoritative": true
+  },
+  "scripts": {
+    "post-autoload-dump": [
+      "sed -i '' \"/InstalledVersions.php/d\" vendor/composer/autoload_static.php"
+    ]
+  },
+  "require": {}
 }
