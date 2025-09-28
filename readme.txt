@@ -1,10 +1,16 @@
+/**
+ * W E A D O W N . C O M
+ * ---- weadown.com ----
+ */
+
+
 === Advanced Custom Fields (ACF®) PRO ===
 Contributors: deliciousbrains, wpengine, elliotcondon, mattshaw, lgladdy, antpb, johnstonphilip, dalewilliams, polevaultweb
 Tags: acf, fields, custom fields, meta, repeater
 Requires at least: 6.0
-Tested up to: 6.8.1
+Tested up to: 6.8.2
 Requires PHP: 7.4
-Stable tag: 6.4.3
+Stable tag: 6.5.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -93,6 +99,45 @@ From your WordPress dashboard
 
 
 == Changelog ==
+
+= 6.5.1 =
+*Release Date 10th September 2025*
+
+* Enhancement - The Flexible Content “Expand All” and “Collapse All” button now appear correctly on mobile
+* Enhancement - The Flexible Content delete layout button is now back in the main layout header, making it easier to delete layouts
+* Enhancement - The JSON import tool now limits the selectable files to JSON files
+* Fix - Disabled Flexible Content layouts are no longer counted towards min/max layout validation
+* Fix - The top “Add Row” button for layouts is now disabled when layouts have reached the max layouts validation
+* Fix - The per-layout “Add Row” and “Duplicate Layout” buttons are now disabled when layouts have reached the max layouts validation
+* Fix - Disabling Flexible Content layouts no longer disables layouts in cloned Flexible Content fields using a different post ID on the same page
+* Fix - Flexible Content “Add Layout” menu is no longer hidden by some field types
+* Fix - Flexible Content layout names can now allow some safe HTML
+* Fix - When creating a temporary post type during import, ACF now correctly sets the ACF post type, rather than defaulting to post
+* Fix - ACF PRO updates are now shown even when no other plugins have an update available
+
+= 6.5.0.1 =
+*Release Date 12th August 2025*
+*PRO Only Release*
+
+* Fix - Flexible Content layouts configured with a "Layout" setting of "Table" are now rendered correctly in the post editor
+* Fix - Flexible Content "Add Layout" buttons now insert the new layout in the correct position
+* Fix - Long Flexible Content layout names no longer extend outside of the "Add Layout" dropdown
+
+= 6.5.0 =
+*Release Date 11th August 2025*
+
+* New - Flexible Content layouts can now be renamed in the post editor, giving content editors better clarity when managing layouts
+* New - Flexible Content layouts can now be disabled, preventing them from rendering on the frontend without needing to delete their data
+* New - Flexible Content layouts can now be collapsed and expanded in bulk for faster content editing
+* New - Editing a Flexible Content layout now highlights the layout being edited, making it easier to identify
+* New - The Date and Date Time Picker fields can now be configured to default to the current date
+* Fix - Custom Icon Picker tabs now work correctly when used inside an ACF Block
+* Fix - Duplicating a Field Group no longer causes a fatal error when using Russian translations
+* Fix - ACF classes no longer use dynamic class properties, improving compatibility with PHP 8.2+
+* Fix - ACF PRO no longer shows an update available immediately after updating to the latest version
+* Fix - Field group metabox collapse and expand buttons are no longer misaligned in the post editor
+* Fix - The ACF Site Health section no longer causes a PHP warning when field group location rules are incomplete
+* Security - HTML is now escaped from field validation errors and tooltips
 
 = 6.4.3 =
 *Release Date 22nd July 2025*
