@@ -1,8 +1,12 @@
 <?php
 /**
- * The ACF Blocks PHP code.
- *
  * @package ACF
+ * @author  WP Engine
+ *
+ * © 2025 Advanced Custom Fields (ACF®). All rights reserved.
+ * "ACF" is a trademark of WP Engine.
+ * Licensed under the GNU General Public License v2 or later.
+ * https://www.gnu.org/licenses/gpl-2.0.html
  */
 
 // Exit if accessed directly.
@@ -51,6 +55,17 @@ function acf_handle_json_block_registration( $settings, $metadata ) {
 		return $settings;
 	}
 
+	/**
+	 * Filters the default ACF block version for blocks registered via block.json.
+	 *
+	 * @since 6.6.0
+	 *
+	 * @param integer $default_acf_block_version The default ACF block version.
+	 * @param array   $settings                  An array of block settings.
+	 * @return integer
+	 */
+	$default_acf_block_version = apply_filters( 'acf/blocks/default_block_version', 2, $settings );
+
 	// Setup ACF defaults.
 	$settings = wp_parse_args(
 		$settings,
@@ -64,8 +79,7 @@ function acf_handle_json_block_registration( $settings, $metadata ) {
 			'uses_context'      => array(),
 			'supports'          => array(),
 			'attributes'        => array(),
-			'acf_block_version' => 2,
-			'api_version'       => 2,
+			'acf_block_version' => $default_acf_block_version,
 			'validate'          => true,
 			'validate_on_load'  => true,
 			'use_post_meta'     => false,
@@ -105,14 +119,15 @@ function acf_handle_json_block_registration( $settings, $metadata ) {
 
 	// Map custom ACF properties from the ACF key, with localization.
 	$property_mappings = array(
-		'renderCallback' => 'render_callback',
-		'renderTemplate' => 'render_template',
-		'mode'           => 'mode',
-		'blockVersion'   => 'acf_block_version',
-		'postTypes'      => 'post_types',
-		'validate'       => 'validate',
-		'validateOnLoad' => 'validate_on_load',
-		'usePostMeta'    => 'use_post_meta',
+		'renderCallback'      => 'render_callback',
+		'renderTemplate'      => 'render_template',
+		'mode'                => 'mode',
+		'blockVersion'        => 'acf_block_version',
+		'postTypes'           => 'post_types',
+		'validate'            => 'validate',
+		'validateOnLoad'      => 'validate_on_load',
+		'usePostMeta'         => 'use_post_meta',
+		'hideFieldsInSidebar' => 'hide_fields_in_sidebar',
 	);
 	$textdomain        = ! empty( $metadata['textdomain'] ) ? $metadata['textdomain'] : 'acf';
 	$i18n_schema       = get_block_metadata_i18n_schema();
@@ -125,6 +140,17 @@ function acf_handle_json_block_registration( $settings, $metadata ) {
 				$settings[ $mapped_key ] = translate_settings_using_i18n_schema( $i18n_schema->$key, $settings[ $key ], $textdomain );
 			}
 		}
+	}
+
+	if ( isset( $metadata['apiVersion'] ) ) {
+		// Use the apiVersion defined in block.json if it exists.
+		$settings['api_version'] = $metadata['apiVersion'];
+	} elseif ( $settings['acf_block_version'] >= 3 && version_compare( get_bloginfo( 'version' ), '6.3', '>=' ) ) {
+		// Otherwise, if we're on WP 6.3+ and the block is ACF block version 3 or greater, use apiVersion 3.
+		$settings['api_version'] = 3;
+	} else {
+		// Otherwise, default to apiVersion 2.
+		$settings['api_version'] = 2;
 	}
 
 	// Add the block name and registration path to settings.
@@ -198,11 +224,28 @@ function acf_register_block_type( $block ) {
 
 	// Set ACF required attributes.
 	$block['attributes'] = acf_get_block_type_default_attributes( $block );
-	if ( ! isset( $block['api_version'] ) ) {
-		$block['api_version'] = 2;
-	}
+
+	/**
+	 * Filters the default ACF block version for blocks registered via acf_register_block_type().
+	 *
+	 * @since 6.6.0
+	 *
+	 * @param integer $default_acf_block_version The default ACF block version.
+	 * @param array   $block                     An array of block settings.
+	 * @return integer
+	 */
+	$default_acf_block_version = apply_filters( 'acf/blocks/default_block_version', 1, $block );
+
 	if ( ! isset( $block['acf_block_version'] ) ) {
-		$block['acf_block_version'] = 1;
+		$block['acf_block_version'] = $default_acf_block_version;
+	}
+
+	if ( ! isset( $block['api_version'] ) ) {
+		if ( $block['acf_block_version'] >= 3 && version_compare( get_bloginfo( 'version' ), '6.3', '>=' ) ) {
+			$block['api_version'] = 3;
+		} else {
+			$block['api_version'] = 2;
+		}
 	}
 
 	// Add to storage.
@@ -559,8 +602,16 @@ function acf_render_block_callback( $attributes, $content = '', $wp_block = null
  * @return  string   The block HTML.
  */
 function acf_rendered_block( $attributes, $content = '', $is_preview = false, $post_id = 0, $wp_block = null, $context = false, $is_ajax_render = false ) {
-	$mode = isset( $attributes['mode'] ) ? $attributes['mode'] : 'auto';
-	$form = ( 'edit' === $mode && $is_preview );
+	$registry      = WP_Block_Type_Registry::get_instance();
+	$wp_block_type = $registry->get_registered( $attributes['name'] );
+
+	if ( isset( $wp_block_type->acf_block_version ) && $wp_block_type->acf_block_version >= 3 ) {
+		$mode = 'preview';
+		$form = false;
+	} else {
+		$mode = isset( $attributes['mode'] ) ? $attributes['mode'] : 'auto';
+		$form = ( 'edit' === $mode && $is_preview );
+	}
 
 	// If context is available from the WP_Block class object and we have no context of our own, use that.
 	if ( empty( $context ) && ! empty( $wp_block->context ) ) {
@@ -749,12 +800,16 @@ function acf_block_render_template( $block, $content, $is_preview, $post_id, $wp
 		$path = locate_template( $block['render_template'] );
 	}
 
+	do_action( 'acf/blocks/pre_block_template_render', $block, $content, $is_preview, $post_id, $wp_block, $context );
+
 	// Include template.
 	if ( file_exists( $path ) ) {
 		include $path;
 	} elseif ( $is_preview ) {
 		echo acf_esc_html( apply_filters( 'acf/blocks/template_not_found_message', '<p>' . __( 'The render template for this ACF Block was not found', 'acf' ) . '</p>' ) );
 	}
+
+	do_action( 'acf/blocks/post_block_template_render', $block, $content, $is_preview, $post_id, $wp_block, $context );
 }
 
 /**
@@ -803,11 +858,15 @@ function acf_enqueue_block_assets() {
 	// Localize text.
 	acf_localize_text(
 		array(
-			'Switch to Edit'           => __( 'Switch to Edit', 'acf' ),
-			'Switch to Preview'        => __( 'Switch to Preview', 'acf' ),
-			'Change content alignment' => __( 'Change content alignment', 'acf' ),
-			'Error previewing block'   => __( 'An error occurred when loading the preview for this block.', 'acf' ),
-			'Error loading block form' => __( 'An error occurred when loading the block in edit mode.', 'acf' ),
+			'Switch to Edit'            => __( 'Switch to Edit', 'acf' ),
+			'Switch to Preview'         => __( 'Switch to Preview', 'acf' ),
+			'Change content alignment'  => __( 'Change content alignment', 'acf' ),
+			'Error previewing block'    => __( 'An error occurred when loading the preview for this block.', 'acf' ),
+			'Error loading block form'  => __( 'An error occurred when loading the block in edit mode.', 'acf' ),
+			'Edit Block'                => __( 'Edit Block', 'acf' ),
+			'Open Expanded Editor'      => __( 'Open Expanded Editor', 'acf' ),
+			'Error previewing block v3' => __( 'The preview for this block couldn’t be loaded. Review its content or settings for issues.', 'acf' ),
+			'ACF Block'                 => __( 'ACF Block', 'acf' ),
 
 			/* translators: %s: Block type title */
 			'%s settings'              => __( '%s settings', 'acf' ),

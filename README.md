@@ -16,6 +16,12 @@
 >
 > Upon activation, the plugin will display a message that it has not been registered. To resolve this, go to "ACF" → "Updates" and enter **any random text** into the field and press "Activate License".
 
+### License Code
+
+```bash
+83A5BB0E-2AD5-1646-90BC-7A42AE592CF5
+```
+
 This is the **fully activated premium version** of the plugin, provided by [wordpress-premium.net](https://www.wordpress-premium.net?utm_source=acf). It has been scanned for security issues and is intended **for evaluation purposes only**. To use Advanced Custom Fields PRO on a live website, please [purchase a license](https://www.advancedcustomfields.com/pro/) directly from the official website.
 
 **Important:** Unlicensed ("nulled") usage may violate the developer's terms and will not include official updates or support.
@@ -28,21 +34,19 @@ This is the **fully activated premium version** of the plugin, provided by [word
 
 ## Changelog
 
-### v6.5.1
+### v6.6.2
 
-**Released:** September 10th, 2025
+**Release Date:** 29th October 2025
 
-* Enhancement - The Flexible Content “Expand All” and “Collapse All” button now appear correctly on mobile
-* Enhancement - The Flexible Content delete layout button is now back in the main layout header, making it easier to delete layouts
-* Enhancement - The JSON import tool now limits the selectable files to JSON files
-* Fix - Disabled Flexible Content layouts are no longer counted towards min/max layout validation
-* Fix - The top “Add Row” button for layouts is now disabled when layouts have reached the max layouts validation
-* Fix - The per-layout “Add Row” and “Duplicate Layout” buttons are now disabled when layouts have reached the max layouts validation
-* Fix - Disabling Flexible Content layouts no longer disables layouts in cloned Flexible Content fields using a different post ID on the same page
-* Fix - Flexible Content “Add Layout” menu is no longer hidden by some field types
-* Fix - Flexible Content layout names can now allow some safe HTML
-* Fix - When creating a temporary post type during import, ACF now correctly sets the ACF post type, rather than defaulting to post
-* Fix - ACF PRO updates are now shown even when no other plugins have an update available
+* Enhancement - Added a new `convert_field_name_to_lowercase` JS filter to allow uppercase letters in ACF field names
+* Enhancement - The form for V3 Blocks can now be optionally hidden from the sidebar via a new `hideFieldsInSidebar` setting in block.json
+* Enhancement - V3 Blocks now display an "Open Expanded Editor" button in the sidebar for easier access to the full edit form
+* Fix - The buttons to reorder ACF metaboxes are no longer hidden for metaboxes in the block editor sidebar
+* Fix - V3 Blocks now display a fallback message when the block preview can't be rendered due to invalid HTML being used in field values
+* Fix - V3 Blocks no longer show a loading spinner when preloaded
+* Fix - V3 Blocks now save default field values even if the block wasn't interacted with before saving
+* Fix - Pressing CMD/CTRL + Z no longer causes the fields to disappear in V3 Blocks
+* Fix - The form for V3 Blocks now opens on the left side in RTL languages
 
 ---
 
