@@ -14,7 +14,7 @@
 
 > [!IMPORTANT]
 >
-> Upon activation, the plugin will display a message that it has not been registered. To resolve this, go to "ACF" → "Updates" and enter **any random text** into the field and press "Activate License".
+> Upon activation, the plugin will display a message that it has not been registered. To resolve this, go to "ACF" → "Updates" and enter **any random text** into the field and press "Activate License," or use the following license code.
 
 ### License Code
 
@@ -30,7 +30,7 @@ This is the **fully activated premium version** of the plugin, provided by [word
 >
 > ## Donate
 >
-> If [WordPress Premium](https://www.wordpress-premium.net/?utm_source=acf) helps you access premium plugins safely, consider supporting us via a donation in any of the available [cryptocurrencies](https://www.wordpress-premium.net/wallets/) to keep the service running.
+> If [WordPress Premium](https://www.wordpress-premium.net/?utm_source=acf) helps you access premium plugins safely, consider supporting us via [a donation through PayPal](https://www.paypal.com/paypalme/thaikolja) or in any of the available [cryptocurrencies](https://www.wordpress-premium.net/wallets/) to keep the service running.
 
 ## Changelog
 
@@ -38,15 +38,15 @@ This is the **fully activated premium version** of the plugin, provided by [word
 
 **Release Date:** 29th October 2025
 
-* Enhancement - Added a new `convert_field_name_to_lowercase` JS filter to allow uppercase letters in ACF field names
-* Enhancement - The form for V3 Blocks can now be optionally hidden from the sidebar via a new `hideFieldsInSidebar` setting in block.json
-* Enhancement - V3 Blocks now display an "Open Expanded Editor" button in the sidebar for easier access to the full edit form
-* Fix - The buttons to reorder ACF metaboxes are no longer hidden for metaboxes in the block editor sidebar
-* Fix - V3 Blocks now display a fallback message when the block preview can't be rendered due to invalid HTML being used in field values
-* Fix - V3 Blocks no longer show a loading spinner when preloaded
-* Fix - V3 Blocks now save default field values even if the block wasn't interacted with before saving
-* Fix - Pressing CMD/CTRL + Z no longer causes the fields to disappear in V3 Blocks
-* Fix - The form for V3 Blocks now opens on the left side in RTL languages
+* **feat(filters):** add `convert_field_name_to_lowercase` JS filter for uppercase ACF field names
+- **feat(blocks):** add `hideFieldsInSidebar` option to hide V3 Block forms from sidebar
+- **feat(blocks):** add "Open Expanded Editor" button in sidebar for V3 Blocks
+- **fix(metaboxes):** prevent reorder buttons from being hidden in block editor sidebar
+- **fix(blocks):** display fallback message when V3 Block preview fails due to invalid HTML
+- **fix(blocks):** remove loading spinner from preloaded V3 Blocks
+- **fix(blocks):** save default field values in V3 Blocks without user interaction
+- **fix(blocks):** prevent field disappearance on CMD/CTRL + Z in V3 Blocks
+- **fix(blocks):** open V3 Block form on left side for RTL languages
 
 ---
 
