@@ -38,7 +38,7 @@ This is the **fully activated premium version** of the plugin, provided by [word
 
 **Release Date:** 29th October 2025
 
-* **feat(filters):** add `convert_field_name_to_lowercase` JS filter for uppercase ACF field names
+- **feat(filters):** add `convert_field_name_to_lowercase` JS filter for uppercase ACF field names
 - **feat(blocks):** add `hideFieldsInSidebar` option to hide V3 Block forms from sidebar
 - **feat(blocks):** add "Open Expanded Editor" button in sidebar for V3 Blocks
 - **fix(metaboxes):** prevent reorder buttons from being hidden in block editor sidebar
