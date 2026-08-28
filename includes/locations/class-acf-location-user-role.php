@@ -3,7 +3,7 @@
  * @package ACF
  * @author  WP Engine
  *
- * © 2025 Advanced Custom Fields (ACF®). All rights reserved.
+ * © 2026 Advanced Custom Fields (ACF®). All rights reserved.
  * "ACF" is a trademark of WP Engine.
  * Licensed under the GNU General Public License v2 or later.
  * https://www.gnu.org/licenses/gpl-2.0.html
@@ -60,7 +60,7 @@ if ( ! class_exists( 'ACF_Location_User_Role' ) ) :
 					$user_role = get_option( 'default_role' );
 
 					// Check if user can, and if so, set the value allowing them to match.
-				} elseif ( user_can( $user_id, $rule['value'] ) ) {
+				} elseif ( ( $rule['value'] ?? '' ) && user_can( $user_id, $rule['value'] ) ) {
 					$user_role = $rule['value'];
 				}
 			} else {

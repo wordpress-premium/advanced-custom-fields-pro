@@ -3,7 +3,7 @@
  * @package ACF
  * @author  WP Engine
  *
- * © 2025 Advanced Custom Fields (ACF®). All rights reserved.
+ * © 2026 Advanced Custom Fields (ACF®). All rights reserved.
  * "ACF" is a trademark of WP Engine.
  * Licensed under the GNU General Public License v2 or later.
  * https://www.gnu.org/licenses/gpl-2.0.html
@@ -44,7 +44,7 @@ if ( ! class_exists( 'ACF_Location_Current_User' ) ) :
 		 * @return  boolean
 		 */
 		public function match( $rule, $screen, $field_group ) {
-			switch ( $rule['value'] ) {
+			switch ( $rule['value'] ?? '' ) {
 				case 'logged_in':
 					$result = is_user_logged_in();
 					break;
@@ -60,7 +60,7 @@ if ( ! class_exists( 'ACF_Location_Current_User' ) ) :
 			}
 
 			// Reverse result for "!=" operator.
-			if ( $rule['operator'] === '!=' ) {
+			if ( ( $rule['operator'] ?? '' ) === '!=' ) {
 				return ! $result;
 			}
 			return $result;

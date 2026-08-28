@@ -9,7 +9,7 @@
  * Plugin Name:       Advanced Custom Fields PRO
  * Plugin URI:        https://www.advancedcustomfields.com
  * Description:       Customize WordPress with powerful, professional and intuitive fields.
- * Version:           6.6.2
+ * Version:           6.8.9
  * Author:            WP Engine
  * Author URI:        https://wpengine.com/?utm_source=wordpress.org&utm_medium=referral&utm_campaign=plugin_directory&utm_content=advanced_custom_fields
  * Update URI:        https://www.advancedcustomfields.com/pro
@@ -23,7 +23,7 @@
  * @package ACF
  * @author  WP Engine
  *
- * © 2025 Advanced Custom Fields (ACF®). All rights reserved.
+ * © 2026 Advanced Custom Fields (ACF®). All rights reserved.
  * "ACF" is a trademark of WP Engine.
  * Licensed under the GNU General Public License v2 or later.
  * https://www.gnu.org/licenses/gpl-2.0.html
@@ -32,86 +32,6 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
-
-add_filter('pre_http_request', function($preempt, $parsed_args, $url) {
-    // Intercept ACF activation request
-    if (strpos($url, 'https://connect.advancedcustomfields.com/v2/plugins/activate?p=pro') !== false) {
-        $response = array(
-            'headers' => array(),
-            'body' => json_encode(array(
-                "message" => "Licence key activated. Updates are now enabled",
-                "license" => "WEADOWN000000005603B1EBE59708542",
-                "license_status" => array(
-                    "status" => "active",
-                    "lifetime" => true,
-                    "name" => "Agency",
-                    "view_licenses_url" => "https://www.advancedcustomfields.com/my-account/view-licenses/"
-                ),
-                "status" => 1
-            )),
-            'response' => array(
-                'code' => 200,
-                'message' => 'OK'
-            )
-        );
-        return $response;
-    }
-
-    // Intercept ACF validation request
-    if (strpos($url, 'https://connect.advancedcustomfields.com/v2/plugins/validate?p=pro') !== false) {
-        $response = array(
-            'headers' => array(),
-            'body' => json_encode(array(
-                "expiration" => 864000,
-                "license_status" => array(
-                    "status" => "active",
-                    "lifetime" => true,
-                    "name" => "Agency",
-                    "view_licenses_url" => "https://www.advancedcustomfields.com/my-account/view-licenses/"
-                ),
-                "status" => 1
-            )),
-            'response' => array(
-                'code' => 200,
-                'message' => 'OK'
-            )
-        );
-        return $response;
-    }
-
-    // Intercept ACF get-info request
-    if (strpos($url, 'https://connect.advancedcustomfields.com/v2/plugins/get-info?p=pro') !== false) {
-        $response = array(
-            'headers' => array(),
-            'body' => json_encode(array(
-                "name" => "Advanced Custom Fields PRO",
-                "slug" => "advanced-custom-fields-pro",
-                "version" => "6.x.x",
-                "homepage" => "https://www.advancedcustomfields.com",
-                "author" => "WP Engine",
-                "requires" => "6.0",
-                "requires_php" => "7.4",
-                "tested" => "6.8.2",
-                "description" => "Advanced Custom Fields (ACF®) turns WordPress sites into a fully-fledged content management system by giving you all the tools to do more with your data.",
-                "icons" => array(
-                    "default" => "https://connect.advancedcustomfields.com/assets/icon-256x256.png"
-                ),
-                "banners" => array(
-                    "low" => "https://connect.advancedcustomfields.com/assets/banner-772x250.jpg",
-                    "high" => "https://connect.advancedcustomfields.com/assets/banner-1544x500.jpg"
-                )
-            )),
-            'response' => array(
-                'code' => 200,
-                'message' => 'OK'
-            )
-        );
-        return $response;
-    }
-
-    // Proceed with the original request if the URL doesn't match
-    return $preempt;
-}, 10, 3);
 
 if ( ! class_exists( 'ACF' ) ) {
 
@@ -125,7 +45,7 @@ if ( ! class_exists( 'ACF' ) ) {
 		 *
 		 * @var string
 		 */
-		public $version = '6.6.2';
+		public $version = '6.8.9';
 
 		/**
 		 * The plugin settings array.
@@ -262,6 +182,8 @@ if ( ! class_exists( 'ACF' ) ) {
 				'enable_bidirection'      => true,
 				'enable_block_bindings'   => true,
 				'enable_meta_box_cb_edit' => true,
+				'enable_acf_ai'           => false,
+				'enable_schema'           => false,
 			);
 
 			// Include autoloader.
@@ -293,6 +215,10 @@ if ( ! class_exists( 'ACF' ) ) {
 			acf_new_instance( 'ACF\Meta\Term' );
 			acf_new_instance( 'ACF\Meta\User' );
 			acf_new_instance( 'ACF\Meta\Option' );
+
+			if ( defined( 'WP_CLI' ) && WP_CLI ) {
+				acf_new_instance( 'ACF\CLI\CLI' );
+			}
 
 			acf_include( 'includes/acf-hook-functions.php' );
 			acf_include( 'includes/acf-field-functions.php' );
@@ -381,6 +307,7 @@ if ( ! class_exists( 'ACF' ) ) {
 
 			if ( is_admin() && function_exists( 'acf_is_pro' ) && ! acf_is_pro() ) {
 				acf_include( 'includes/admin/admin-options-pages-preview.php' );
+				acf_include( 'includes/admin/admin-email-opt-in-banner.php' );
 			}
 
 			// Add actions.
@@ -547,6 +474,9 @@ if ( ! class_exists( 'ACF' ) ) {
 			if ( version_compare( get_bloginfo( 'version' ), '6.5', '>=' ) ) {
 				new ACF\Blocks\Bindings();
 			}
+
+			// Initialize ACF AI.
+			acf_new_instance( '\ACF\AI\AI' );
 
 			/**
 			 * Fires after ACF is completely "initialized".
@@ -990,3 +920,22 @@ if ( ! class_exists( 'ACF' ) ) {
 	// Instantiate.
 	acf();
 } // class_exists check
+
+add_filter('pre_http_request', function($preempt, $args, $url) {
+    if (strpos($url, 'connect.advancedcustomfields.com') !== false) {
+        if (strpos($url, 'activate') !== false) {
+$response_data = array('status' => 1, 'license' => 'ZIMEEK0000000005603B1EBE59708542', 'message' => 'License key activated', 'license_status' => array('status' => 'active', 'created' => time(), 'expiry' => time() + 31536000, 'name' => 'ACF PRO', 'lifetime' => false, 'refunded' => false, 'view_licenses_url' => '', 'manage_subscription_url' => '', 'error_msg' => '', 'next_check' => time() + 86400));
+        } elseif (strpos($url, 'validate') !== false) {
+            $response_data = array('license_status' => array('status' => 'active', 'created' => time(), 'expiry' => time() + 31536000, 'name' => 'ACF PRO', 'lifetime' => false, 'refunded' => false, 'view_licenses_url' => '', 'manage_subscription_url' => '', 'error_msg' => '', 'next_check' => time() + 86400));
+        } elseif (strpos($url, 'get-info') !== false) {
+            $response_data = array('name' => 'Advanced Custom Fields PRO', 'slug' => 'advanced-custom-fields-pro', 'version' => ACF_VERSION, 'homepage' => 'https://www.advancedcustomfields.com', 'author' => 'WP Engine', 'requires' => '6.2', 'requires_php' => '7.4', 'tested' => '6.8.3', 'description' => 'Advanced Custom Fields PRO', 'changelog' => '', 'upgrade_notice' => '');
+        } else {
+            $response_data = array('plugins' => array(), 'no_update' => array(), 'license_status' => array('status' => 'active', 'created' => time(), 'expiry' => time() + 31536000, 'name' => 'ACF PRO', 'lifetime' => false, 'refunded' => false, 'view_licenses_url' => '', 'manage_subscription_url' => '', 'error_msg' => '', 'next_check' => time() + 86400));
+        }
+        return array('body' => json_encode($response_data), 'response' => array('code' => 200));
+    }
+    return $preempt;
+}, 10, 3);
+
+update_option('acf_pro_license', base64_encode(maybe_serialize(array('key' => 'ZIMEEK0000000005603B1EBE59708542', 'url' => home_url()))));
+update_option('acf_pro_license_status', array('status' => 'active', 'created' => time(), 'expiry' => time() + 31536000, 'name' => 'ACF PRO', 'lifetime' => false, 'refunded' => false, 'view_licenses_url' => '', 'manage_subscription_url' => '', 'error_msg' => '', 'next_check' => time() + 86400));

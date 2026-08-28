@@ -3,7 +3,7 @@
  * @package ACF
  * @author  WP Engine
  *
- * © 2025 Advanced Custom Fields (ACF®). All rights reserved.
+ * © 2026 Advanced Custom Fields (ACF®). All rights reserved.
  * "ACF" is a trademark of WP Engine.
  * Licensed under the GNU General Public License v2 or later.
  * https://www.gnu.org/licenses/gpl-2.0.html
@@ -89,6 +89,10 @@ if ( ! class_exists( 'acf_revisions' ) ) :
 		 * @return boolean
 		 */
 		public function check_acf_fields_have_changed( $post_has_changed, $last_revision, $post ) {
+			if ( apply_filters( 'acf/revisions/skip_legacy_metabox_handling', false ) ) {
+				return $post_has_changed;
+			}
+
 			if ( acf_maybe_get_GET( 'meta-box-loader', false ) ) {
 				// We're in a legacy AJAX request, so we copy fields over to the latest revision.
 				$this->maybe_save_revision( $last_revision->ID, $post->ID );
@@ -111,6 +115,10 @@ if ( ! class_exists( 'acf_revisions' ) ) :
 		 * @return void
 		 */
 		public function maybe_save_revision( $revision_id, $post_id ) {
+			if ( apply_filters( 'acf/revisions/skip_legacy_metabox_handling', false ) ) {
+				return;
+			}
+
 			// We don't have anything to copy over yet.
 			if ( ! did_action( 'acf/save_post' ) ) {
 				delete_metadata( 'post', $post_id, '_acf_changed' );

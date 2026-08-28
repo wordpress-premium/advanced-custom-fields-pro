@@ -3,7 +3,7 @@
  * @package ACF
  * @author  WP Engine
  *
- * © 2025 Advanced Custom Fields (ACF®). All rights reserved.
+ * © 2026 Advanced Custom Fields (ACF®). All rights reserved.
  * "ACF" is a trademark of WP Engine.
  * Licensed under the GNU General Public License v2 or later.
  * https://www.gnu.org/licenses/gpl-2.0.html
@@ -107,8 +107,17 @@ if ( ! class_exists( 'ACF_Ajax_Check_Screen' ) ) :
 				$response['sorted'] = get_user_option( 'meta-box-order_' . $this->get( 'post_type' ) );
 			}
 
-			// return
-			return $response;
+			/**
+			 * Filters the check_screen response, allowing extensions to attach
+			 * extra data tied to the screen.
+			 *
+			 * @since 6.8.1
+			 *
+			 * @param array $response     The response array.
+			 * @param array $field_groups The field groups returned for this screen.
+			 * @param array $args         The check_screen request args.
+			 */
+			return apply_filters( 'acf/ajax/check_screen/response', $response, $field_groups, $args );
 		}
 	}
 

@@ -3,7 +3,7 @@
  * @package ACF
  * @author  WP Engine
  *
- * © 2025 Advanced Custom Fields (ACF®). All rights reserved.
+ * © 2026 Advanced Custom Fields (ACF®). All rights reserved.
  * "ACF" is a trademark of WP Engine.
  * Licensed under the GNU General Public License v2 or later.
  * https://www.gnu.org/licenses/gpl-2.0.html
@@ -57,12 +57,13 @@ if ( ! class_exists( 'ACF_Location_Attachment' ) ) :
 			$mime_type = get_post_mime_type( $attachment );
 
 			// Allow for unspecific mim_type matching such as "image" or "video".
-			if ( ! strpos( $rule['value'], '/' ) ) {
+			$rule_value = $rule['value'] ?? '';
+			if ( $rule_value && ! strpos( $rule_value, '/' ) ) {
 
 				// Explode mime_type into bits ([0] => type, [1] => subtype) and match type.
 				$bits = explode( '/', $mime_type );
-				if ( $bits[0] === $rule['value'] ) {
-					$mime_type = $rule['value'];
+				if ( $bits[0] === $rule_value ) {
+					$mime_type = $rule_value;
 				}
 			}
 			return $this->compare_to_rule( $mime_type, $rule );

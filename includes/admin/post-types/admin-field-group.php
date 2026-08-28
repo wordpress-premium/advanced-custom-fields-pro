@@ -3,7 +3,7 @@
  * @package ACF
  * @author  WP Engine
  *
- * © 2025 Advanced Custom Fields (ACF®). All rights reserved.
+ * © 2026 Advanced Custom Fields (ACF®). All rights reserved.
  * "ACF" is a trademark of WP Engine.
  * Licensed under the GNU General Public License v2 or later.
  * https://www.gnu.org/licenses/gpl-2.0.html
@@ -501,6 +501,7 @@ if ( ! class_exists( 'acf_admin_field_group' ) ) :
 
 				do_action( "acf/field_group/render_field_settings_tab/{$tab}/type={$field['type']}", $field );
 				do_action( "acf/render_field_{$tab}_settings/type={$field['type']}", $field );
+				do_action( "acf/render_field_{$tab}_settings", $field );
 
 				$sections[ $tab ] = ob_get_clean();
 			}

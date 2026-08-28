@@ -3,7 +3,7 @@
  * @package ACF
  * @author  WP Engine
  *
- * © 2025 Advanced Custom Fields (ACF®). All rights reserved.
+ * © 2026 Advanced Custom Fields (ACF®). All rights reserved.
  * "ACF" is a trademark of WP Engine.
  * Licensed under the GNU General Public License v2 or later.
  * https://www.gnu.org/licenses/gpl-2.0.html
@@ -313,6 +313,22 @@ if ( ! class_exists( 'ACF_Form_Post' ) ) :
 		public function save_post( $post_id, $post ) {
 			// Bail early if not allowed to save this post type.
 			if ( ! $this->allow_save_post( $post ) ) {
+				return $post_id;
+			}
+
+			/**
+			 * Filters whether ACF_Form_Post::save_post() should bail without
+			 * verifying the nonce or running acf_save_post(). Allows extensions
+			 * to short-circuit the save when another handler is responsible for
+			 * persisting field values for the current request.
+			 *
+			 * @since 6.8.1
+			 *
+			 * @param boolean $skip    Whether to skip the save.
+			 * @param integer $post_id The post ID being saved.
+			 * @param WP_Post $post    The post being saved.
+			 */
+			if ( apply_filters( 'acf/form-post/skip_save', false, $post_id, $post ) ) {
 				return $post_id;
 			}
 

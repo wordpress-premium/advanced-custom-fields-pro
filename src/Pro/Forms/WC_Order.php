@@ -3,7 +3,7 @@
  * @package ACF
  * @author  WP Engine
  *
- * © 2025 Advanced Custom Fields (ACF®). All rights reserved.
+ * © 2026 Advanced Custom Fields (ACF®). All rights reserved.
  * "ACF" is a trademark of WP Engine.
  * Licensed under the GNU General Public License v2 or later.
  * https://www.gnu.org/licenses/gpl-2.0.html
@@ -26,7 +26,6 @@ class WC_Order {
 	public function __construct() {
 		add_action( 'load-woocommerce_page_wc-orders', array( $this, 'initialize' ) );
 		add_action( 'load-woocommerce_page_wc-orders--shop_subscription', array( $this, 'initialize' ) );
-		add_action( 'woocommerce_update_order', array( $this, 'save_order' ), 10, 1 );
 	}
 
 	/**
@@ -40,6 +39,8 @@ class WC_Order {
 	public function initialize() {
 		acf_enqueue_scripts( array( 'uploader' => true ) );
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ), 10, 2 );
+		add_action( 'woocommerce_update_order', array( $this, 'save_order' ), 10, 1 );
+		add_filter( 'acf/form-post/skip_save', array( $this, 'skip_post_save_for_orders' ), 10, 3 );
 	}
 
 	/**
@@ -196,6 +197,28 @@ class WC_Order {
 	}
 
 	/**
+	 * Prevents ACF_Form_Post from saving order posts so that save_order()
+	 * remains the single save entry-point. Without this, the backfill
+	 * triggered by WooCommerce Compatibility Mode fires save_post before
+	 * woocommerce_update_order, consuming the ACF nonce and causing
+	 * save_order() to bail.
+	 *
+	 * @since 6.8.6
+	 *
+	 * @param boolean  $skip    Whether to skip the save.
+	 * @param integer  $post_id The post ID being saved.
+	 * @param \WP_Post $post    The post being saved.
+	 * @return boolean
+	 */
+	public function skip_post_save_for_orders( $skip, $post_id, $post ) {
+		if ( in_array( $post->post_type, array( 'shop_order', 'shop_subscription' ), true ) ) {
+			return true;
+		}
+
+		return $skip;
+	}
+
+	/**
 	 * Saves ACF fields to the current order.
 	 *
 	 * @since 6.4
@@ -206,6 +229,10 @@ class WC_Order {
 	public function save_order( int $order_id ) {
 		// Bail if not using HPOS to prevent a double-save.
 		if ( ! $this->is_hpos_enabled() ) {
+			return;
+		}
+
+		if ( empty( $_POST['acf'] ) || ! acf_verify_nonce( 'post' ) ) {
 			return;
 		}
 

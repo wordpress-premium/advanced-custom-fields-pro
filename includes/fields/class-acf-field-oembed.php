@@ -3,7 +3,7 @@
  * @package ACF
  * @author  WP Engine
  *
- * © 2025 Advanced Custom Fields (ACF®). All rights reserved.
+ * © 2026 Advanced Custom Fields (ACF®). All rights reserved.
  * "ACF" is a trademark of WP Engine.
  * Licensed under the GNU General Public License v2 or later.
  * https://www.gnu.org/licenses/gpl-2.0.html
@@ -81,13 +81,17 @@ if ( ! class_exists( 'acf_field_oembed' ) ) :
 		 * @param string         $url    The URL that should be embedded.
 		 * @param integer|string $width  Optional maxwidth value passed to the provider URL.
 		 * @param integer|string $height Optional maxheight value passed to the provider URL.
+		 * @param array          $args   Optional. Additional arguments merged into the oEmbed request (e.g. 'discover').
 		 * @return string|false The embedded HTML on success, false on failure.
 		 */
-		function wp_oembed_get( $url = '', $width = 0, $height = 0 ) {
+		function wp_oembed_get( $url = '', $width = 0, $height = 0, $args = array() ) {
 			$embed = false;
-			$res   = array(
-				'width'  => $width,
-				'height' => $height,
+			$res   = array_merge(
+				array(
+					'width'  => $width,
+					'height' => $height,
+				),
+				$args
 			);
 
 			if ( function_exists( 'wp_oembed_get' ) ) {
@@ -97,7 +101,21 @@ if ( ! class_exists( 'acf_field_oembed' ) ) :
 			// try shortcode
 			if ( ! $embed ) {
 				global $wp_embed;
+
+				/**
+				 * Mirror our discover restriction onto WP_Embed::shortcode(),
+				 * which otherwise forces discover=true via embed_oembed_discover.
+				 */
+				$force_discover_off = isset( $args['discover'] ) && false === $args['discover'];
+				if ( $force_discover_off ) {
+					add_filter( 'embed_oembed_discover', '__return_false', PHP_INT_MAX );
+				}
+
 				$embed = $wp_embed->shortcode( $res, $url );
+
+				if ( $force_discover_off ) {
+					remove_filter( 'embed_oembed_discover', '__return_false', PHP_INT_MAX );
+				}
 			}
 
 			return $embed;
@@ -118,7 +136,7 @@ if ( ! class_exists( 'acf_field_oembed' ) ) :
 				)
 			);
 
-			if ( ! acf_verify_ajax( $args['nonce'], $args['field_key'], true ) ) {
+			if ( ! acf_verify_ajax( $args['nonce'], $args['field_key'], true, 'oembed' ) ) {
 				die();
 			}
 
@@ -155,10 +173,25 @@ if ( ! class_exists( 'acf_field_oembed' ) ) :
 			// prepare field to correct width and height
 			$field = $this->prepare_field( $field );
 
+			/**
+			 * Filters whether URL discovery is permitted on the AJAX oEmbed preview path.
+			 *
+			 * Discovery is restricted by default to users with the edit_posts capability,
+			 * limiting unauthenticated and subscriber-tier callers to WordPress's
+			 * registered oEmbed provider allowlist. Saved values and admin save-time
+			 * rendering are unaffected.
+			 *
+			 * @since 6.8.3
+			 *
+			 * @param bool  $allow_discovery Whether discovery is permitted. Default: true for users with edit_posts, false otherwise.
+			 * @param array $field           The oEmbed field array.
+			 */
+			$allow_discovery = (bool) apply_filters( 'acf/fields/oembed/allow_discovery', current_user_can( 'edit_posts' ), $field );
+
 			// vars
 			$response = array(
 				'url'  => $args['s'],
-				'html' => $this->wp_oembed_get( $args['s'], $field['width'], $field['height'] ),
+				'html' => $this->wp_oembed_get( $args['s'], $field['width'], $field['height'], array( 'discover' => $allow_discovery ) ),
 			);
 
 			// return
@@ -304,6 +337,100 @@ if ( ! class_exists( 'acf_field_oembed' ) ) :
 			$schema['format'] = 'uri';
 
 			return $schema;
+		}
+
+		/**
+		 * Returns an array of JSON-LD Property output types that are supported by this field type.
+		 *
+		 * @since 6.8
+		 *
+		 * @return string[]
+		 */
+		public function get_jsonld_output_types(): array {
+			return array( 'VideoObject', 'AudioObject', 'MediaObject' );
+		}
+
+		/**
+		 * Formats the field value for JSON-LD output.
+		 *
+		 * @since 6.8.0
+		 *
+		 * @param mixed          $value   The value of the field (URL).
+		 * @param integer|string $post_id The ID of the post.
+		 * @param array          $field   The field array.
+		 * @return mixed
+		 */
+		public function format_value_for_jsonld( $value, $post_id, $field ) {
+			if ( empty( $value ) ) {
+				return null;
+			}
+
+			// Get output format with fallback.
+			$output_format = $field['schema_output_format'] ?? '';
+			if ( empty( $output_format ) ) {
+				$property      = $field['schema_property'] ?? '';
+				$output_format = \ACF\AI\GEO\Schema::get_default_output_format( $this->name, $property );
+			}
+
+			// Default to VideoObject if no format determined.
+			if ( empty( $output_format ) ) {
+				$output_format = 'VideoObject';
+			}
+
+			// Get oEmbed data for richer output.
+			$oembed_data = _wp_oembed_get_object()->get_data( $value, array() );
+
+			$result = array(
+				'@type' => $output_format,
+				'url'   => $value,
+			);
+
+			if ( $oembed_data ) {
+				// Add name/title.
+				if ( ! empty( $oembed_data->title ) ) {
+					$result['name'] = $oembed_data->title;
+				}
+
+				// Add thumbnail.
+				if ( ! empty( $oembed_data->thumbnail_url ) ) {
+					$result['thumbnailUrl'] = $oembed_data->thumbnail_url;
+				}
+
+				// Add provider information.
+				if ( ! empty( $oembed_data->provider_name ) ) {
+					$result['publisher'] = array(
+						'@type' => 'Organization',
+						'name'  => $oembed_data->provider_name,
+					);
+					if ( ! empty( $oembed_data->provider_url ) ) {
+						$result['publisher']['url'] = $oembed_data->provider_url;
+					}
+				}
+
+				// Add dimensions for video.
+				if ( 'VideoObject' === $output_format || 'video' === ( $oembed_data->type ?? '' ) ) {
+					if ( ! empty( $oembed_data->width ) ) {
+						$result['width'] = (int) $oembed_data->width;
+					}
+					if ( ! empty( $oembed_data->height ) ) {
+						$result['height'] = (int) $oembed_data->height;
+					}
+				}
+
+				// Add author if available.
+				if ( ! empty( $oembed_data->author_name ) ) {
+					$author = array(
+						'@type' => 'Person',
+						'name'  => $oembed_data->author_name,
+					);
+					if ( ! empty( $oembed_data->author_url ) ) {
+						$author['url'] = $oembed_data->author_url;
+					}
+					$result['author'] = $author;
+				}
+			}
+
+			return $result;
 		}
 	}
 

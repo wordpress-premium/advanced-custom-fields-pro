@@ -3,7 +3,7 @@
  * @package ACF
  * @author  WP Engine
  *
- * © 2025 Advanced Custom Fields (ACF®). All rights reserved.
+ * © 2026 Advanced Custom Fields (ACF®). All rights reserved.
  * "ACF" is a trademark of WP Engine.
  * Licensed under the GNU General Public License v2 or later.
  * https://www.gnu.org/licenses/gpl-2.0.html
@@ -52,16 +52,17 @@ if ( ! class_exists( 'ACF_Location_Current_User_Role' ) ) :
 			}
 
 			// Check super_admin value.
-			if ( $rule['value'] == 'super_admin' ) {
+			$rule_value = $rule['value'] ?? '';
+			if ( $rule_value == 'super_admin' ) {
 				$result = is_super_admin( $user->ID );
 
 				// Check role.
 			} else {
-				$result = in_array( $rule['value'], $user->roles );
+				$result = in_array( $rule_value, $user->roles );
 			}
 
 			// Reverse result for "!=" operator.
-			if ( $rule['operator'] === '!=' ) {
+			if ( ( $rule['operator'] ?? '' ) === '!=' ) {
 				return ! $result;
 			}
 			return $result;

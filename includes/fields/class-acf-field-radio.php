@@ -3,7 +3,7 @@
  * @package ACF
  * @author  WP Engine
  *
- * © 2025 Advanced Custom Fields (ACF®). All rights reserved.
+ * © 2026 Advanced Custom Fields (ACF®). All rights reserved.
  * "ACF" is a trademark of WP Engine.
  * Licensed under the GNU General Public License v2 or later.
  * https://www.gnu.org/licenses/gpl-2.0.html
@@ -366,6 +366,14 @@ if ( ! class_exists( 'acf_field_radio' ) ) :
 					// sanitize (remove tags)
 					$value = sanitize_text_field( $value );
 
+					/** This filter is documented in includes/fields/class-acf-field-select.php */
+					$max = (int) apply_filters( 'acf/fields/max_appended_choices', 1000, $field, $post_id );
+
+					// bail if the cap is reached; the normalized value still saves
+					if ( count( $field['choices'] ) >= $max ) {
+						return $value;
+					}
+
 					// update $field
 					$field['choices'][ $value ] = $value;
 
@@ -463,6 +471,17 @@ if ( ! class_exists( 'acf_field_radio' ) ) :
 			}
 
 			return $schema;
+		}
+
+		/**
+		 * Returns an array of JSON-LD Property output types that are supported by this field type.
+		 *
+		 * @since 6.8
+		 *
+		 * @return string[]
+		 */
+		public function get_jsonld_output_types(): array {
+			return array( 'Text' );
 		}
 	}
 

@@ -3,7 +3,7 @@
  * @package ACF
  * @author  WP Engine
  *
- * © 2025 Advanced Custom Fields (ACF®). All rights reserved.
+ * © 2026 Advanced Custom Fields (ACF®). All rights reserved.
  * "ACF" is a trademark of WP Engine.
  * Licensed under the GNU General Public License v2 or later.
  * https://www.gnu.org/licenses/gpl-2.0.html
@@ -38,7 +38,7 @@ class Bindings {
 			register_block_bindings_source(
 				'acf/field',
 				array(
-					'label'              => _x( 'ACF Fields', 'The core ACF block binding source name for fields on the current page', 'acf' ),
+					'label'              => _x( 'Custom Fields', 'The core ACF block binding source name for fields on the current page', 'acf' ),
 					'get_value_callback' => array( $this, 'get_value' ),
 				)
 			);

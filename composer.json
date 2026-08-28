@@ -1,6 +1,6 @@
 {
   "name": "wordpress-premium/advanced-custom-fields-pro",
-  "description": "Advanced Custom Fields",
+  "description": "Advanced Custom Fields PRO",
   "type": "wordpress-plugin",
   "license": "GPL-2.0-or-later",
   "autoload": {

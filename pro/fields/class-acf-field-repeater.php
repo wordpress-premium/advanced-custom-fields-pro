@@ -3,7 +3,7 @@
  * @package ACF
  * @author  WP Engine
  *
- * © 2025 Advanced Custom Fields (ACF®). All rights reserved.
+ * © 2026 Advanced Custom Fields (ACF®). All rights reserved.
  * "ACF" is a trademark of WP Engine.
  * Licensed under the GNU General Public License v2 or later.
  * https://www.gnu.org/licenses/gpl-2.0.html
@@ -1079,19 +1079,26 @@ if ( ! class_exists( 'acf_field_repeater' ) ) :
 		public function ajax_get_rows() {
 			$args = acf_request_args(
 				array(
-					'field_name'    => '',
-					'field_key'     => '',
-					'field_prefix'  => '',
-					'post_id'       => 0,
-					'rows_per_page' => 0,
-					'refresh'       => false,
-					'nonce'         => '',
+					'field_name'        => '',
+					'field_key'         => '',
+					'field_prefix'      => '',
+					'post_id'           => 0,
+					'rows_per_page'     => 0,
+					'refresh'           => false,
+					'nonce'             => '',
+					'options_page_slug' => '',
 				)
 			);
 
-			if ( ! acf_verify_ajax( $args['nonce'], $args['field_key'], true ) ) {
+			if ( ! acf_verify_ajax( $args['nonce'], $args['field_key'], true, 'repeater' ) ) {
 				$error = array( 'error' => __( 'Invalid nonce.', 'acf' ) );
 				wp_send_json_error( $error, 401 );
+			}
+
+			$post_id_info = acf_decode_post_id( acf_get_valid_post_id( $args['post_id'] ) );
+			if ( ! acf_current_user_can_edit_in_context( $post_id_info, sanitize_text_field( $args['options_page_slug'] ) ) ) {
+				$error = array( 'error' => __( 'Sorry, you do not have permission to do that.', 'acf' ) );
+				wp_send_json_error( $error, 403 );
 			}
 
 			if ( '' === $args['field_name'] || '' === $args['field_key'] ) {
@@ -1110,6 +1117,11 @@ if ( ! class_exists( 'acf_field_repeater' ) ) :
 
 			// Make sure we have a valid field.
 			$field = acf_validate_field( $field );
+
+			if ( empty( $field['pagination'] ) ) {
+				$error = array( 'error' => __( 'Pagination is not enabled for this field.', 'acf' ) );
+				wp_send_json_error( $error, 400 );
+			}
 
 			// Make sure that we only get a subset of the rows.
 			$this->is_rendering = true;
@@ -1138,6 +1150,132 @@ if ( ! class_exists( 'acf_field_repeater' ) ) :
 			$response['rows'] = $repeater_table->rows( true );
 
 			wp_send_json_success( $response );
+		}
+
+		/**
+		 * Returns an array of JSON-LD Property output types that are supported by this field type.
+		 *
+		 * @since 6.8
+		 *
+		 * @return string[]
+		 */
+		public function get_jsonld_output_types(): array {
+			return array( 'Thing', 'ItemList' );
+		}
+
+		/**
+		 * Formats the field value for JSON-LD output.
+		 *
+		 * @since 6.8.0
+		 *
+		 * @param mixed          $value   The value of the field.
+		 * @param integer|string $post_id The ID of the post.
+		 * @param array          $field   The field array.
+		 * @return mixed
+		 */
+		public function format_value_for_jsonld( $value, $post_id, $field ) {
+			if ( empty( $value ) || ! is_array( $value ) || empty( $field['sub_fields'] ) ) {
+				return null;
+			}
+
+			// Get output format with fallback.
+			$output_format = $field['schema_output_format'] ?? '';
+			if ( empty( $output_format ) ) {
+				$property      = $field['schema_property'] ?? '';
+				$output_format = \ACF\AI\GEO\Schema::get_default_output_format( $this->name, $property );
+			}
+
+			// Get all Schema.org types for type detection.
+			$all_types   = array_keys( \ACF\AI\GEO\SchemaData::get_type_hierarchy() );
+			$all_types[] = 'Thing';
+
+			$items = array();
+
+			// Process each row.
+			foreach ( $value as $row ) {
+				if ( ! is_array( $row ) ) {
+					continue;
+				}
+
+				$row_data = array();
+				$row_type = null;
+
+				// Add @type to each row item if we have a specific output format.
+				// For ItemList, items don't get the @type directly (they get wrapped in ListItem).
+				if ( ! empty( $output_format ) && 'ItemList' !== $output_format ) {
+					$row_type = $output_format;
+				}
+
+				// Process each sub field in the row.
+				foreach ( $field['sub_fields'] as $sub_field ) {
+					// Get the sub field value - try both key and name.
+					$sub_value = $row[ $sub_field['key'] ] ?? $row[ $sub_field['_name'] ] ?? $row[ $sub_field['name'] ] ?? null;
+
+					if ( null === $sub_value ) {
+						continue;
+					}
+
+					// Check if sub field has a schema property mapping.
+					$schema_property = $sub_field['schema_property'] ?? '';
+
+					if ( empty( $schema_property ) ) {
+						// No schema property - skip this field for JSON-LD output.
+						continue;
+					}
+
+					// Check if schema_property is actually a Schema.org type (e.g., HowToStep).
+					// If so, use it as the row's @type instead of as a property.
+					if ( in_array( $schema_property, $all_types, true ) ) {
+						$row_type = $schema_property;
+						continue;
+					}
+
+					// Parse qualified property (e.g., "Thing.name" -> "name") to strip type prefix.
+					$property_name = \ACF\AI\GEO\Schema::get_property_name( $schema_property );
+
+					// Format the sub field value for JSON-LD.
+					$formatted_value = \ACF\AI\GEO\GEO::format_field_value_for_jsonld( $sub_value, $sub_field );
+
+					if ( null !== $formatted_value ) {
+						$row_data[ $property_name ] = $formatted_value;
+					}
+				}
+
+				// Add @type if we determined one.
+				if ( $row_type ) {
+					$row_data = array_merge( array( '@type' => $row_type ), $row_data );
+				}
+
+				// If row has only one property and no @type, extract just the value for cleaner output.
+				if ( count( $row_data ) === 1 && ! isset( $row_data['@type'] ) ) {
+					$items[] = reset( $row_data );
+				} elseif ( ! empty( $row_data ) ) {
+					// Only add row if it has content.
+					$items[] = $row_data;
+				}
+			}
+
+			if ( empty( $items ) ) {
+				return null;
+			}
+
+			// For ItemList, wrap items in the proper structure.
+			if ( 'ItemList' === $output_format ) {
+				$list_items = array();
+				foreach ( $items as $position => $item ) {
+					$list_items[] = array(
+						'@type'    => 'ListItem',
+						'position' => $position + 1,
+						'item'     => $item,
+					);
+				}
+				return array(
+					'@type'           => 'ItemList',
+					'itemListElement' => $list_items,
+				);
+			}
+
+			return $items;
 		}
 	}
 

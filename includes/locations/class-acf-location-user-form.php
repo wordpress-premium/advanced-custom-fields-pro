@@ -3,7 +3,7 @@
  * @package ACF
  * @author  WP Engine
  *
- * © 2025 Advanced Custom Fields (ACF®). All rights reserved.
+ * © 2026 Advanced Custom Fields (ACF®). All rights reserved.
  * "ACF" is a trademark of WP Engine.
  * Licensed under the GNU General Public License v2 or later.
  * https://www.gnu.org/licenses/gpl-2.0.html
@@ -58,7 +58,7 @@ if ( ! class_exists( 'ACF_Location_User_Form' ) ) :
 			}
 
 			// The "Add / Edit" choice (foolishly valued "edit") should match true for either "add" or "edit".
-			if ( $rule['value'] === 'edit' && $user_form === 'add' ) {
+			if ( ( $rule['value'] ?? '' ) === 'edit' && $user_form === 'add' ) {
 				$user_form = 'edit';
 			}
 

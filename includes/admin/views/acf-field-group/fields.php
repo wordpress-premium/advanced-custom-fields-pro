@@ -3,7 +3,7 @@
  * @package ACF
  * @author  WP Engine
  *
- * © 2025 Advanced Custom Fields (ACF®). All rights reserved.
+ * © 2026 Advanced Custom Fields (ACF®). All rights reserved.
  * "ACF" is a trademark of WP Engine.
  * Licensed under the GNU General Public License v2 or later.
  * https://www.gnu.org/licenses/gpl-2.0.html
@@ -116,13 +116,15 @@ if ( $is_subfield ) {
 if ( ! $parent ) :
 
 	// get clone
+	global $field_group;
 	$clone = acf_get_valid_field(
 		array(
-			'ID'    => 'acfcloneindex',
-			'key'   => 'acfcloneindex',
-			'label' => __( 'New Field', 'acf' ),
-			'name'  => 'new_field',
-			'type'  => 'text',
+			'ID'     => 'acfcloneindex',
+			'key'    => 'acfcloneindex',
+			'label'  => __( 'New Field', 'acf' ),
+			'name'   => 'new_field',
+			'type'   => 'text',
+			'parent' => isset( $field_group['ID'] ) ? $field_group['ID'] : 0,
 		)
 	);
 

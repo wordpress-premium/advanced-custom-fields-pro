@@ -3,7 +3,7 @@
  * @package ACF
  * @author  WP Engine
  *
- * © 2025 Advanced Custom Fields (ACF®). All rights reserved.
+ * © 2026 Advanced Custom Fields (ACF®). All rights reserved.
  * "ACF" is a trademark of WP Engine.
  * Licensed under the GNU General Public License v2 or later.
  * https://www.gnu.org/licenses/gpl-2.0.html
@@ -326,6 +326,11 @@ class ACF_Rest_Api {
 			// If the incoming request has a map of field names to keys, extract it for use in the subsequent
 			// field search.
 			$field_key_map = acf_extract_var( $data, '_acf_field_key_map', array() );
+
+			// Sanitize field data for users without unfiltered_html capability.
+			if ( ! acf_allow_unfiltered_html() ) {
+				$data = wp_kses_post_deep( $data );
+			}
 
 			// Loop through the inbound data payload, find the field matching the incoming field name, and
 			// update the field.

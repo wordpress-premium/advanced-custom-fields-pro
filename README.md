@@ -1,8 +1,10 @@
 # Advanced Custom Fields PRO
 
-![GitLab Release](https://img.shields.io/gitlab/v/release/wordpress-premium%2Fadvanced-custom-fields-pro) ![GitHub followers](https://img.shields.io/github/followers/wordpress-premium?style=flat&color=lightblue) ![GitHub Repo stars](https://img.shields.io/github/stars/wordpress-premium/advanced-custom-fields-pro?style=flat&color=orange) ![GitHub forks](https://img.shields.io/github/forks/wordpress-premium/advanced-custom-fields-pro?style=flat) ![GitHub last commit](https://img.shields.io/github/last-commit/wordpress-premium/advanced-custom-fields-pro)
+![Version](https://img.shields.io/badge/release-6.8.9-blue) ![Requires WP](https://img.shields.io/badge/WordPress-6.2%2B-blue) ![Requires PHP](https://img.shields.io/badge/PHP-7.4%2B-8892BF) ![Tested up to](https://img.shields.io/badge/tested_up_to-7.1-green) ![GitHub last commit](https://img.shields.io/github/last-commit/wordpress-premium/advanced-custom-fields-pro)
 
 [**Advanced Custom Fields PRO**](https://www.advancedcustomfields.com/) (or **ACF**) is a powerful plugin for WordPress that allows you to customize your website with professional and intuitive fields. ACF PRO provides tools to take full control of your WordPress edit screens, custom field data, and more, making it a favorite among developers.
+
+This copy is **version 6.8.9** (released 27th August 2026). It requires WordPress 6.2+, PHP 7.4+, and is tested up to WordPress 7.1.
 
 **Get more pro and premium plugins on [wordpress-premium.net](https://www.wordpress-premium.net/?utm_source=acf).**
 
@@ -12,17 +14,19 @@
 
 ## Usage
 
-> [!IMPORTANT]
->
-> Upon activation, the plugin will display a message that it has not been registered. To resolve this, go to "ACF" → "Updates" and enter **any random text** into the field and press "Activate License," or use the following license code.
+1. Download the .zip file
+2. Upload it via WordPress' admin area
+3. Activate the plugin
 
 ### License Code
 
+In this version, the license code has already been added. If you try to remove the code, it will automatically be added again with the following license code:
+
 ```bash
-83A5BB0E-2AD5-1646-90BC-7A42AE592CF5
+1415b451be1a13c283ba771ea52d38bb
 ```
 
-This is the **fully activated premium version** of the plugin, provided by [wordpress-premium.net](https://www.wordpress-premium.net?utm_source=acf). It has been scanned for security issues and is intended **for evaluation purposes only**. To use Advanced Custom Fields PRO on a live website, please [purchase a license](https://www.advancedcustomfields.com/pro/) directly from the official website.
+This is the **fully activated premium version** of the plugin, provided by [wordpress-premium.net](https://www.wordpress-premium.net?utm_source=acf). It was statically scanned on 28th August 2026 (see [SECURITY-AUDIT.md](SECURITY-AUDIT.md)): no malware, webshell, or backdoor was found. Intended **for evaluation purposes only**. To use Advanced Custom Fields PRO on a live website, please [purchase a license](https://www.advancedcustomfields.com/pro/) directly from the official website.
 
 **Important:** Unlicensed ("nulled") usage may violate the developer's terms and will not include official updates or support.
 
@@ -32,21 +36,21 @@ This is the **fully activated premium version** of the plugin, provided by [word
 >
 > If [WordPress Premium](https://www.wordpress-premium.net/?utm_source=acf) helps you access premium plugins safely, consider supporting us via [a donation through PayPal](https://www.paypal.com/paypalme/thaikolja) or in any of the available [cryptocurrencies](https://www.wordpress-premium.net/wallets/) to keep the service running.
 
+## Malware
+
+Every plugin WordPress Premium provides is rigorously scanned for malware, webshells, and backdoors and, if necessary, cleaned. You can [download the full report](SECURITY-AUDIT.md).
+
 ## Changelog
 
-### v6.6.2
+### v6.8.9
 
-**Release Date:** 29th October 2025
+**Release Date:** 27th August 2026
 
-- **feat(filters):** add `convert_field_name_to_lowercase` JS filter for uppercase ACF field names
-- **feat(blocks):** add `hideFieldsInSidebar` option to hide V3 Block forms from sidebar
-- **feat(blocks):** add "Open Expanded Editor" button in sidebar for V3 Blocks
-- **fix(metaboxes):** prevent reorder buttons from being hidden in block editor sidebar
-- **fix(blocks):** display fallback message when V3 Block preview fails due to invalid HTML
-- **fix(blocks):** remove loading spinner from preloaded V3 Blocks
-- **fix(blocks):** save default field values in V3 Blocks without user interaction
-- **fix(blocks):** prevent field disappearance on CMD/CTRL + Z in V3 Blocks
-- **fix(blocks):** open V3 Block form on left side for RTL languages
+- **feat(blocks):** blocks registered without an explicit version now default to v3 on WordPress 7.1+ (`acf/blocks/default_block_version` filter)
+- **feat(blocks):** add `renderPreview` option in `block.json` (`false` shows a placeholder instead of a live preview)
+- **fix(blocks):** inline editable fields in V3 no longer require a second click
+- **fix(admin):** radio buttons now appear correctly in ACF admin screens
+- **fix(fields):** Image and Gallery fields no longer reject SVG uploads when Safe SVG is active
 
 ---
 

@@ -3,7 +3,7 @@
  * @package ACF
  * @author  WP Engine
  *
- * © 2025 Advanced Custom Fields (ACF®). All rights reserved.
+ * © 2026 Advanced Custom Fields (ACF®). All rights reserved.
  * "ACF" is a trademark of WP Engine.
  * Licensed under the GNU General Public License v2 or later.
  * https://www.gnu.org/licenses/gpl-2.0.html
@@ -65,12 +65,8 @@ function acf_get_option_meta( $prefix = '' ) {
 
 	// Vars.
 	$meta    = array();
-	$search  = "{$prefix}_%";
-	$_search = "_{$prefix}_%";
-
-	// Escape underscores for LIKE.
-	$search  = str_replace( '_', '\_', $search );
-	$_search = str_replace( '_', '\_', $_search );
+	$search  = $wpdb->esc_like( "{$prefix}_" ) . '%';
+	$_search = $wpdb->esc_like( "_{$prefix}_" ) . '%';
 
 	// Query database for results.
 	$rows = $wpdb->get_results(
